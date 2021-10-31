@@ -1,13 +1,15 @@
 <?php
+
+
+/*
 require_once('config/safemysql.class.php');
 require_once('config/log.php');
-require_once('config/config.php');
 
+// Подготовимся к логированию
 $log = Logi::getInstance();
 
-
-
-
+// Получим настройки
+$config = include 'config/config.php';
 
 // необходимые HTTP-заголовки 
 header("Access-Control-Allow-Origin: *");
@@ -40,20 +42,9 @@ $apiRequest = [
     'parameterJSON' => $data,               // Параметры переданые через тело запроса
 ];
 
-$config = Config::getInstance();
-
-$log->add("Проверка");
-
-$log->add($config->get('login'));
 
 
-//$db = new SafeMysql(array('user' => $config->get('login'), 'pass' => $config->get('password'),'db' => $config->get('db'), 'charset' => $config->get('charset')));
-
-
-
-
-
-echo json_encode($apiRequest);
+$db = new SafeMysql(array('user' => $config['db']->login, 'pass' => $config['db']->password,'db' => $config['db']->db));
 
 
 
@@ -61,39 +52,88 @@ echo json_encode($apiRequest);
 
 
 
+switch ($apiRequest['module']) {
+    case 'users': {
 
 
+    } break;
+
+    case 'model': {
 
 
-die();
-
-
-
-function router($url, ...$args)
-{
-    (empty($args[1]) || false !== strpos(METHOD, $args[0]))
-    && (URI === $url || preg_match('#^' . $url . '$#iu', URI, $match))
-    && die(call_user_func_array(end($args), $match ?? []));
+    } break;
+    
+    
+    default:{
+        $json = [
+            'status'    => 0,
+            'messages'  => 'ERROR: not modules.',
+            'data' => $apiRequest,
+        ];
+    } break;
 }
 
-router('/api/games', 'GET', function () {
-    echo 'список игрушек';
-});
+header('Location:' . $apiRequest['module'], true, 404);
+echo json_encode($json);
 
-router('/api/game/(\d+)', 'GET', function (...$args) {
-    echo 'информация о игрушке: ', $args[1];
-});
 
-router('/api/games', 'POST', function () {
-    echo 'добавить новую игрушку';
-});
 
-router('/api/games/(\d+)', 'PUT', function (...$args) {
-    echo 'обновить существующую игрушку: ', $args[1];
-});
+*/
 
-router('/api/games/(\d+)', 'DELETE', function (...$args) {
-    echo ' удалить игрушку: ', $args[1];
-});
+
+// Получим настройки
+$config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
+require_once($config['dirConfig'] . 'log.php');
+
+
+// Подготовимся к логированию
+$log = Logi::getInstance();
+
+################### Разбор стройки URL
+
+// Отрежем из URL часть /api/
+$url = mb_substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 5);
+// Разобьем параметры URL по "/"  
+$request = explode('/', trim($url, "/"));
+
+
+################### Запустим на исполнение
+
+// Если имя запрашиваемого модуля есть в настройках
+if (array_key_exists($request[0], $config['api'])) {
+    // Подключим файл
+    require_once($config['dirApiModules'] . $config['api'][$request[0]]['file']);
+    // Создадим API
+    $Api = new $config['api'][$request[0]]['class']();
+    // Запусти API
+    echo $Api->run();
+} else {
+// Если модуля нет, ответим    
+    header("Access-Control-Allow-Orgin: *");
+    header("Access-Control-Allow-Methods: *");
+    header("Content-Type: application/json");
+    header("HTTP/1.1 405 Method Not Allowed ");
+
+    $answer = array(
+        'status'    => 'false',
+        'message'   => 'Method not found.'
+    );
+
+    if ($config['conf'] == 'debug') {
+        $answer += ['debug' => [
+            'responseJSON' => json_decode(file_get_contents("php://input")),
+            'responseURL' => $request,
+        ]];
+    }
+
+    echo json_encode($answer);
+}
+
+
+
+
+
+
+
 
 ?>

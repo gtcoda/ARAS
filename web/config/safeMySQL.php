@@ -66,6 +66,8 @@
  * 
  */
 
+
+
 class SafeMySQL
 {
 
@@ -76,9 +78,9 @@ class SafeMySQL
 
 	protected $defaults = array(
 		'host'      => 'localhost',
-		'user'      => 'root',
-		'pass'      => '',
-		'db'        => 'test',
+		'user'      => 'aras',
+		'pass'      => 'jj3ey7QiLUGvaO40',
+		'db'        => 'ARAS',
 		'port'      => NULL,
 		'socket'    => NULL,
 		'pconnect'  => FALSE,
