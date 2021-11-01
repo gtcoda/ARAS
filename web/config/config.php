@@ -36,6 +36,10 @@ return array(
             'class'  => 'loginApi',
             'file'   => 'login.php',
         ),
+        'gilds' => array(
+            'class' => 'gildsApi',
+            'file'  => 'gilds.php',
+        ),
 
     ),
 
@@ -49,7 +53,3 @@ return array(
     
 
 );
-
-
-
-?>

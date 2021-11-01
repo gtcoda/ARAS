@@ -1,4 +1,12 @@
 <?php
+// Допишим логирование
+$config = include $_SERVER['DOCUMENT_ROOT'].'/config/config.php';
+
+
+require_once($config['dirConfig'].'log.php');
+
+
+
 /**
  * @author col.shrapnel@gmail.com
  * @link http://phpfaq.ru/safemysql
@@ -532,6 +540,16 @@ class SafeMySQL
 			}
 			$query .= $part;
 		}
+############################### Каждый запрос залогируем
+
+		$log = Logi::getInstance();
+		$log->add(" ## " . $query);
+
+
+
+
+###############################
+
 		return $query;
 	}
 

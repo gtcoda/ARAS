@@ -116,7 +116,7 @@ if (array_key_exists($request[0], $config['api'])) {
 
     $answer = array(
         'status'    => 'false',
-        'message'   => 'Method not found.'
+        'message'   => 'Api not found.'
     );
 
     if ($config['conf'] == 'debug') {

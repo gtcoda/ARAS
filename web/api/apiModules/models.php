@@ -1,38 +1,31 @@
-<?php
+<?php 
 $config = include $_SERVER['DOCUMENT_ROOT'].'/config/config.php';
 
 require_once($config['dirApiModules'].'apiClass.php');
 require_once($config['dirConfig'].'safeMySQL.php');
 require_once($config['dirConfig'].'log.php');
 
+require_once($config['dirModule'].'Gilds.php');
 
-require_once($config['dirModule'].'Users.php');
+require_once($config['dirModule'].'modules.php');
 
 
-class usersApi extends Api
-{
-    public $apiName = 'users';
+class gildsApi extends Api{
+    public $apiName = 'modeles';
 
-    /**
+     /**
      * Метод GET
-     * Вывод списка всех записей
-     * http://ДОМЕН/users
+     * 
+     * Вернуть все цеха
+     * http://ДОМЕН/gilds
      * @return string
      */
     public function indexAction()
     {
-        
-
-
-        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-        // Подготовимся к логированию
-        $log = Logi::getInstance();
-        $log->add("Зашли в обработчик!");
-
-        $user = Users::getInstance();
+        $gild = Gilds::getInstance();
         $data = [];
 
-        $data = $user->GetUsers();
+        $data = $gild->GetGilds();
         $answer = array(
             'status' => 'success',
             'messages' => 'All users',
@@ -44,31 +37,21 @@ class usersApi extends Api
 
     /**
      * Метод GET
-     * Просмотр отдельной записи (по id)
-     * http://ДОМЕН/users/1
+     * 
+     * Получить информацию о цехе с {id}
+     * http://ДОМЕН/login/1
      * @return string
-     * 
-     * 
-     * 
      */
     public function viewAction()
     {
-        $user = Users::getInstance();
+        $gild = Gilds::getInstance();
         $data = [];
 
         try {
-
-            if (ctype_digit($this->requestUri[0])){
-                $data = $user->GetUserId($this->requestUri[0]);
-            }
-            else{
-                $data = $user->GetUserLogin($this->requestUri[0]);
-            }
-
-
+            $data = $gild->GetGild($this->requestUri[0]);
             $answer = array(
                 'status' => 'success',
-                'messages' => 'User',
+                'messages' => 'Gild',
                 'data' => $data,
             );
             return $this->response($answer, 200);
@@ -83,38 +66,44 @@ class usersApi extends Api
 
     /**
      * Метод POST
-     * Создание нового пользователя
-     * http://ДОМЕН/users + параметры запроса name, login, password
+     * Создание нового цеха
+     * http://ДОМЕН/gilds + параметры запроса 
      * @return string
      * 
      * Пример тела запроса
      * {
-     * "user_login": "freddy",
-     * "user_password": "5453123",
-     * "user_name": "fred"
+     * "gild_number": "4", // Номер цеха()
+     * "gild_name": "Сборочный", // Название
+     * "gild_desc": "Расположен там то, начальник тот то", // Описание  
+     * "gild_dimX":  "10", // Размер в ячейках по Х
+     * "gild_dimY":  "20" // Размер в ячейках по Y
      * }
-     * 
-     * 
-     * 
-     * 
      */
+
+
     public function createAction()
     {
         $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
- 
+        // Подготовимся к логированию
+        $log = Logi::getInstance();
+        $log->add("Добавляем цех");
 
-        $user = Users::getInstance();
+        $gild = Gilds::getInstance();
+
+        $log->add($this->requestParams);
 
         try {
-            if ($user->AddUser($this->requestParams)) {
+            if ($gild->AddGild($this->requestParams)) {
                 $answer = array(
                     'status' => 'success',
-                    'messages' => 'User creation completed'
+                    'messages' => 'Gild creation completed'
                 );
                 return $this->response($answer, 200);
             }
         } catch (Exception $e) {
             
+            
+            $log->add(print_r($e, true));
 
             $answer = array(
                 'status' => 'error',
@@ -125,73 +114,53 @@ class usersApi extends Api
         }
     }
 
+
     /**
      * Метод PUT
-     * Обновление отдельной записи (по ее id или логину)
-     * http://ДОМЕН/users/1 + параметры запроса name, email
+     * 
      * @return string
      */
     public function updateAction()
     {
-
-        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-        // Подготовимся к логированию
-        $log = Logi::getInstance();
-        $log->add("Зашли в обработчик!");
-
-        $user = Users::getInstance();
+        $gild = Gilds::getInstance();
 
         try {
-            if ($user->UpdateUser($this->requestParams, $this->requestUri[0])) {
+            if ($gild->UpdateGild($this->requestParams, $this->requestUri[0])) {
                 $answer = array(
-                    'status' => 'success',
-                    'messages' => 'User update'
+                    'status'    => 'success',
+                    'messages'  => 'Gild update',
+                    'data'      => $gild->GetGild($this->requestUri[0]),
                 );
                 return $this->response($answer, 200);
             }
         } catch (Exception $e) {
-
-
-            $log->add(print_r($e, true));
-
             $answer = array(
                 'status' => 'error',
                 'messages' => $e->getMessage(),
             );
-
             return $this->response($answer, 400);
         }
+        
     }
 
     /**
      * Метод DELETE
      * Удаление отдельной записи (по ее id)
-     * http://ДОМЕН/users/1
+     * http://ДОМЕН/gilds/1
      * @return string
      */
     public function deleteAction()
     {
-
-        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-        // Подготовимся к логированию
-        $log = Logi::getInstance();
-        $log->add("Зашли в обработчик удаления!");
-
-        $user = Users::getInstance();
-
+        $gild = Gilds::getInstance();
         try {
-            if ($user->DeleteUser($this->requestUri[0])) {
+            if ($gild->DeliteGild($this->requestUri[0])) {
                 $answer = array(
                     'status' => 'success',
-                    'messages' => 'User delete'
+                    'messages' => 'Gild delete'
                 );
                 return $this->response($answer, 200);
             }
         } catch (Exception $e) {
-
-
-            $log->add(print_r($e, true));
-
             $answer = array(
                 'status' => 'error',
                 'messages' => $e->getMessage(),
@@ -200,4 +169,11 @@ class usersApi extends Api
             return $this->response($answer, 400);
         }
     }
+
+
+
+
 }
+
+
+?>

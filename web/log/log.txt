@@ -1,2 +1,21 @@
-Зашли в обработчик!
+##################### Полученые данные в запросе ##############
+Array
+(
+)
+
+Array
+(
+    [0] => api
+    [1] => users
+)
+
+Array
+(
+    [user_login] => testUser
+    [user_password] => TestPassword
+    [user_name] => testUserName
+)
+
+###############################################################
+ ## SELECT user_id, user_login, user_name FROM `users` WHERE user_login='testUser'
 

@@ -1,0 +1,818 @@
+{
+	"info": {
+		"_postman_id": "40358055-cc06-4a8e-9684-a9c94b400e76",
+		"name": "ApiARAS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Список users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Your test name\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/users",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Конкрентый user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/users/gtcoda",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"users",
+								"gtcoda"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Создание пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_login\": \"testUser\",\r\n  \"user_password\": \"TestPassword\",\r\n  \"user_name\": \"testUserName\"\r\n}"
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/users",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Создание пользователя с существующим логином",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check status\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"error\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check messages\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.messages).to.eql(\"User is exists!\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_login\": \"testUser\",\r\n  \"user_password\": \"TestPassword\",\r\n  \"user_name\": \"testUserName\"\r\n}"
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/users",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получение id тестового пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check status\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check messages\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.messages).to.eql(\"User\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"try {\r",
+									"    // сохраняем полученый токен из json ответа в переменную окружения\r",
+									"    pm.environment.set(\"testUserId\", pm.response.json().data.user_id);\r",
+									"    \r",
+									"} catch(e) {\r",
+									"    // выводим исключение в консоль\r",
+									"    console.log(e);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/users/testUser",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"users",
+								"testUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменение пользователя по имени",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_password\": \"TestPasswordUpdate\",\r\n  \"user_name\": \"testUserNameUpdateName\"\r\n}"
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/users/testUser",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"users",
+								"testUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменение пользователя по id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_password\": \"TestPasswordUpdate\",\r\n  \"user_name\": \"testUserNameUpdateName\"\r\n}"
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/users/{{testUserId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{testUserId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/users/testUser",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"users",
+								"testUser"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Войти",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    try {\r",
+									"        // сохраняем полученый токен из json ответа в переменную окружения\r",
+									"        pm.environment.set(\"jwt\", pm.response.json().jwt);\r",
+									"        \r",
+									"    } catch(e) {\r",
+									"        // выводим исключение в консоль\r",
+									"        console.log(e);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Your test name\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_login\": \"gtcoda\",\r\n  \"user_password\": \"123456\",\r\n  \"user_name\": \"Sid\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/login",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Проверить JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    console.log(pm.environment.get(\"jwt\"));\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"jwt\": \"{{jwt}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/login",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"login"
+							],
+							"query": [
+								{
+									"key": "jwt",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Попытка входа с неправильным паролем",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check status\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"error\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_login\": \"gtcoda\",\r\n  \"user_password\": \"123456____\",\r\n  \"user_name\": \"Sid\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/login",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Попытка входа с неправильным JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check status\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"error\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check messages\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.messages).to.eql(\"Signature verification failed\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"jwt\": \"{{jwt}}______\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/login",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Попытка входа без jwt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check status\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"error\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check messages\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.messages).to.eql(\"Нет токена!\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_login\": \"gtcoda\",\r\n}"
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/login",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gilds",
+			"item": [
+				{
+					"name": "Список Gilds",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/gilds",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"gilds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Конкретный Gild",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/gilds/1",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"gilds",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Создать цех",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"gild_number\": \"4\",\r\n\"gild_name\": \"Сборочный\",\r\n\"gild_desc\": \"Расположен там то, начальник тот то\",\r\n\"gild_dimX\": \"10\",\r\n\"gild_dimY\": \"20\" \r\n}"
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/gilds",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"gilds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменить Gild",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"gild_dimX\": \"15\"\r\n}"
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/gilds/1",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"gilds",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить цех",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/gilds/1",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"gilds",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "JWTToken",
+			"value": ""
+		}
+	]
+}

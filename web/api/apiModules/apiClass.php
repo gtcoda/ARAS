@@ -30,6 +30,9 @@ abstract class Api
 
 
         $this->requestGET = $_GET;
+        $this->statusCode = array(
+            'OK' => 200,
+        );
 
         //Массив GET параметров разделенных слешем(без параметров  после '?')
         $this->requestUri = explode('/', trim(strtok($_SERVER['REQUEST_URI'], '?'), '/'));
@@ -37,6 +40,14 @@ abstract class Api
 
         #$this->requestParams = $_REQUEST;
         $this->requestParams = json_decode(file_get_contents("php://input"), true);
+
+
+        $log = Logi::getInstance();
+        $log->add("##################### Полученые данные в запросе ##############");
+        $log->add($this->requestGET);
+        $log->add($this->requestUri);
+        $log->add($this->requestParams);
+        $log->add("###############################################################");
 
         //Определение метода запроса
         $this->method = $_SERVER['REQUEST_METHOD'];
@@ -89,6 +100,7 @@ abstract class Api
     {
         $status = array(
             200 => 'OK',
+            400 => 'Bad Request',
             404 => 'Not Found',
             405 => 'Method Not Allowed',
             500 => 'Internal Server Error',
