@@ -1,7 +1,5 @@
 <?php
-$config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-require_once($config['dirConfig'] . 'safeMySQL.php');
-require_once($config['dirConfig'] . 'log.php');
+require_once($config['dirModule'] . 'ModulesClass.php');
 
 
 /**
@@ -15,11 +13,12 @@ require_once($config['dirConfig'] . 'log.php');
  * 
  */
 
-class Gilds
+class Gilds extends Modules
 {
     private static $instance;
     protected function __construct()
     {
+        parent::__construct();
     }
     protected function __clone()
     {
@@ -40,20 +39,16 @@ class Gilds
 
     public function Gets()
     {
-        $db = new SafeMySQL();
-        $all = $db->getAll("SELECT * FROM ?n", "gilds");
+        $all = $this->db->getAll("SELECT * FROM ?n", "gilds");
         return $all;
     }
 
     public function Get($id)
     {
-        $db = new SafeMySQL();
-
         try {
-            $row = $db->getRow("SELECT * FROM ?n WHERE gild_id=?i", "gilds", $id);
+            $row = $this->db->getRow("SELECT * FROM ?n WHERE gild_id=?i", "gilds", $id);
         } catch (Exception $e) {
-            $log = Logi::getInstance();
-            $log->add(print_r($e->getMessage(), true));
+            $this->log->add($e->getMessage());
         }
 
         return $row;
@@ -74,15 +69,14 @@ class Gilds
             throw new RuntimeException('Request is empty');
         }
 
-        $db = new SafeMySQL();
-        $data = $db->filterArray($arr, $fields);
+
+        $data = $this->db->filterArray($arr, $fields);
 
         try {
-            $db->query("INSERT INTO ?n SET ?u", "gilds", $data);
-            return $this->Get($db->insertId());
+            $this->db->query("INSERT INTO ?n SET ?u", "gilds", $data);
+            return $this->Get($this->db->insertId());
         } catch (Exception $e) {
-            $log = Logi::getInstance();
-            $log->add(print_r($e->getMessage(), true));
+            $this->log->add($e->getMessage());
             // Выдадим выше ошибку, но без подробностей
             throw new RuntimeException('Request is bad');
         }
@@ -106,22 +100,20 @@ class Gilds
         //Если users не существует
         if (empty($this->Get($id))) {
             throw new RuntimeException('Gild not exists!');
-            return false;
         }
 
 
-        $db = new SafeMySQL();
-        $data = $db->filterArray($arr, $fields);
+
+        $data = $this->db->filterArray($arr, $fields);
 
         try {
-            $db->query("UPDATE ?n SET ?u WHERE gild_id = ?i", 'gilds', $data, $id);
+            $this->db->query("UPDATE ?n SET ?u WHERE gild_id = ?i", 'gilds', $data, $id);
             return true;
         } catch (Exception $e) {
-            $log = Logi::getInstance();
-            $log->add(print_r($e->getMessage(), true));
+
+            $this->log->add($e->getMessage());
             // Выдадим выше ошибку, но без подробностей
             throw new RuntimeException('Request is bad');
-            return false;
         }
 
 
@@ -138,19 +130,17 @@ class Gilds
         //Если users не существует
         if (empty($this->Get($id))) {
             throw new RuntimeException('Gild not exists!');
-            return false;
         }
 
-        $db = new SafeMySQL();
+
         try {
-            $db->query("DELETE FROM ?n WHERE gild_id=?i", 'gilds', $id);
+            $this->db->query("DELETE FROM ?n WHERE gild_id=?i", 'gilds', $id);
             return true;
         } catch (Exception $e) {
-            $log = Logi::getInstance();
-            $log->add(print_r($e->getMessage(), true));
+
+            $this->log->add($e->getMessage());
             // Выдадим выше ошибку, но без подробностей
             throw new RuntimeException('Request is bad');
-            return false;
         }
 
 

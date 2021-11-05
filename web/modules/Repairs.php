@@ -1,20 +1,16 @@
 <?php
-$config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-require_once($config['dirConfig'] . 'safeMySQL.php');
-require_once($config['dirConfig'] . 'log.php');
+require_once($config['dirModule'] . 'ModulesClass.php');
 
 
 
-class Repairs {
+class Repairs extends Modules  {
     private static $instance;
     private $table = "repairs";
-    private $db;
-    private $log;
+
 
     protected function __construct()
     {
-        $this->db = new SafeMySQL();
-        $this->log = Logi::getInstance();
+        parent::__construct();
     }
     protected function __clone()
     {

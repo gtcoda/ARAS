@@ -1,23 +1,33 @@
-<?php 
-$config = include $_SERVER['DOCUMENT_ROOT'].'/config/config.php';
+<?php
+$config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
 
-require_once($config['dirApiModules'].'apiClass.php');
-require_once($config['dirConfig'].'safeMySQL.php');
-require_once($config['dirConfig'].'log.php');
+require_once($config['dirApiModules'] . 'apiClass.php');
+require_once($config['dirConfig'] . 'safeMySQL.php');
+require_once($config['dirConfig'] . 'log.php');
 
-require_once($config['dirModule'].'Users.php');
-
-
-require_once ($config['dirJWT'].'BeforeValidException.php');
-require_once ($config['dirJWT'].'ExpiredException.php');
-require_once ($config['dirJWT'].'SignatureInvalidException.php');
-require_once ($config['dirJWT'].'JWT.php');
+require_once($config['dirModule'] . 'Users.php');
 
 
+require_once($config['dirJWT'] . 'BeforeValidException.php');
+require_once($config['dirJWT'] . 'ExpiredException.php');
+require_once($config['dirJWT'] . 'SignatureInvalidException.php');
+require_once($config['dirJWT'] . 'JWT.php');
 
-class loginApi extends Api{
+
+
+class loginApi extends Api
+{
     public $apiName = 'login';
 
+    private $user;
+
+    function __construct()
+    {
+        // Вызовем конструктор родителя
+        parent::__construct();
+
+        $this->user = Users::getInstance();
+    }
 
     /**
      * Метод GET
@@ -63,58 +73,43 @@ class loginApi extends Api{
      * "user_login": "freddy",
      * "user_password": "5453123",
      * }
-     * 
-     * 
-     * 
-     * 
+
      */
     public function createAction()
     {
-        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-        // Подготовимся к логированию
-        $log = Logi::getInstance();
-        $log->add("Зашли в обработчик!");
+        if ($this->user->CheckUser($this->requestParams['user_login'], $this->requestParams['user_password'])) {
 
-        $user = Users::getInstance();
-
-
-
-        $log->add($this->requestParams);
-
-        if ($user->CheckUser($this->requestParams['user_login'], $this->requestParams['user_password'])) {
-
-            $row = $user->GetUserLogin($this->requestParams['user_login']);
+            $row = $this->user->GetUserLogin($this->requestParams['user_login']);
 
             $token = array(
-                "iss" => $config['JWT']['iss'],
-                "aud" => $config['JWT']['aud'],
-                "iat" => $config['JWT']['iat'],
-                "nbf" => $config['JWT']['nbf'],
+                "iss" => $this->config['JWT']['iss'],
+                "aud" => $this->config['JWT']['aud'],
+                "iat" => $this->config['JWT']['iat'],
+                "nbf" => $this->config['JWT']['nbf'],
             );
 
 
-            $token += ['data'=>array(
+            $token += ['data' => array(
                 'user_id' => $row['user_id'],
                 'user_login' => $row['user_login'],
-                'role_name' => $user->GetUserRole($row['user_id']),
+                'role_name' => $this->user->GetUserRole($row['user_id']),
             )];
-            
+
             // Cоздадим токен JWT
-            $jwt = Firebase\JWT\JWT::encode($token, $config['JWT']['key']);
-            
+            $jwt = Firebase\JWT\JWT::encode($token, $this->config['JWT']['key']);
+
             $answer = array(
                 'status' => 'success',
                 'messages' => 'User confirmed',
                 'jwt' => $jwt,
             );
             return $this->response($answer, 200);
-        }
-        else{
+        } else {
             $answer = array(
                 'status' => 'error',
                 'messages' => 'User NOT confirmed'
             );
-            return $this->response($answer, 400); 
+            return $this->response($answer, 400);
         }
     }
 
@@ -129,11 +124,7 @@ class loginApi extends Api{
         $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
 
 
-        $log = Logi::getInstance();
-        $log->add("Проверяем JWT ");
-        
-  
-        if(array_key_exists("jwt",$this->requestParams)){
+        if (array_key_exists("jwt", (array)$this->requestParams)) {
 
             try {
 
@@ -145,10 +136,7 @@ class loginApi extends Api{
                     'data' => $data,
                 );
                 return $this->response($answer, 200);
-
-            }
-
-            catch(Exception $e){
+            } catch (Exception $e) {
 
                 $answer = array(
                     'status' => 'error',
@@ -163,7 +151,6 @@ class loginApi extends Api{
             'messages' => 'Нет токена!'
         );
         return $this->response($answer, 404);
-        
     }
 
     /**
@@ -180,11 +167,4 @@ class loginApi extends Api{
         );
         return $this->response($answer, 400);
     }
-
-
-
-
 }
-
-
-?>

@@ -1,8 +1,5 @@
 <?php
-$config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-require_once($config['dirConfig'] . 'safeMySQL.php');
-require_once($config['dirConfig'] . 'log.php');
-
+require_once($config['dirModule'] . 'ModulesClass.php');
 
 /**
  * 
@@ -15,13 +12,14 @@ require_once($config['dirConfig'] . 'log.php');
  * 
  */
 
-class Machines
+class Machines extends Modules
 {
     private static $instance;
     private $table = "machines";
 
     protected function __construct()
     {
+        parent::__construct();
     }
     protected function __clone()
     {
@@ -46,8 +44,7 @@ class Machines
      */
     public function Gets()
     {
-        $db = new SafeMySQL();
-        $all = $db->getAll("SELECT * FROM ?n", $this->table);
+        $all = $this->db->getAll("SELECT * FROM ?n", $this->table);
         return $all;
     }
     /**
@@ -57,13 +54,13 @@ class Machines
      */
     public function Get($id)
     {
-        $db = new SafeMySQL();
+      
 
         try {
-            $row = $db->getRow("SELECT * FROM ?n WHERE machine_id=?i", $this->table, $id);
+            $row = $this->db->getRow("SELECT * FROM ?n WHERE machine_id=?i", $this->table, $id);
         } catch (Exception $e) {
-            $log = Logi::getInstance();
-            $log->add(print_r($e->getMessage(), true));
+            
+            $this->log->add($e->getMessage());
         }
 
         return $row;
@@ -90,15 +87,15 @@ class Machines
             throw new RuntimeException($config['messages']['NoCompl']);
         }
 
-        $db = new SafeMySQL();
-        $data = $db->filterArray($arr, $fields);
+       
+        $data = $this->db->filterArray($arr, $fields);
 
         try {
-            $db->query("INSERT INTO ?n SET ?u", $this->table, $data);
-            return $this->Get($db->insertId());
+            $this->db->query("INSERT INTO ?n SET ?u", $this->table, $data);
+            return $this->Get($this->db->insertId());
         } catch (Exception $e) {
-            $log = Logi::getInstance();
-            $log->add($e->getMessage());
+            
+            $this->log->add($e->getMessage());
             // Выдадим выше ошибку, но без подробностей
             throw new RuntimeException('Request is bad');
         }
@@ -126,16 +123,15 @@ class Machines
         }
 
 
-        $db = new SafeMySQL();
-        $data = $db->filterArray($arr, $fields);
+         $data = $this->db->filterArray($arr, $fields);
 
         try {
 
-            $db->query("UPDATE ?n SET ?u WHERE machine_id = ?i", $this->table, $data, $id);
+            $this->db->query("UPDATE ?n SET ?u WHERE machine_id = ?i", $this->table, $data, $id);
             return true;
         } catch (Exception $e) {
-            $log = Logi::getInstance();
-            $log->add(print_r($e->getMessage(), true));
+            
+            $this->log->add($e->getMessage());
             // Выдадим выше ошибку, но без подробностей
             throw new RuntimeException('Request is bad');
             return false;
@@ -158,13 +154,13 @@ class Machines
             return false;
         }
 
-        $db = new SafeMySQL();
+
         try {
-            $db->query("DELETE FROM ?n WHERE machine_id=?i", $this->table, $id);
+            $this->db->query("DELETE FROM ?n WHERE machine_id=?i", $this->table, $id);
             return true;
         } catch (Exception $e) {
-            $log = Logi::getInstance();
-            $log->add(print_r($e->getMessage(), true));
+            
+            $this->log->add($e->getMessage());
             // Выдадим выше ошибку, но без подробностей
             throw new RuntimeException('Request is bad');
             return false;

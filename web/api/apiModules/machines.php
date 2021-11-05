@@ -13,6 +13,20 @@ class machinesApi extends Api
 {
     public $apiName = 'machines';
 
+
+
+    private $machine;
+
+    function __construct()
+    {
+        // Вызовем конструктор родителя
+        parent::__construct();
+
+        $this->machine = Machines::getInstance();
+    }
+
+
+
     /**
      * Метод GET
      * 
@@ -22,10 +36,10 @@ class machinesApi extends Api
      */
     public function indexAction()
     {
-        $machine = Machines::getInstance();
+
         $data = [];
 
-        $data = $machine->Gets();
+        $data = $this->machine->Gets();
         $answer = array(
             'status' => 'success',
             'messages' => 'All machines',
@@ -43,11 +57,9 @@ class machinesApi extends Api
      */
     public function viewAction()
     {
-        $machine = Machines::getInstance();
-        $data = [];
 
         try {
-            $data = $machine->Get($this->requestUri[0]);
+            $data = $this->machine->Get($this->requestUri[0]);
             $answer = array(
                 'status' => 'success',
                 'messages' => 'Machine',
@@ -83,17 +95,9 @@ class machinesApi extends Api
 
     public function createAction()
     {
-        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-        // Подготовимся к логированию
-        $log = Logi::getInstance();
-        $log->add("Добавляем машину");
-
-        $machine = Machines::getInstance();
-
-        $log->add($this->requestParams);
 
         try {
-            $res = $machine->Add($this->requestParams);
+            $res = $this->machine->Add($this->requestParams);
             $answer = array(
                 'status'    => 'success',
                 'messages'  => 'Machine creation completed',
@@ -101,11 +105,7 @@ class machinesApi extends Api
             );
 
             return $this->response($answer, 200);
-            
         } catch (Exception $e) {
-
-
-            $log->add(print_r($e, true));
 
             $answer = array(
                 'status' => 'error',
@@ -133,14 +133,14 @@ class machinesApi extends Api
      */
     public function updateAction()
     {
-        $machine = Machines::getInstance();
+
 
         try {
-            if ($machine->Update($this->requestParams, $this->requestUri[0])) {
+            if ($this->machine->Update($this->requestParams, $this->requestUri[0])) {
                 $answer = array(
                     'status'    => 'success',
                     'messages'  => 'Model update',
-                    'data'      => $machine->Get($this->requestUri[0]),
+                    'data'      => $this->machine->Get($this->requestUri[0]),
                 );
                 return $this->response($answer, 200);
             }
@@ -161,9 +161,9 @@ class machinesApi extends Api
      */
     public function deleteAction()
     {
-        $machine = Machines::getInstance();
+
         try {
-            if ($machine->Delite($this->requestUri[0])) {
+            if ($this->machine->Delite($this->requestUri[0])) {
                 $answer = array(
                     'status' => 'success',
                     'messages' => 'Model delete'

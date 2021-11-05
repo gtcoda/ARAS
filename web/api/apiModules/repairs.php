@@ -12,6 +12,18 @@ class repairsApi extends Api
 {
     public $apiName = 'repairs';
 
+
+
+    private $repair;
+
+    function __construct()
+    {
+        // Вызовем конструктор родителя
+        parent::__construct();
+
+        $this->repair = Repairs::getInstance();
+    }
+
     /**
      * Метод GET
      * @return string
@@ -35,29 +47,14 @@ class repairsApi extends Api
      * Создание нового идентификатора ремонта
      * http://ДОМЕН/repairs + без параметров 
      * @return string
-     * 
-     * Пример тела запроса
-     * {
-     * "gild_number": "4", // Номер цеха()
-     * "gild_name": "Сборочный", // Название
-     * "gild_desc": "Расположен там то, начальник тот то", // Описание  
-     * "gild_dimX":  "10", // Размер в ячейках по Х
-     * "gild_dimY":  "20" // Размер в ячейках по Y
-     * }
+     *
      */
 
 
     public function createAction()
     {
-        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-        // Подготовимся к логированию
-        $log = Logi::getInstance();
-        $log->add("Добавляем id ремонт");
-
-        $repair = Repairs::getInstance();
-
         try {
-            $res = $repair->Open();
+            $res = $this->repair->Open();
             $answer = array(
                 'status'    => 'success',
                 'messages'  => 'Repair is open',
@@ -65,9 +62,6 @@ class repairsApi extends Api
             );
             return $this->response($answer, 200);
         } catch (Exception $e) {
-
-
-            $log->add(print_r($e, true));
 
             $answer = array(
                 'status' => 'error',

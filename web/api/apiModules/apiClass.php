@@ -21,9 +21,15 @@ abstract class Api
 
     protected $action = ''; //Название метод для выполнения
 
+    protected $config = [];
+    protected $log;
+ 
 
     public function __construct()
     {
+        $this->log = Logi::getInstance();
+        $this->config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
+
         header("Access-Control-Allow-Orgin: *");
         header("Access-Control-Allow-Methods: *");
         header("Content-Type: application/json");
@@ -42,12 +48,12 @@ abstract class Api
         $this->requestParams = json_decode(file_get_contents("php://input"), true);
 
 
-        $log = Logi::getInstance();
-        $log->add("##################### Полученые данные в запросе ##############");
-        $log->add($this->requestGET);
-        $log->add($this->requestUri);
-        $log->add($this->requestParams);
-        $log->add("###############################################################");
+       
+        $this->log->add("##################### Полученые данные в запросе ##############");
+        $this->log->add($this->requestGET);
+        $this->log->add($this->requestUri);
+        $this->log->add($this->requestParams);
+        $this->log->add("###############################################################");
 
         //Определение метода запроса
         $this->method = $_SERVER['REQUEST_METHOD'];
