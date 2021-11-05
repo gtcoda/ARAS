@@ -6,16 +6,11 @@
 Array
 (
     [0] => api
-    [1] => users
+    [1] => events
+    [2] => 7
 )
 
-Array
-(
-    [user_login] => testUser
-    [user_password] => TestPassword
-    [user_name] => testUserName
-)
 
 ###############################################################
- ## SELECT user_id, user_login, user_name FROM `users` WHERE user_login='testUser'
+ ## SELECT * FROM `events` WHERE event_id=7
 

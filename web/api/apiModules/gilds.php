@@ -1,17 +1,18 @@
-<?php 
-$config = include $_SERVER['DOCUMENT_ROOT'].'/config/config.php';
+<?php
+$config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
 
-require_once($config['dirApiModules'].'apiClass.php');
-require_once($config['dirConfig'].'safeMySQL.php');
-require_once($config['dirConfig'].'log.php');
+require_once($config['dirApiModules'] . 'apiClass.php');
+require_once($config['dirConfig'] . 'safeMySQL.php');
+require_once($config['dirConfig'] . 'log.php');
 
-require_once($config['dirModule'].'Gilds.php');
+require_once($config['dirModule'] . 'Gilds.php');
 
 
-class gildsApi extends Api{
+class gildsApi extends Api
+{
     public $apiName = 'gilds';
 
-     /**
+    /**
      * Метод GET
      * 
      * Вернуть все цеха
@@ -23,14 +24,13 @@ class gildsApi extends Api{
         $gild = Gilds::getInstance();
         $data = [];
 
-        $data = $gild->GetGilds();
+        $data = $gild->Gets();
         $answer = array(
             'status' => 'success',
-            'messages' => 'All users',
+            'messages' => 'All gilds',
             'data' => $data,
         );
         return $this->response($answer, 200);
-
     }
 
     /**
@@ -46,7 +46,7 @@ class gildsApi extends Api{
         $data = [];
 
         try {
-            $data = $gild->GetGild($this->requestUri[0]);
+            $data = $gild->Get($this->requestUri[0]);
             $answer = array(
                 'status' => 'success',
                 'messages' => 'Gild',
@@ -91,16 +91,16 @@ class gildsApi extends Api{
         $log->add($this->requestParams);
 
         try {
-            if ($gild->AddGild($this->requestParams)) {
-                $answer = array(
-                    'status' => 'success',
-                    'messages' => 'Gild creation completed'
-                );
-                return $this->response($answer, 200);
-            }
+            $res = $gild->Add($this->requestParams);
+            $answer = array(
+                'status'    => 'success',
+                'messages'  => 'Gild creation completed',
+                'data'      => $res,
+            );
+            return $this->response($answer, 200);
         } catch (Exception $e) {
-            
-            
+
+
             $log->add(print_r($e, true));
 
             $answer = array(
@@ -123,11 +123,11 @@ class gildsApi extends Api{
         $gild = Gilds::getInstance();
 
         try {
-            if ($gild->UpdateGild($this->requestParams, $this->requestUri[0])) {
+            if ($gild->Update($this->requestParams, $this->requestUri[0])) {
                 $answer = array(
                     'status'    => 'success',
                     'messages'  => 'Gild update',
-                    'data'      => $gild->GetGild($this->requestUri[0]),
+                    'data'      => $gild->Get($this->requestUri[0]),
                 );
                 return $this->response($answer, 200);
             }
@@ -138,7 +138,6 @@ class gildsApi extends Api{
             );
             return $this->response($answer, 400);
         }
-        
     }
 
     /**
@@ -151,7 +150,7 @@ class gildsApi extends Api{
     {
         $gild = Gilds::getInstance();
         try {
-            if ($gild->DeliteGild($this->requestUri[0])) {
+            if ($gild->Delite($this->requestUri[0])) {
                 $answer = array(
                     'status' => 'success',
                     'messages' => 'Gild delete'
@@ -167,11 +166,4 @@ class gildsApi extends Api{
             return $this->response($answer, 400);
         }
     }
-
-
-
-
 }
-
-
-?>

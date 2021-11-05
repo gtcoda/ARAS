@@ -40,9 +40,31 @@ return array(
             'class' => 'gildsApi',
             'file'  => 'gilds.php',
         ),
-
+        'models' => array(
+            'class' => 'modelsApi',
+            'file'  => 'models.php',
+        ),
+        'machines' => array(
+            'class' => 'machinesApi',
+            'file'  => 'machines.php',
+        ),
+        'events' => array(
+            'class' => 'eventsApi',
+            'file'  => 'events.php',
+        ),
+        'repairs' => array(
+            'class' => 'repairsApi',
+            'file'  => 'repairs.php',
+        ),
     ),
 
+    // Сообщения о ошибках
+    'messages'      => array(
+        'NoCompl'   => 'Request is incomplete', // Запрос содержит не все данные
+        'BadReq'    => 'Request is bad',  // Неверный запрос
+        'NoRepair'  => 'No repair_id', // В запросе нет repair_id
+        'BadIdRepair'=> 'Bad repair_id', // Неверный repair_id
+    ),
     // Пути 
     'dirApiModules' => $_SERVER['DOCUMENT_ROOT'].'/api/apiModules/',
     'dirJWT'        => $_SERVER['DOCUMENT_ROOT'].'/api/jwt/',

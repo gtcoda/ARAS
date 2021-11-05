@@ -1,56 +1,56 @@
-<?php 
-$config = include $_SERVER['DOCUMENT_ROOT'].'/config/config.php';
+<?php
+$config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
 
-require_once($config['dirApiModules'].'apiClass.php');
-require_once($config['dirConfig'].'safeMySQL.php');
-require_once($config['dirConfig'].'log.php');
+require_once($config['dirApiModules'] . 'apiClass.php');
+require_once($config['dirConfig'] . 'safeMySQL.php');
+require_once($config['dirConfig'] . 'log.php');
 
-require_once($config['dirModule'].'Models.php');
+require_once($config['dirModule'] . 'Machines.php');
 
 
 
-class modelsApi extends Api{
-    public $apiName = 'models';
+class machinesApi extends Api
+{
+    public $apiName = 'machines';
 
-     /**
+    /**
      * Метод GET
      * 
-     * Вернуть все модели оборудования
-     * http://ДОМЕН/gilds
+     * Вернуть все еденицы оборудования
+     * http://ДОМЕН/machines
      * @return string
      */
     public function indexAction()
     {
-        $model = Models::getInstance();
+        $machine = Machines::getInstance();
         $data = [];
 
-        $data = $model->Gets();
+        $data = $machine->Gets();
         $answer = array(
             'status' => 'success',
-            'messages' => 'All models',
+            'messages' => 'All machines',
             'data' => $data,
         );
         return $this->response($answer, 200);
-
     }
 
     /**
      * Метод GET
      * 
-     * Получить информацию ою обюорудовании с {id}
-     * http://ДОМЕН/login/1
+     * Получить информацию о, оборудовании с {id}
+     * http://ДОМЕН/machines/1
      * @return string
      */
     public function viewAction()
     {
-        $model = Models::getInstance();
+        $machine = Machines::getInstance();
         $data = [];
 
         try {
-            $data = $model->Get($this->requestUri[0]);
+            $data = $machine->Get($this->requestUri[0]);
             $answer = array(
                 'status' => 'success',
-                'messages' => 'Model',
+                'messages' => 'Machine',
                 'data' => $data,
             );
             return $this->response($answer, 200);
@@ -65,14 +65,18 @@ class modelsApi extends Api{
 
     /**
      * Метод POST
-     * Создание новой модели оборудования
-     * http://ДОМЕН/gilds + параметры запроса 
+     * Создание новой еденицы оборудования
+     * http://ДОМЕН/machines + параметры запроса 
      * @return string
      * 
      * Пример тела запроса
      * {
-     * "model_name": "ГДВ400", // Название
-     * "model_desc": "Обрабатывающий центр", // Описание  
+     * "model_id"       : "5",      // id модели оборудования
+     * "machine_number" : "42097",  // табельный номер
+     * "gild_id"        : "1",      // id цеха
+     * "machine_desc"   : "Стоящий вдоль" // Комментарий к машине
+     * "machine_posX"   : "10"      // Позиция машины в цеху по Х
+     * "machine_posY"   : "12"      // Позиция машины в цеху по Y
      * }
      */
 
@@ -82,24 +86,25 @@ class modelsApi extends Api{
         $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
         // Подготовимся к логированию
         $log = Logi::getInstance();
-        $log->add("Добавляем модель");
+        $log->add("Добавляем машину");
 
-        $model = Models::getInstance();
+        $machine = Machines::getInstance();
 
         $log->add($this->requestParams);
 
         try {
-            $res = $model->Add($this->requestParams);
-                $answer = array(
-                    'status'    => 'success',
-                    'messages'  => 'Model creation completed',
-                    'data'      => $res,
-                );
-                return $this->response($answer, 200);
+            $res = $machine->Add($this->requestParams);
+            $answer = array(
+                'status'    => 'success',
+                'messages'  => 'Machine creation completed',
+                'data'      => $res,
+            );
+
+            return $this->response($answer, 200);
             
         } catch (Exception $e) {
-            
-            
+
+
             $log->add(print_r($e, true));
 
             $answer = array(
@@ -117,21 +122,25 @@ class modelsApi extends Api{
      * Изменить модель 
      * Пример тела запроса
      * {
-     * "model_name": "ГДВ400", // Название
-     * "model_desc": "Обрабатывающий центр", // Описание  
+     * "model_id"       : "5",      // id модели оборудования
+     * "machine_number" : "42097",  // табельный номер
+     * "gild_id"        : "1",      // id цеха
+     * "machine_desc"   : "Стоящий вдоль" // Комментарий к машине
+     * "machine_posX"   : "10"      // Позиция машины в цеху по Х
+     * "machine_psxY"   : "12"      // Позиция машины в цеху по Y
      * }
      * @return string
      */
     public function updateAction()
     {
-        $model = Models::getInstance();
+        $machine = Machines::getInstance();
 
         try {
-            if ($model->Update($this->requestParams, $this->requestUri[0])) {
+            if ($machine->Update($this->requestParams, $this->requestUri[0])) {
                 $answer = array(
                     'status'    => 'success',
                     'messages'  => 'Model update',
-                    'data'      => $model->Get($this->requestUri[0]),
+                    'data'      => $machine->Get($this->requestUri[0]),
                 );
                 return $this->response($answer, 200);
             }
@@ -142,20 +151,19 @@ class modelsApi extends Api{
             );
             return $this->response($answer, 400);
         }
-        
     }
 
     /**
      * Метод DELETE
      * Удаление отдельной записи (по ее id)
-     * http://ДОМЕН/models/1
+     * http://ДОМЕН/machines/1
      * @return string
      */
     public function deleteAction()
     {
-        $model = Models::getInstance();
+        $machine = Machines::getInstance();
         try {
-            if ($model->Delite($this->requestUri[0])) {
+            if ($machine->Delite($this->requestUri[0])) {
                 $answer = array(
                     'status' => 'success',
                     'messages' => 'Model delete'
@@ -171,8 +179,4 @@ class modelsApi extends Api{
             return $this->response($answer, 400);
         }
     }
-
-
-
-
 }

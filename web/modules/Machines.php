@@ -11,13 +11,15 @@ require_once($config['dirConfig'] . 'log.php');
  *      изменение
  *      получение
  *      удаление
- * цехов.
+ * станков.
  * 
  */
 
-class Gilds
+class Machines
 {
     private static $instance;
+    private $table = "machines";
+
     protected function __construct()
     {
     }
@@ -37,20 +39,28 @@ class Gilds
         return self::$instance;
     }
 
-
+    /**
+     * Получить список всех машин
+     * 
+     * @return array
+     */
     public function Gets()
     {
         $db = new SafeMySQL();
-        $all = $db->getAll("SELECT * FROM ?n", "gilds");
+        $all = $db->getAll("SELECT * FROM ?n", $this->table);
         return $all;
     }
-
+    /**
+     * Получить машину по $id
+     * 
+     * @return array
+     */
     public function Get($id)
     {
         $db = new SafeMySQL();
 
         try {
-            $row = $db->getRow("SELECT * FROM ?n WHERE gild_id=?i", "gilds", $id);
+            $row = $db->getRow("SELECT * FROM ?n WHERE machine_id=?i", $this->table, $id);
         } catch (Exception $e) {
             $log = Logi::getInstance();
             $log->add(print_r($e->getMessage(), true));
@@ -58,31 +68,37 @@ class Gilds
 
         return $row;
     }
+    /**
+     * Добавить машину
+     * 
+     * @return array
+     */
 
     public function Add($arr)
     {
-        $fields = ['gild_number', 'gild_name', 'gild_desc', 'gild_dimX', 'gild_dimY'];
+        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
+        $fields = ['model_id', 'machine_number', 'gild_id', 'machine_desc', 'machine_posX', 'machine_posY'];
 
         // Проверим заполнены ли поля
         if (
-            empty($arr['gild_number']) ||
-            empty($arr['gild_name']) ||
-            empty($arr['gild_desc']) ||
-            empty($arr['gild_dimX']) ||
-            empty($arr['gild_dimY'])
+            empty($arr['model_id']) ||
+            empty($arr['machine_number']) ||
+            empty($arr['gild_id']) ||
+            empty($arr['machine_posX']) ||
+            empty($arr['machine_posY'])
         ) {
-            throw new RuntimeException('Request is empty');
+            throw new RuntimeException($config['messages']['NoCompl']);
         }
 
         $db = new SafeMySQL();
         $data = $db->filterArray($arr, $fields);
 
         try {
-            $db->query("INSERT INTO ?n SET ?u", "gilds", $data);
+            $db->query("INSERT INTO ?n SET ?u", $this->table, $data);
             return $this->Get($db->insertId());
         } catch (Exception $e) {
             $log = Logi::getInstance();
-            $log->add(print_r($e->getMessage(), true));
+            $log->add($e->getMessage());
             // Выдадим выше ошибку, но без подробностей
             throw new RuntimeException('Request is bad');
         }
@@ -90,22 +106,22 @@ class Gilds
         return false;
     }
     /**
-     * Изменить цех по $id
+     * Изменить машину по $id
      * 
      * @return array
      */
     public function Update($arr, $id)
     {
-        $fields = ['gild_number', 'gild_name', 'gild_desc', 'gild_dimX', 'gild_dimY'];
+        $fields = ['model_id', 'machine_number', 'gild_id', 'machine_desc', 'machine_posX', 'machine_posY'];
 
         // Проверим заполнены ли поля
         if (empty($id)) {
             throw new RuntimeException('Request is empty');
         }
 
-        //Если users не существует
+        //Если model не существует
         if (empty($this->Get($id))) {
-            throw new RuntimeException('Gild not exists!');
+            throw new RuntimeException('Model not exists!');
             return false;
         }
 
@@ -114,7 +130,8 @@ class Gilds
         $data = $db->filterArray($arr, $fields);
 
         try {
-            $db->query("UPDATE ?n SET ?u WHERE gild_id = ?i", 'gilds', $data, $id);
+
+            $db->query("UPDATE ?n SET ?u WHERE machine_id = ?i", $this->table, $data, $id);
             return true;
         } catch (Exception $e) {
             $log = Logi::getInstance();
@@ -137,13 +154,13 @@ class Gilds
 
         //Если users не существует
         if (empty($this->Get($id))) {
-            throw new RuntimeException('Gild not exists!');
+            throw new RuntimeException('Machine not exists!');
             return false;
         }
 
         $db = new SafeMySQL();
         try {
-            $db->query("DELETE FROM ?n WHERE gild_id=?i", 'gilds', $id);
+            $db->query("DELETE FROM ?n WHERE machine_id=?i", $this->table, $id);
             return true;
         } catch (Exception $e) {
             $log = Logi::getInstance();

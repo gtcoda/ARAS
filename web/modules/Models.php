@@ -18,6 +18,8 @@ require_once($config['dirConfig'] . 'log.php');
 class Models
 {
     private static $instance;
+    private $table = 'models';
+    
     protected function __construct()
     {
     }
@@ -41,7 +43,7 @@ class Models
     public function Gets()
     {
         $db = new SafeMySQL();
-        $all = $db->getAll("SELECT * FROM ?n", "models");
+        $all = $db->getAll("SELECT * FROM ?n", $this->table);
         return $all;
     }
 
@@ -50,7 +52,7 @@ class Models
         $db = new SafeMySQL();
 
         try {
-            $row = $db->getRow("SELECT * FROM ?n WHERE model_id=?i", "models", $id);
+            $row = $db->getRow("SELECT * FROM ?n WHERE model_id=?i", $this->table, $id);
         } catch (Exception $e) {
             $log = Logi::getInstance();
             $log->add(print_r($e->getMessage(), true));
@@ -59,8 +61,9 @@ class Models
         return $row;
     }
 
-    public function AddModel($arr)
+    public function Add($arr)
     {
+        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
         $fields = ['model_name', 'model_desc'];
 
         // Проверим заполнены ли поля
@@ -68,40 +71,42 @@ class Models
             empty($arr['model_name']) ||
             empty($arr['model_desc'])
         ) {
-            throw new RuntimeException('Request is empty');
+            throw new RuntimeException($config['messages']['NoCompl']);
         }
 
         $db = new SafeMySQL();
         $data = $db->filterArray($arr, $fields);
 
         try {
-            $db->query("INSERT INTO ?n SET ?u", "model", $data);
-            return true;
+            $db->query("INSERT INTO ?n SET ?u", $this->table, $data);
+
+            return $this->Get($db->insertId());
         } catch (Exception $e) {
             $log = Logi::getInstance();
             $log->add(print_r($e->getMessage(), true));
             // Выдадим выше ошибку, но без подробностей
-            throw new RuntimeException('Request is bad');
+            throw new RuntimeException($config['messages']['BadReq']);
         }
 
         return false;
     }
     /**
-     * Изменить цех по $id
+     * Изменить модель по $id
      * 
      * @return array
      */
-    public function UpdateModel($arr, $id)
+    public function Update($arr, $id)
     {
+        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
         $fields = ['model_name', 'model_desc'];
 
         // Проверим заполнены ли поля
         if (empty($id)) {
-            throw new RuntimeException('Request is empty');
+            throw new RuntimeException($config['messages']['NoCompl']);
         }
 
         //Если model не существует
-        if (empty($this->GetModel($id))) {
+        if (empty($this->Get($id))) {
             throw new RuntimeException('Model not exists!');
             return false;
         }
@@ -112,7 +117,7 @@ class Models
 
         try {
 
-            $db->query("UPDATE ?n SET ?u WHERE model_id = ?i", 'models', $data, $id);
+            $db->query("UPDATE ?n SET ?u WHERE model_id = ?i", $this->table, $data, $id);
             return true;
         } catch (Exception $e) {
             $log = Logi::getInstance();
@@ -126,7 +131,7 @@ class Models
         return false;
     }
 
-    public function DeliteModel($id)
+    public function Delite($id)
     {
         // Проверим заполнены ли полу
         if (empty($id)) {
@@ -134,14 +139,14 @@ class Models
         }
 
         //Если users не существует
-        if (empty($this->GetModel($id))) {
+        if (empty($this->Get($id))) {
             throw new RuntimeException('Model not exists!');
             return false;
         }
 
         $db = new SafeMySQL();
         try {
-            $db->query("DELETE FROM ?n WHERE model_id=?i", 'models', $id);
+            $db->query("DELETE FROM ?n WHERE model_id=?i", $this->table, $id);
             return true;
         } catch (Exception $e) {
             $log = Logi::getInstance();

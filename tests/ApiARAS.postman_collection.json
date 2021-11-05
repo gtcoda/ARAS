@@ -660,41 +660,6 @@
 					"response": []
 				},
 				{
-					"name": "Конкретный Gild",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://aras.gtcoda.ru/api/gilds/1",
-							"protocol": "https",
-							"host": [
-								"aras",
-								"gtcoda",
-								"ru"
-							],
-							"path": [
-								"api",
-								"gilds",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Создать цех",
 					"event": [
 						{
@@ -703,7 +668,16 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});"
+									"});\r",
+									"\r",
+									"try {\r",
+									"        // сохраняем полученый токен из json ответа в переменную окружения\r",
+									"        pm.environment.set(\"testGildId\", pm.response.json().data.gild_id);\r",
+									"        \r",
+									"    } catch(e) {\r",
+									"        // выводим исключение в консоль\r",
+									"        console.log(e);\r",
+									"    }"
 								],
 								"type": "text/javascript"
 							}
@@ -714,7 +688,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\"gild_number\": \"4\",\r\n\"gild_name\": \"Сборочный\",\r\n\"gild_desc\": \"Расположен там то, начальник тот то\",\r\n\"gild_dimX\": \"10\",\r\n\"gild_dimY\": \"20\" \r\n}"
+							"raw": "{\r\n\"gild_number\": \"8888\",\r\n\"gild_name\": \"TestGild\",\r\n\"gild_desc\": \"TestDescriptionGild\",\r\n\"gild_dimX\": \"88\",\r\n\"gild_dimY\": \"88\" \r\n}"
 						},
 						"url": {
 							"raw": "https://aras.gtcoda.ru/api/gilds",
@@ -733,6 +707,46 @@
 					"response": []
 				},
 				{
+					"name": "Конкретный Gild Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check add gild\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.data.gild_name).to.eql(\"TestGild\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/gilds/{{testGildId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"gilds",
+								"{{testGildId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Изменить Gild",
 					"event": [
 						{
@@ -741,6 +755,11 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check update gild\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.data.gild_name).to.eql(\"TestGildUpdate\");\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -752,10 +771,10 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\"gild_dimX\": \"15\"\r\n}"
+							"raw": "{\r\n\"gild_name\": \"TestGildUpdate\",\r\n\"gild_dimX\": \"15\"\r\n}"
 						},
 						"url": {
-							"raw": "https://aras.gtcoda.ru/api/gilds/1",
+							"raw": "https://aras.gtcoda.ru/api/gilds/{{testGildId}}",
 							"protocol": "https",
 							"host": [
 								"aras",
@@ -765,7 +784,7 @@
 							"path": [
 								"api",
 								"gilds",
-								"1"
+								"{{testGildId}}"
 							]
 						}
 					},
@@ -790,7 +809,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://aras.gtcoda.ru/api/gilds/1",
+							"raw": "https://aras.gtcoda.ru/api/gilds/{{testGildId}}",
 							"protocol": "https",
 							"host": [
 								"aras",
@@ -800,7 +819,701 @@
 							"path": [
 								"api",
 								"gilds",
-								"1"
+								"{{testGildId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Запросим удаленный Gild",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check add gild\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.data).to.eql(null);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/gilds/{{testGildId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"gilds",
+								"{{testGildId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Models",
+			"item": [
+				{
+					"name": "Создать модель",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"try {\r",
+									"        // сохраняем полученый токен из json ответа в переменную окружения\r",
+									"        pm.environment.set(\"testModelId\", pm.response.json().data.model_id);\r",
+									"        \r",
+									"    } catch(e) {\r",
+									"        // выводим исключение в консоль\r",
+									"        console.log(e);\r",
+									"    }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"model_name\": \"TestModel\",\r\n\"model_desc\": \"TestModelDesc\"\r\n}"
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/models",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Список Models",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/models",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Конкретная модель",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check model_name\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.data.model_name).to.eql(\"TestModel\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/models/{{testModelId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"models",
+								"{{testModelId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменить Model",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check update name\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.data.model_name).to.eql(\"TestModelUpdate\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"model_name\": \"TestModelUpdate\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/models/{{testModelId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"models",
+								"{{testModelId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить модель",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/models/{{testModelId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"models",
+								"{{testModelId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Machines",
+			"item": [
+				{
+					"name": "Создать Machine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"try {\r",
+									"        // сохраняем полученый токен из json ответа в переменную окружения\r",
+									"        pm.environment.set(\"testMachineId\", pm.response.json().data.machine_id);\r",
+									"        \r",
+									"    } catch(e) {\r",
+									"        // выводим исключение в консоль\r",
+									"        console.log(e);\r",
+									"    }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"model_id\" : \"1\",\r\n\"machine_number\" : \"88888\",\r\n\"gild_id\" : \"2\",\r\n\"machine_desc\" : \"TestMachine\",\r\n\"machine_posX\" : \"10\",\r\n\"machine_posY\" : \"12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/machines",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"machines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Список Machines",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/machines",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"machines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Конкретный Machine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/machines/{{testMachineId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"machines",
+								"{{testMachineId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменить Machine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Your test name\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.data.machine_desc).to.eql(\"TestDescUpdate\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"machine_desc\" : \"TestDescUpdate\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/machines/{{testMachineId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"machines",
+								"{{testMachineId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить машину",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/machines/{{testMachineId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"machines",
+								"{{testMachineId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Repairs",
+			"item": [
+				{
+					"name": "Open Repairs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Your test name\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"});\r",
+									"\r",
+									"try {\r",
+									"        // сохраняем полученый токен из json ответа в переменную окружения\r",
+									"        pm.environment.set(\"testRepairOpenId\", pm.response.json().repair_id);\r",
+									"       \r",
+									"} catch(e) {\r",
+									"      // выводим исключение в консоль\r",
+									"       console.log(e);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/repairs",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"repairs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Создать Event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"try {\r",
+									"    // сохраняем полученый токен из json ответа в переменную окружения\r",
+									"    pm.environment.set(\"testEventId\", pm.response.json().data.event_id);\r",
+									"    \r",
+									"} catch(e) {\r",
+									"    // выводим исключение в консоль\r",
+									"    console.log(e);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"machine_id\" : \"4\",\r\n\"event_message\" : \"TestMessagesOfRepair\",\r\n\"event_modif_1\" : \"\",\r\n\"repair_id\"     : \"{{testRepairOpenId}}\",\r\n\"jwt\":\"{{jwt}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/events",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменить Event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"event_message\" : \"Update_TestMessagesOfRepair\",\r\n\"jwt\":\"{{jwt}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/events/{{testEventId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"events",
+								"{{testEventId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить Event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"jwt\":\"{{jwt}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/events/{{testEventId}}",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"events",
+								"{{testEventId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Все Events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://aras.gtcoda.ru/api/events/7",
+							"protocol": "https",
+							"host": [
+								"aras",
+								"gtcoda",
+								"ru"
+							],
+							"path": [
+								"api",
+								"events",
+								"7"
 							]
 						}
 					},

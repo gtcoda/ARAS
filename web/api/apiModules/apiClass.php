@@ -199,4 +199,49 @@ abstract class Api
             return $this->response($answer, 404);
         }
     }
+
+
+
+    /**
+     * Проверить аутентификацию запроса 
+     * @return array
+     * 
+     * Коды Ошибок:
+     * 1 - No token,
+     * 2 - Invalid token
+     */
+
+
+    protected function login(){
+        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
+
+        // Какой из массивов параметрое будет заполнен неизвестно, 
+        // поэтому проверяем сначала на наличие, а потом на присутствие ключа.
+        if ((!empty($this->requestParams) && array_key_exists("jwt", $this->requestParams)) ||
+            (!empty($this->requestGET) && array_key_exists("jwt", $this->requestGET))
+        ) {
+
+            try {
+                // Получим jwt
+                if ((!empty($this->requestParams) && array_key_exists("jwt", $this->requestParams))) {
+                    $jwt = $this->requestParams['jwt'];
+                } else {
+                    $jwt = $this->requestGET['jwt'];
+                }
+
+                $login_data = Firebase\JWT\JWT::decode($jwt, $config['JWT']['key'], array('HS256'));
+               
+                return (array)$login_data;
+            } catch (Exception $e) {
+                throw new RuntimeException('Invalid token',2);
+            }
+        } else {
+            throw new RuntimeException('No token',1);
+        }
+    }
+
+
+
+
+
 }
