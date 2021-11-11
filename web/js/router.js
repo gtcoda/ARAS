@@ -1,80 +1,23 @@
-'use strict';
+import Controller from './controller.js'
 
-function Router(routes) {
-    try {
-        if (!routes) {
-            throw 'error: routes param is mandatory';
-        }
-        this.constructor(routes);
-        this.init();
-    } catch (e) {
-        console.error(e);   
+function getRouteInfo() {
+    const hash = location.hash ? location.hash.slice(1) : '';
+    const [name, id] = hash.split('/');
+    return { name, params: { id } };
+}
+
+function handleHash() {
+    const { name, params } = getRouteInfo();
+    if (name) {
+        const routeName = name + 'Route';
+        Controller[routeName](params);
     }
 }
 
-Router.prototype = {
-    routes: undefined,
-    rootElem: undefined,
-    constructor: function (routes) {
-        this.routes = routes;
-        this.rootElem = document.getElementById('app');
 
-        console.log( document.getElementById('app'));
-    },
-
-    init: function () {
-        var r = this.routes;
-        (function(scope, r) { 
-            window.addEventListener('hashchange', function (e) {
-                scope.hasChanged(scope, r);
-            });
-        })(this, r);
-        this.hasChanged(this, r);
-    },
-
-    hasChanged: function(scope, r){
-        if (window.location.hash.length > 0) {
-            for (var i = 0, length = r.length; i < length; i++) {
-                var route = r[i];
-                if(route.isActiveRoute(window.location.hash.substr(1))) {
-                    scope.goToRoute(route.htmlName);
-                }
-            }
-        } else {
-            for (var i = 0, length = r.length; i < length; i++) {
-                var route = r[i];
-                if(route.default) {
-                    scope.goToRoute(route.htmlName);
-                }
-            }
-        }
-    },
-
-    goToRoute: function (htmlName) {
-        (function(scope) { 
-           /*  
-            $.ajax({
-                url: 'https://aras.gtcoda.ru/views/' + htmlName,
-                cache: false
-              }).done(function( html ) {
-                console.log(html);
-              });
-              */
-            
-
-            var url = 'https://aras.gtcoda.ru/views/' + htmlName;
-            var xhttp = new XMLHttpRequest();
-            
-            xhttp.onload = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    console.log(this.responseText);
-                    scope.rootElem.innerHTML = this.responseText;
-                }
-            };
-
-            xhttp.open('GET', url, true);
-            xhttp.send();
-            
-        })(this);
+export default {
+    init() {
+        addEventListener('hashchange', handleHash);
+        handleHash();
     }
-};
+}

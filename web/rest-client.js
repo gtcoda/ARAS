@@ -238,3 +238,6 @@ function resource(client, parent, name, id, ctx) {
 }
 
 //module.exports = RestClient;
+
+
+var API = new RestClient('https://aras.gtcoda.ru/api');
