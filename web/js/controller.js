@@ -1,14 +1,40 @@
 import Model from "./model.js";
+import View from "./view.js";
+import eventsPage from "./pages/events.js"
+import usersPage from "./pages/users.js"
 
-export default{
-    async OverviewRoute(){
+const overwiewNavNode = document.querySelector('[data-role=nav-over]');
+const settingsNavNode = document.querySelector('[data-role=nav-set]');
+
+let activeNavNode;
+
+function setActiveNavNode(node) {
+    if (activeNavNode) {
+        activeNavNode.classList.remove('active');
+    }
+    activeNavNode = node;
+    activeNavNode.classList.add('active');
+}
+
+export default {
+    async OverviewRoute() {
         const users = await Model.getUsers();
-        console.log(users);
+
+        usersPage.setData(users);
+        usersPage.render();
+
+        setActiveNavNode(overwiewNavNode);
     },
 
-    async SettingsRoute(){
+    async SettingsRoute() {
         const events = await Model.getEvents();
-        console.log(events);
+
+        eventsPage.setData(events);
+        eventsPage.render();
+
+
+        setActiveNavNode(settingsNavNode);
     },
+
 
 };
