@@ -1,0 +1,57 @@
+<!---
+Шаблоны для страницы #Model
+-->
+
+
+<script id="modelsTemplate" type="text/template">
+    <div>
+        <div>
+            <button id="setModelButton" type="button" class="btn btn-primary">Добавить модель</button>
+        </div>
+        <div class="flex-container">
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">id</th>
+                <th scope="col">Название</th>
+                <th scope="col">Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each this}}
+                    <tr>
+                    <td>{{model_id}}</td>
+                    <td>{{model_name}}</td>
+                    <td>{{model_desc}}</td>
+                    </tr>
+                {{/each}}  
+            </tbody>
+        </table>
+        </div>
+    </div>
+</script>
+
+
+
+<script id="addModelsTemplate" type="text/template">
+    
+    <div class="flex-container" data-dialog-title="Добавить модель">
+        <form id="addModelForm">
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Название модели</label>
+            <input name="model_name" class="form-control" id="exampleInputEmail1">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Описание модели</label>
+            <input name="model_desc" class="form-control" id="exampleInputPassword1">
+        </div>
+        <button type="submit" id="addModelButton" class="btn btn-primary">Добавить</button>
+        </form>
+        
+        <div id="ErrorMessage">
+
+        </div>
+
+    </div>
+   
+</script>

@@ -6,12 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link href="css/bootstrap.css" rel="stylesheet">
+
 
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 
 
-
+    <script src="js/main.js" type="module"></script>
     <script src="js/rest-client.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -26,6 +27,23 @@
 
 
     <script>
+        $(function() {
+            function getTemplate(templateName) {
+                var templateUrl = "templates/" + templateName + "Template.hbs";
+
+                $.ajax({
+                    url: templateUrl,
+                    success: function(data) {
+                        $("#templates").append(data);
+                    }
+                });
+            }
+            getTemplate('sing');
+            getTemplate('models');
+
+        });
+
+
         /*  var api = new RestClient('https://aras.gtcoda.ru/api');
         api.res('users');
         api.users('gtcoda').get().then(function(users) {
@@ -58,7 +76,8 @@
 
 
 
-*/
+
+            */
     </script>
     <title>ARAS</title>
 </head>
@@ -95,8 +114,18 @@
                         <li class="nav-item">
                             <a class="nav-link" data-role="nav-task" href="#Task">Задания</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-role="nav-set" href="#Settings">Настройки</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#Setting" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Настройки
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#Gild">Цех</a></li>
+                                <li><a class="dropdown-item" href="#Model">Модель</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
                         </li>
 
                         <li class="nav-item">
@@ -108,102 +137,13 @@
             </div>
         </nav>
 
-
-
-        <!--  
-        <menu>
-            <div class="row">
-                <div class="col">
-                    <div class="btn-group btn-group-lg">
-                        <a class="btn btn-default" data-role="nav-over" href="#Overview">Обзор</a>
-                        <a class="btn btn-default" data-role="nav-calen" href="#Calendar">Календарь</a>
-                        <a class="btn btn-default" data-role="nav-rep" href="#Report">Отчет</a>
-                        <a class="btn btn-default" data-role="nav-set" href="#Settings">Настройки</a>
-                        <a class="btn btn-default" data-role="nav-task" href="#Task">Задания</a>
-                    </div>
-                </div>
-            </div>
-        </menu>   -->
-
-
-
         <!--  Основная часть   -->
 
-        <div id="app">
+        <div class="mt-3"  id="app">
 
         </div>
 
     </div>
-
-
-
-    <!--- Шаблон для входа -->
-    <script id="signInTemplate" type="text/template">
-
-        <div data-dialog-title="Вход">
-            <form id="signInForm" class="form-horizontal" role="form" method="POST">
-                <div class="form-group">
-                    <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Логин</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" placeholder="Логин" name="login">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-2 control-label">Пароль</label>
-                        <div class="col-sm-10">
-                            <input type="password" class="form-control" placeholder="Пароль" name="password">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button id="signInBotton" type="submit" class="btn btn-default btn-sm">Войти</button>
-                            <a id="signUpBotton" class="btn btn-default" href="">Регистрация</a>
-                        </div>
-                    </div>
-            </form>
-
-            <div id="ErrorMessage">
-
-            </div>
-        </div>
-
-    </script>
-
-    <!--- Шаблон для регистрации -->
-    <script id="signUpTemplate" type="text/template">
-
-        <div data-dialog-title="Регистрация">
-        <form id="signUpForm">
-  <div class="form-group">
-    <label for="exampleInputEmail1">Login</label>
-    <input type="login" class="form-control" name="login" placeholder="Login">
-    </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Password</label>
-    <input type="password" class="form-control" name="password" placeholder="Password">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1" placeholder="Name">Name</label>
-    <input class="form-control" name="name">
-  </div>
-
-  <button  type="submit" class="btn btn-primary">Регистрация</button>
-</form>
-<div id="ErrorMessage">
-
-            </div>
-        </div>
-    </script>
-
-
-
-
-
-
-
 
 
     <script id="userTemplate" type="text/template">
@@ -249,10 +189,22 @@
     </script>
 
 
+
+    <div id="templates">
+
+
+    </div>
+
     <!--  MVC   -->
     <script src="js/entry.js" type="module"></script>
+    <script src="js/bootstrap.js"></script>
 
-    <script src="js/main.js" type="module"></script>
+
+
+
+
+
+
 </body>
 
 </html>

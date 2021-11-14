@@ -1,5 +1,6 @@
 let jwt = localStorage.jwt
 
+let app = 'app';
 
 let eventsSort = localStorage.eventsSort || 'event_id';
 
@@ -22,4 +23,9 @@ export function setJWT(value){
 // Получить токен
 export function getJWT(){
     return jwt;
+}
+
+// id div с app
+export function getApp(){
+    return app;
 }

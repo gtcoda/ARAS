@@ -2,6 +2,7 @@ import Model from "./model.js";
 import View from "./view.js";
 import eventsPage from "./pages/events.js"
 import usersPage from "./pages/users.js"
+import modelsPage from "./pages/models.js"
 
 const overwiewNavNode = document.querySelector('[data-role=nav-over]');
 const settingsNavNode = document.querySelector('[data-role=nav-set]');
@@ -34,6 +35,16 @@ export default {
 
 
         setActiveNavNode(settingsNavNode);
+    },
+
+
+
+    async ModelRoute(){
+        const models = await Model.getModels();
+
+        modelsPage.setData(models);
+        modelsPage.render();
+
     },
 
 

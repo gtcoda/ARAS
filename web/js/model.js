@@ -1,5 +1,9 @@
 import * as settings from './settings.js';
 
+
+
+
+
 export default {
 
     // Авторизироваться
@@ -113,6 +117,47 @@ export default {
                 }
             });
         });
+    },
+
+    ////////////////////////////////////////////////////////////// Models /////////////////////////////////////////////////////    
+
+    // Получить список моделей
+    getModels() {
+        return new Promise((resolve, reject) => {
+            API.res('models');
+            API.models.get({ jwt: settings.getJWT() }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
+
+    // Добавить модель
+    setModel(value) {
+
+
+
+        return new Promise((resolve, reject) => {
+            API.res('models');
+            API.models.post({
+                model_name: value.model_name,
+                model_desc: value.model_desc
+            }).then(
+                function (models) {
+                    resolve(models.data);
+                },
+                function (xnr) {
+                    reject(xnr);
+                });
+
+        });
+
+
+
     },
 
 
