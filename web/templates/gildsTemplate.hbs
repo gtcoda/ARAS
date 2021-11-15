@@ -1,0 +1,77 @@
+<!---
+Шаблоны для страницы #Gilds
+-->
+
+
+<!--- Список цехов -->
+<script id="gildsTemplate" type="text/template">
+    <div>
+        <div>
+            <button id="setModelButton" type="button" class="btn btn-primary">Добавить цех</button>
+        </div>
+        <div class="flex-container">
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">id</th>
+                <th scope="col">Номер</th>
+                <th scope="col">Название</th>
+                <th scope="col">Описание</th>
+                <th scope="col">dim_X</th>
+                <th scope="col">dim_Y</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each this}}
+                    <tr style="transform: rotate(0);">
+                    <td scope="row"><a href="#Gilds/{{gild_id}}" class="stretched-link">{{gild_id}}</a></td>
+                    <td>{{gild_number}}</td>
+                    <td>{{gild_name}}</td>
+                    <td>{{gild_desc}}</td>
+                    <td>{{gild_dimX}}</td>
+                    <td>{{gild_dimY}}</td>
+                    </tr>
+                {{/each}}  
+            </tbody>
+        </table>
+        </div>
+    </div>
+</script>
+
+
+<!--- Модальное окно добавления станка в цех -->
+<script id="addMachineTemplate" type="text/template">
+    
+    <div class="flex-container" data-dialog-title="Добавить оборудование">
+        <form id="addMachineGildsForm">
+        
+        <input type="hidden" name="dimX" value="{{dimX}}">
+        <input type="hidden" name="dimY" value="{{dimY}}">
+
+
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Модель</label>
+            <select name="model_id" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                {{#each models}}
+                    <option value="{{model_id}}">{{model_name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Номер</label>
+            <input name="machine_number" class="form-control" id="exampleInputPassword1">
+        </div>
+
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Описание</label>
+            <input name="machine_desc" class="form-control" id="exampleInputPassword1">
+        </div>
+
+        <div class="form-group">
+            <label id="ErrorMessage" class="col-sm control-label"></label>
+        </div>
+        <button type="submit" id="addModelButton" class="btn btn-primary">Добавить</button>
+        </form>
+    </div>
+   
+</script>

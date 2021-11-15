@@ -1,5 +1,5 @@
 export default {
-    render(templateName, data) {
+    render(templateName, data = {}) {
         templateName = templateName + 'Template';
 
         const templateElement = document.getElementById(templateName);

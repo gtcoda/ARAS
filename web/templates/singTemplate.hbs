@@ -19,6 +19,10 @@
                     </div>
 
                     <div class="form-group">
+                        <label id="ErrorMessage" class="col-sm control-label"></label>
+                    </div>
+
+                    <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
                             <button id="signInBotton" type="submit" class="btn btn-default btn-sm">Войти</button>
                             <a id="signUpBotton" class="btn btn-default" href="">Регистрация</a>
@@ -26,9 +30,6 @@
                     </div>
             </form>
 
-            <div id="ErrorMessage">
-
-            </div>
         </div>
 
     </script>
@@ -37,24 +38,25 @@
 <script id="signUpTemplate" type="text/template">
 
         <div data-dialog-title="Регистрация">
-        <form id="signUpForm">
-  <div class="form-group">
-    <label for="exampleInputEmail1">Login</label>
-    <input type="login" class="form-control" name="login" placeholder="Login">
-    </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Password</label>
-    <input type="password" class="form-control" name="password" placeholder="Password">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1" placeholder="Name">Name</label>
-    <input class="form-control" name="name">
-  </div>
+            <form id="signUpForm">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Login</label>
+                    <input type="login" class="form-control" name="login" placeholder="Login">
+                    </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1" placeholder="Name">Name</label>
+                    <input class="form-control" name="name">
+                </div>
+                <div class="form-group">
+                        <label id="ErrorMessage" class="col-sm control-label"></label>
+                </div>
 
-  <button  type="submit" class="btn btn-primary">Регистрация</button>
-</form>
-<div id="ErrorMessage">
+                <button  type="submit" class="btn btn-primary">Регистрация</button>
+            </form>
 
-            </div>
         </div>
     </script>

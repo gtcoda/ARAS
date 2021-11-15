@@ -3,6 +3,7 @@ import View from "./view.js";
 import eventsPage from "./pages/events.js"
 import usersPage from "./pages/users.js"
 import modelsPage from "./pages/models.js"
+import gildsPage from "./pages/gilds.js"
 
 const overwiewNavNode = document.querySelector('[data-role=nav-over]');
 const settingsNavNode = document.querySelector('[data-role=nav-set]');
@@ -46,6 +47,23 @@ export default {
         modelsPage.render();
 
     },
+
+
+    async GildsRoute(param){
+
+        console.log(param);
+        if(param.id){
+            const gilds = await Model.getGilds(param.id);
+            gildsPage.setDataId(gilds);
+            //gildsPage.render();
+        }
+        else{
+            const gilds = await Model.getGilds();
+            gildsPage.setData(gilds);
+            gildsPage.render();
+        }
+        
+    }
 
 
 };

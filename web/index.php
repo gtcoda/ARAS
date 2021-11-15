@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 
 
-    <script src="js/main.js" type="module"></script>
+
     <script src="js/rest-client.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -40,6 +40,7 @@
             }
             getTemplate('sing');
             getTemplate('models');
+            getTemplate('gilds');
 
         });
 
@@ -89,7 +90,7 @@
         <footer>
             <div class="row">
                 <div class="col">
-                    <h1>Шапка</h1>
+                    <h2>Шапка</h2>
                 </div>
             </div>
         </footer>
@@ -119,7 +120,7 @@
                                 Настройки
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#Gild">Цех</a></li>
+                                <li><a class="dropdown-item" href="#Gilds">Цех</a></li>
                                 <li><a class="dropdown-item" href="#Model">Модель</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
@@ -198,6 +199,7 @@
     <!--  MVC   -->
     <script src="js/entry.js" type="module"></script>
     <script src="js/bootstrap.js"></script>
+    <script src="js/main.js" type="module"></script>
 
 
 

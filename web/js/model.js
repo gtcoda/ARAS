@@ -160,6 +160,52 @@ export default {
 
     },
 
+////////////////////////////////////////////////////////////// Gilds /////////////////////////////////////////////////////    
+
+    // Получить список цехов
+    getGilds(id) {
+
+        if(id){
+
+
+            return new Promise((resolve, reject) => {
+                API.res('gilds');
+                API.gilds(id).get({ jwt: settings.getJWT() }).then(function (res) {
+                    if (res.status == 'success') {
+                        resolve(res.data);
+                    }
+                    else {
+                        reject(new Error(res.message));
+                    }
+                });
+            });
+
+
+        }
+        else{
+
+
+            return new Promise((resolve, reject) => {
+                API.res('gilds');
+                API.gilds.get({ jwt: settings.getJWT() }).then(function (res) {
+                    if (res.status == 'success') {
+                        resolve(res.data);
+                    }
+                    else {
+                        reject(new Error(res.message));
+                    }
+                });
+            });
+        }
+
+
+
+    },
+
+
+
+
+
 
 };
 

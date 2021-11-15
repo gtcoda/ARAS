@@ -3,6 +3,11 @@ import Model from "./model.js";
 import * as settings from './settings.js';
 
 
+checkSingInMenu();
+
+
+
+
 // Обработчик на все кнопки
 $('body').on('click', 'button', function (e) {
 
@@ -40,17 +45,15 @@ $('body').on('submit', 'form', function (e) {
     // Остановка всплытия события
     e.stopPropagation();
 
-    console.log(this);
-
     //  за кнопка, и запустим обработчик
     switch (this.id) {
         case 'addModelForm': addModel(this);
             break;
-        case '': ;
+        case 'signInForm':  singIn(this);
             break;
-        case '': ;
+        case 'signUpForm': singUp(this);
             break;
-        case '': ;
+        case 'addMachineGildsForm': addMachineGilds(this); ;
             break;
         case '': ;
             break;
@@ -67,8 +70,96 @@ $('body').on('submit', 'form', function (e) {
 
 });
 
+
+// Обработчик на все кнопки по типу <a>
+$('body').on('click', 'a', function (e) {
+    // Определим то за ссылка, и запустим обработчик
+    switch (this.id) {
+        case 'signIn': singInBotton(e);
+            break;
+        case 'signUpBotton': signUpBotton(e);
+            break;
+        case '': ;
+            break;
+        case '': ;
+            break;
+        case '': ;
+            break;
+        case '': ;
+            break;
+        case '': ;
+            break;
+        case '': ;
+            break;
+        case '': ;
+            break;
+        default:{
+        }    
+    }
+
+});
+
+
+
+
+
+
+
+
+
+/**
+ *
+ * Функции страницы добавления машины на странице настроек
+ *
+ */
+// Обработчик настройку gilds
+$('body').on('click', '.gildMachineSet', async function (e) {
+    
+    const models = await Model.getModels();
+
+    var data = {
+        dimX:this.getAttribute('dimx'),
+        dimY:this.getAttribute('dimy'),
+        models:models
+    };
+
+    console.log(data);
+    var html = View.render('addMachine',data);
+
+    modal(html);
+});
+
+
+// Получение настройки машины и размещение в DOM
+// Обработчик формы
+function addMachineGilds(form){
+
+    // Получим координаты изменяемой ячейки
+    var x = form.dimX.value;
+    var y = form.dimY.value;
+
+    // Найтем ячейку
+    var n = document.querySelector(`div[dimx="${x}"][ dimy="${y}" ]`);
+
+
+    // Вставляем в ячейку
+
+    var text = form.model_id.value;
+    n.innerHTML = text;
+
+
+
+    $(".dialog").dialog("close");
+}
+
+
+
+function log(v){
+    console.log(v);
+}
+
 // Дернем хеш, для перезагрузки содержимого
-function hashRefresh(){
+function hashRefresh() {
     let hash = document.location.hash;
     document.location.hash = '';
     document.location.hash = hash;
@@ -92,169 +183,106 @@ function modal(html, id) {
 }
 
 
-
 /**
-* Функции для работы обслуживания входа и регистрации
-*/
-$(function () {
-    $.ajaxSetup({
-        cache: false
-    });
+ *
+ * Функции регистрация и вход
+ *
+ */
 
-    // Проконтролируем надпись в меню
-    function checkSingInMenu() {
-        // Нет токена
-        if ($.isEmptyObject(settings.getJWT())) {
-            $("#signIn").empty();
-            $("#signIn").append(' Войти ');
+// Проконтролируем надпись в меню
+function checkSingInMenu() {
+    // Нет токена
+    if ($.isEmptyObject(settings.getJWT())) {
+        $("#signIn").empty();
+        $("#signIn").append(' Войти ');
+    }
+    else {
+        $("#signIn").empty();
+        $("#signIn").append(' Выйти ');
+    }
+}
+
+// Обработчик добавления модального окна входа
+function singInBotton(e) {
+    // Отменить действие браузера по умолчанию
+    e.preventDefault();
+    // Остановка всплытия события
+    e.stopPropagation();
+    // Если токена нет выдавим форму и войдем
+    if ($.isEmptyObject(settings.getJWT())) {
+        // Получим шаблон
+        let html = View.render('signIn');
+        modal(html);
+    }
+
+    else {
+        // Если токен есть, удалим данные входа
+        settings.setJWT('');
+        checkSingInMenu();
+    }
+
+}
+
+
+// Обработчик входа
+async function singIn(e) {
+
+    let res = Model.login(e.login.value, e.password.value);
+
+    res.then(result => {
+        settings.setJWT(result);
+
+        checkSingInMenu();
+        // Закроем окно
+        $(".dialog").dialog("close");
+    },
+        error => {
+            $('#ErrorMessage').empty();
+            $('#ErrorMessage').append(JSON.parse(error.response).messages);
         }
-        else {
-            $("#signIn").empty();
-            $("#signIn").append(' Выйти ');
+    );
+
+
+}
+
+// Обработчик добавления модального окна регистрации
+function signUpBotton(e) {
+    // Отменить действие браузера по умолчанию
+    e.preventDefault();
+    // Остановка всплытия события
+    e.stopPropagation();
+
+    // Получим шаблон
+    let html = View.render('signUp');
+
+    console.log(html);
+    // Очистим существующее модальное окно и заполним новым шаблоном
+    $(".dialog").empty();
+    $(".dialog").append(html);
+
+    $(".ui-dialog-title").empty();
+    $(".ui-dialog-title").append($(html).attr("data-dialog-title"));
+}
+
+// Обработчик регистрации
+async function singUp(e) {
+
+    let res = Model.setUser(e.login.value, e.password.value, e.name.value);
+
+    res.then(result => {
+        // Закроем окно
+        $(".dialog").dialog("close");
+
+
+    },
+        error => {
+            $('#ErrorMessage').empty();
+            $('#ErrorMessage').append(JSON.parse(error.response).messages);
         }
-    }
-
-    // Создать модальное окно
-    function modal(html) {
-        $(html) // Создание элемента div
-            .addClass("dialog") // Назначение элементу класса
-            .appendTo("body") // Вставляет в элемент, после содержимого
-            .dialog({ // Создание из элемента диалогового окна
-                title: $(html).attr("data-dialog-title"), // Добавим в заголовок атрибут.
-                close: function () { // Действие по крестику
-                    $(this).remove()
-                },
-                modal: true, // Можно взаимойдействовать с страницей
-                draggable: true
-            })
-    }
+    );
 
 
-    /**
-     * 
-     * Обработчик вызовов модального окна входа и регистрации
-     * 
-     * Вход -> Модальное окно входа -> Обработчик кнопки регистрации -> модальное окно регистрации -> Обработчик регистрации
-     *                              -> Обработчик входа
-     * 
-     */
-
-    function singIn() {
-        // Навешиваем событие на click на элемент #signIn
-        $("#signIn").on("click", function (e) {
-            // Отменить действие браузера по умолчанию
-            e.preventDefault();
-            // Остановка всплытия события
-            e.stopPropagation();
-
-            // Если токена нет выдавим форму и войдем
-            if ($.isEmptyObject(settings.getJWT())) {
-                // Получим шаблон
-                let html = View.render('signIn', {});
-
-
-                modal(html);
-
-                $('#signInForm').submit(async function (e) {
-                    // Отменить действие браузера по умолчанию
-                    e.preventDefault();
-                    // Остановка всплытия события
-                    e.stopPropagation();
-
-                    let res = Model.login(this.login.value, this.password.value);
-
-                    res.then(result => {
-                        settings.setJWT(result);
-
-                        checkSingInMenu();
-                        // Закроем окно
-                        $(".dialog").dialog("close");
-
-
-                    },
-                        error => {
-                            $('#ErrorMessage').empty();
-                            $('#ErrorMessage').append(JSON.parse(error.response).messages);
-                        }
-                    );
-
-
-                });
-
-
-                // Закрыть окно по клику за пределами модального окна
-                $(document).on("click", function (e) {
-                    $(e.target).closest(".ui-dialog").length || $(".dialog").dialog("close");
-                })
-
-                // Навешиваем событие на click на элемент #signUp
-                $("#signUpBotton").on("click", function (e) {
-                    // Отменить действие браузера по умолчанию
-                    e.preventDefault();
-                    // Остановка всплытия события
-                    e.stopPropagation();
-
-                    // Получим шаблон
-                    let html = View.render('signUp', {});
-
-                    console.log(html);
-                    // Очистим существующее модальное окно и заполним новым шаблоном
-                    $(".dialog").empty();
-                    $(".dialog").append(html);
-
-                    $(".ui-dialog-title").empty();
-                    $(".ui-dialog-title").append($(html).attr("data-dialog-title"));
-
-
-                    // Навешиваем событие на отправку формы
-                    $('#signUpForm').submit(async function (e) {
-                        // Отменить действие браузера по умолчанию
-                        e.preventDefault();
-                        // Остановка всплытия события
-                        e.stopPropagation();
-
-                        let res = Model.setUser(this.login.value, this.password.value, this.name.value);
-
-                        res.then(result => {
-                            // Закроем окно
-                            $(".dialog").dialog("close");
-
-
-                        },
-                            error => {
-                                $('#ErrorMessage').empty();
-                                $('#ErrorMessage').append(JSON.parse(error.response).messages);
-                            }
-                        );
-
-
-                    });
-
-
-
-
-
-
-                });
-
-            }
-            else {
-                // Если токен есть, удалим данные входа
-                settings.setJWT('');
-                checkSingInMenu();
-            }
-
-        });
-    }
-
-
-
-    checkSingInMenu();
-
-    singIn();
-
-});
-
+}
 
 
 /**
@@ -271,11 +299,11 @@ function setModelButton() {
 }
 
 // Обработка добавления
-async function addModel(e) {
+async function addModel(form) {
 
     let val = {
-        model_name: e.model_name.value,
-        model_desc: e.model_desc.value
+        model_name: form.model_name.value,
+        model_desc: form.model_desc.value
     }
 
     let res = Model.setModel(val);
