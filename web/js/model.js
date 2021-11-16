@@ -121,19 +121,35 @@ export default {
 
     ////////////////////////////////////////////////////////////// Models /////////////////////////////////////////////////////    
 
-    // Получить список моделей
-    getModels() {
-        return new Promise((resolve, reject) => {
-            API.res('models');
-            API.models.get({ jwt: settings.getJWT() }).then(function (res) {
-                if (res.status == 'success') {
-                    resolve(res.data);
-                }
-                else {
-                    reject(new Error(res.message));
-                }
+    // Получить список моделей или модель
+    getModels(id) {
+        if (id) {
+            return new Promise((resolve, reject) => {
+                API.res('models');
+                API.models(id).get({ jwt: settings.getJWT() }).then(function (res) {
+                    if (res.status == 'success') {
+                        resolve(res.data);
+                    }
+                    else {
+                        reject(new Error(res.message));
+                    }
+                });
             });
-        });
+        }
+        else {
+            return new Promise((resolve, reject) => {
+                API.res('models');
+                API.models.get({ jwt: settings.getJWT() }).then(function (res) {
+                    if (res.status == 'success') {
+                        resolve(res.data);
+                    }
+                    else {
+                        reject(new Error(res.message));
+                    }
+                });
+            });
+        }
+
     },
 
     // Добавить модель
@@ -158,6 +174,23 @@ export default {
 
 
 
+    },
+
+    updateModel(value) {
+        return new Promise((resolve, reject) => {
+            API.res('models');
+            API.models(value.model_id).put({
+                model_name: value.model_name,
+                model_desc: value.model_desc
+            }).then(
+                function (models) {
+                    resolve(models.data);
+                },
+                function (xnr) {
+                    reject(xnr);
+                });
+
+        });
     },
 
     ////////////////////////////////////////////////////////////// Gilds /////////////////////////////////////////////////////    
@@ -217,6 +250,24 @@ export default {
         });
     },
 
+    // Добавить модель
+    setGild(value) {
+
+        return new Promise((resolve, reject) => {
+            API.res('gilds');
+            API.gilds.post(value).then(
+                    function (response) {
+                        resolve(response.data);
+                    },
+                    function (xnr) {
+                        reject(xnr);
+                    });
+
+        });
+
+
+
+    },
     ////////////////////////////////////////////////////////////// Machines /////////////////////////////////////////////////////
 
 
@@ -233,7 +284,7 @@ export default {
                 machine_posY: value.machine_posY
             }).then(function (models) {
                 resolve(models.data);
-                },
+            },
                 function (xnr) {
                     reject(xnr);
                 });

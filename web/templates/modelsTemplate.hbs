@@ -6,7 +6,7 @@
 <script id="modelsTemplate" type="text/template">
     <div>
         <div>
-            <button id="setModelButton" type="button" class="btn btn-primary">Добавить цех</button>
+            <button id="setModelButton" type="button" class="btn btn-primary">Добавить модель</button>
         </div>
         <div class="flex-container">
         <table class="table">
@@ -19,8 +19,8 @@
             </thead>
             <tbody>
                 {{#each this}}
-                    <tr>
-                    <td>{{model_id}}</td>
+                    <tr style="transform: rotate(0);">
+                    <td scope="row"><a href="" id="updateModelButton" model_id="{{model_id}}" class="stretched-link">{{model_id}}</a></td>
                     <td>{{model_name}}</td>
                     <td>{{model_desc}}</td>
                     </tr>
@@ -45,10 +45,34 @@
             <label for="exampleInputPassword1" class="form-label">Описание модели</label>
             <input name="model_desc" class="form-control" id="exampleInputPassword1">
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label id="ErrorMessage" class="col-sm control-label"></label>
         </div>
         <button type="submit" id="addModelButton" class="btn btn-primary">Добавить</button>
+        </form>
+    </div>
+   
+</script>
+
+
+
+<script id="updateModelTemplate" type="text/template">
+    
+    <div class="flex-container" data-dialog-title="Изменить модель">
+        <form id="updateModelForm">
+            <input type="hidden" name="model_id" value="{{model_id}}">   
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Название модели</label>
+                <input name="model_name" value="{{model_name}}" class="form-control" >
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Описание модели</label>
+                <input name="model_desc" value="{{model_desc}}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label id="ErrorMessage" class="col-sm control-label"></label>
+            </div>
+            <button type="submit" id="setUpdateModelButton" class="btn btn-primary">Изменить</button>
         </form>
     </div>
    

@@ -11,11 +11,11 @@ checkSingInMenu();
 // Обработчик на все кнопки
 $('body').on('click', 'button', function (e) {
 
-    // Обределич то за кнопка, и запустим обработчик
+    // Обределим то за кнопка, и запустим обработчик
     switch (this.id) {
-        case 'setModelButton': setModelButton();
+        case 'setModelButton': setModelButton(e);
             break;
-        case '': ;
+        case 'setGildButton': setModalButton(e,'setGild');
             break;
         case '': ;
             break;
@@ -55,9 +55,9 @@ $('body').on('submit', 'form', function (e) {
             break;
         case 'addMachineGildsForm': addMachineGilds(this);;
             break;
-        case '': ;
+        case 'updateModelForm': UpdateModel(this);
             break;
-        case '': ;
+        case 'addGildForm': addGild(this);
             break;
         case '': ;
             break;
@@ -79,7 +79,7 @@ $('body').on('click', 'a', function (e) {
             break;
         case 'signUpBotton': signUpBotton(e);
             break;
-        case '': ;
+        case 'updateModelButton': updateModelBotton(e);
             break;
         case '': ;
             break;
@@ -98,10 +98,6 @@ $('body').on('click', 'a', function (e) {
     }
 
 });
-
-
-
-
 
 /**
  *
@@ -126,47 +122,18 @@ $('body').on('click', '.gildMachineSet', async function (e) {
 });
 
 
-// Получение настройки машины и размещение в DOM
-// Обработчик формы
-function addMachineGilds(form) {
-
-    // Получим координаты изменяемой ячейки
-    var x = form.dimX.value;
-    var y = form.dimY.value;
-
-    var val = {
-        model_id: form.model_id.value,
-        machine_number: form.machine_number.value,
-        gild_id: form.gild_id.value,
-        machine_desc: form.machine_desc.value,
-        machine_posX: form.dimX.value,
-        machine_posY: form.dimY.value
-    }
-
-
-    console.log(val);
-
-
-    let res = Model.setMachines(val);
-
-    res.then(result => {
-        // Закроем окно
-        $(".dialog").dialog("close");
-        hashRefresh();
-
-    },
-        error => {
-            $('#ErrorMessage').empty();
-            $('#ErrorMessage').append(JSON.parse(error.response).messages);
-        }
-    );
-
-}
 
 
 
-function log(v) {
-    console.log(v);
+// Обработчик модального окна добавления
+function setModalButton(e,template) {
+    // Отменить действие браузера по умолчанию
+    e.preventDefault();
+    // Остановка всплытия события
+    e.stopPropagation();
+    // Получим шаблон
+    let html = View.render(template, {});
+    modal(html);
 }
 
 // Дернем хеш, для перезагрузки содержимого
@@ -307,7 +274,11 @@ async function singUp(e) {
  */
 
 // Обработчик модального окна добавления модели
-function setModelButton() {
+function setModelButton(e) {
+    // Отменить действие браузера по умолчанию
+    e.preventDefault();
+    // Остановка всплытия события
+    e.stopPropagation();
     // Получим шаблон
     let html = View.render('addModels', {});
     modal(html);
@@ -337,18 +308,118 @@ async function addModel(form) {
 
 }
 
+// 
+async function updateModelBotton(e) {
+    // Отменить действие браузера по умолчанию
+    e.preventDefault();
+    // Остановка всплытия события
+    e.stopPropagation();
+
+    var model = await Model.getModels(e.target.getAttribute('model_id'));
+
+    console.log(model);
 
 
+    // Получим шаблон
+    let html = View.render('updateModel', model);
+    modal(html);
+}
+
+function UpdateModel(form) {
+    
+    var val = {
+        model_id: form.model_id.value,
+        model_namr: form.model_name.value,
+        model_desc: form.model_desc.value
+    }
 
 
-/*
-$(function(){
-$(".nav-link").on("click",function(){
-    let hash = $(this).attr("href");
-    document.location.hash = '';
-    document.location.hash = hash;
-});
+    console.log(val);
 
-});
 
-*/
+    let res = Model.updateModel(val);
+
+    res.then(result => {
+        // Закроем окно
+        $(".dialog").dialog("close");
+        hashRefresh();
+    },
+        error => {
+            $('#ErrorMessage').empty();
+            $('#ErrorMessage').append(JSON.parse(error.response).messages);
+        }
+    );
+}
+
+
+/**
+ * 
+ * 
+ * Функции страницы настройки цеха
+ * 
+ */
+
+
+// Обработчик формы добавления цеха
+function addGild(form){
+    var val = {
+            gild_number:    form.gild_number.value,
+            gild_name:      form.gild_name.value,
+            gild_desc:      form.gild_desc.value,
+            gild_dimX:      form.gild_dimX.value,
+            gild_dimY:      form. gild_dimY.value
+        }
+    
+        let res = Model.setGild(val);
+
+        res.then(result => {
+            // Закроем окно
+            $(".dialog").dialog("close");
+            hashRefresh();
+    
+        },
+            error => {
+                $('#ErrorMessage').empty();
+                $('#ErrorMessage').append(JSON.parse(error.response).messages);
+            }
+        );
+
+
+}
+
+// Получение настройки машины и размещение в DOM
+// Обработчик формы
+function addMachineGilds(form) {
+
+    // Получим координаты изменяемой ячейки
+    var x = form.dimX.value;
+    var y = form.dimY.value;
+
+    var val = {
+        model_id: form.model_id.value,
+        machine_number: form.machine_number.value,
+        gild_id: form.gild_id.value,
+        machine_desc: form.machine_desc.value,
+        machine_posX: form.dimX.value,
+        machine_posY: form.dimY.value
+    }
+
+
+    console.log(val);
+
+
+    let res = Model.setMachines(val);
+
+    res.then(result => {
+        // Закроем окно
+        $(".dialog").dialog("close");
+        hashRefresh();
+
+    },
+        error => {
+            $('#ErrorMessage').empty();
+            $('#ErrorMessage').append(JSON.parse(error.response).messages);
+        }
+    );
+
+}

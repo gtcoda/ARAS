@@ -6,31 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    
     <link href="css/bootstrap.css" rel="stylesheet">
-
-
-
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
-
-
 
     <script src="js/lib/rest-client.js"></script>
     <script src="js/lib/jquery.min.js"></script>
-
     <script src="js/lib/bootstrap.js"></script>
-
-    <link rel="stylesheet" href="css/jquery-ui.min.css">
     <script src="js/lib/jquery-ui.min.js"></script>
 
-
-    <!--  SPA   
-    <script src="js/route.js"></script>
-    <script src="js/router.js"></script>
-    <script src="js/app.js"></script>
--->
-
-
     <script>
+        // Загрузка шаблонов
         $(function() {
             function getTemplate(templateName) {
                 var templateUrl = "templates/" + templateName + "Template.hbs";
@@ -48,41 +35,6 @@
 
         });
 
-
-        /*  var api = new RestClient('https://aras.gtcoda.ru/api');
-        api.res('users');
-        api.users('gtcoda').get().then(function(users) {
-            console.log(users.data.user_id);
-        })
-
-        api.res('events');
-        api.events.get().then(function(events) {
-            console.log(events);
-        })
-
-
-
-                <p>Message: {{event_message}}</p>
-                <p>MachineId: {{machine_id}}</p>
-                <p>UserId: {{user_id}}</p>
-
-
-           API.res('login');
-            API.login.post({
-                user_login: "login",
-                user_password: "password"
-            }).then(function(login) {
-                console.log(" Ошибки нет ");
-            },function(xnr){
-                console.log(" Ошибка ");
-                console.log(xnr);
-            });
-
-
-
-
-
-            */
     </script>
     <title>ARAS</title>
 </head>
@@ -94,7 +46,7 @@
         <footer>
             <div class="row">
                 <div class="col">
-                    <h2>Шапка</h2>
+                    <h2>Автоматизированная система учета ремонтов</h2>
                 </div>
             </div>
         </footer>
@@ -102,7 +54,7 @@
 
 
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
             <div class="container-fluid">
                 <a class="navbar-brand" data-role="nav-over" href="#Overview">Обзор</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

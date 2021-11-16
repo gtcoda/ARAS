@@ -29,13 +29,16 @@ export default {
             console.log(e);
         }
 
-        var html = `
-        <table class='table-bordered' style='border-collapse:separate; border-spacing: 10px;'>
-            <tbody> `;
-
+        /**
+         * 
+         * Создадим поле цеха
+         * 
+         * Используется таблица на основе DIV
+         */
+        var html = "<div class='container-fluid'>";
 
         for (var y = data.gild_dimY; y > 0; y--) {
-            html += "<tr>";
+            html += "<div class='row row-eq-height'>";
             for (var x = 1; x <= data.gild_dimX; x++) {
 
 
@@ -59,24 +62,24 @@ export default {
                 }
 
                 html += `
-                <th>
-                <div class='card gildMachineSet' gild_id='${data.gild_id}' dimx='${x}' dimy='${y}'>
-                    <div class="card-body">
+                <div class="col">
+                    <div class='card gildMachineSet' gild_id='${data.gild_id}' dimx='${x}' dimy='${y}'>
+                        <div class="card-body">
 
-                    <h5 class="card-title">${machine.machine_number}</h5>
-                    <p class="card-text">${machine.machine_desc}</p>
-                    <p class="card-text"> {${x}:${y}}</p>
+                        <h5 class="card-title">${machine.machine_number}</h5>
+                        <p class="card-text">${machine.machine_desc}</p>
+                        <p class="card-text"> {${x}:${y}}</p>
 
+                        </div>
                     </div>
                 </div>
-                </th>
                 `;
             }
-            html += "</tr>";
+            html += "</div>";
         }
 
-        html += `</tbody>
-        </table>`;
+
+        html += "</div>";
 
         resultsNode.innerHTML = html;
 
