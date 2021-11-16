@@ -160,12 +160,12 @@ export default {
 
     },
 
-////////////////////////////////////////////////////////////// Gilds /////////////////////////////////////////////////////    
+    ////////////////////////////////////////////////////////////// Gilds /////////////////////////////////////////////////////    
 
     // Получить список цехов
     getGilds(id) {
 
-        if(id){
+        if (id) {
 
 
             return new Promise((resolve, reject) => {
@@ -182,7 +182,7 @@ export default {
 
 
         }
-        else{
+        else {
 
 
             return new Promise((resolve, reject) => {
@@ -202,8 +202,44 @@ export default {
 
     },
 
+    // Получить все станки конкретного цеха
+    getGildsM(id) {
+        return new Promise((resolve, reject) => {
+            API.res('gilds');
+            API.gilds(id + "/machines").get({ jwt: settings.getJWT() }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
+
+    ////////////////////////////////////////////////////////////// Machines /////////////////////////////////////////////////////
 
 
+    // Добавить станок
+    setMachines(value) {
+        return new Promise((resolve, reject) => {
+            API.res('machines');
+            API.machines.post({
+                model_id: value.model_id,
+                machine_number: value.machine_number,
+                gild_id: value.gild_id,
+                machine_desc: value.machine_desc,
+                machine_posX: value.machine_posX,
+                machine_posY: value.machine_posY
+            }).then(function (models) {
+                resolve(models.data);
+                },
+                function (xnr) {
+                    reject(xnr);
+                });
+        });
+
+    },
 
 
 

@@ -39,26 +39,48 @@ class gildsApi extends Api
      * Метод GET
      * 
      * Получить информацию о цехе с {id}
-     * http://ДОМЕН/login/1
+     * http://ДОМЕН/gilds/1
+     * Получить все машины цеха {id}
+     * http://ДОМЕН/gilds/1/machines
      * @return string
      */
     public function viewAction()
     {
-        try {
-            $data = $this->gild->Get($this->requestUri[0]);
-            $answer = array(
-                'status' => 'success',
-                'messages' => 'Gild',
-                'data' => $data,
-            );
-            return $this->response($answer, 200);
-        } catch (Exception $e) {
-            $answer = array(
-                'status' => 'error',
-                'messages' => $e->getMessage(),
-            );
-            return $this->response($answer, 400);
+        if($this->requestUri[1]=="machines"){
+            try {
+                $data = $this->gild->GetsM($this->requestUri[0]);
+                $answer = array(
+                    'status' => 'success',
+                    'messages' => 'Machine Gild',
+                    'data' => $data,
+                );
+                return $this->response($answer, 200);
+            } catch (Exception $e) {
+                $answer = array(
+                    'status' => 'error',
+                    'messages' => $e->getMessage(),
+                );
+                return $this->response($answer, 400);
+            }
         }
+        else{
+            try {
+                $data = $this->gild->Get($this->requestUri[0]);
+                $answer = array(
+                    'status' => 'success',
+                    'messages' => 'Gild',
+                    'data' => $data,
+                );
+                return $this->response($answer, 200);
+            } catch (Exception $e) {
+                $answer = array(
+                    'status' => 'error',
+                    'messages' => $e->getMessage(),
+                );
+                return $this->response($answer, 400);
+            }
+        }
+        
     }
 
     /**

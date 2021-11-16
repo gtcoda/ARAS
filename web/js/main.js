@@ -49,11 +49,11 @@ $('body').on('submit', 'form', function (e) {
     switch (this.id) {
         case 'addModelForm': addModel(this);
             break;
-        case 'signInForm':  singIn(this);
+        case 'signInForm': singIn(this);
             break;
         case 'signUpForm': singUp(this);
             break;
-        case 'addMachineGildsForm': addMachineGilds(this); ;
+        case 'addMachineGildsForm': addMachineGilds(this);;
             break;
         case '': ;
             break;
@@ -93,15 +93,11 @@ $('body').on('click', 'a', function (e) {
             break;
         case '': ;
             break;
-        default:{
-        }    
+        default: {
+        }
     }
 
 });
-
-
-
-
 
 
 
@@ -112,19 +108,19 @@ $('body').on('click', 'a', function (e) {
  * Функции страницы добавления машины на странице настроек
  *
  */
-// Обработчик настройку gilds
+// Обработчик настройки gilds
 $('body').on('click', '.gildMachineSet', async function (e) {
-    
+
     const models = await Model.getModels();
 
     var data = {
-        dimX:this.getAttribute('dimx'),
-        dimY:this.getAttribute('dimy'),
-        models:models
+        dimX: this.getAttribute('dimx'),
+        dimY: this.getAttribute('dimy'),
+        gild_id: this.getAttribute('gild_id'),
+        models: models
     };
 
-    console.log(data);
-    var html = View.render('addMachine',data);
+    var html = View.render('addMachine', data);
 
     modal(html);
 });
@@ -132,29 +128,44 @@ $('body').on('click', '.gildMachineSet', async function (e) {
 
 // Получение настройки машины и размещение в DOM
 // Обработчик формы
-function addMachineGilds(form){
+function addMachineGilds(form) {
 
     // Получим координаты изменяемой ячейки
     var x = form.dimX.value;
     var y = form.dimY.value;
 
-    // Найтем ячейку
-    var n = document.querySelector(`div[dimx="${x}"][ dimy="${y}" ]`);
+    var val = {
+        model_id: form.model_id.value,
+        machine_number: form.machine_number.value,
+        gild_id: form.gild_id.value,
+        machine_desc: form.machine_desc.value,
+        machine_posX: form.dimX.value,
+        machine_posY: form.dimY.value
+    }
 
 
-    // Вставляем в ячейку
-
-    var text = form.model_id.value;
-    n.innerHTML = text;
+    console.log(val);
 
 
+    let res = Model.setMachines(val);
 
-    $(".dialog").dialog("close");
+    res.then(result => {
+        // Закроем окно
+        $(".dialog").dialog("close");
+        hashRefresh();
+
+    },
+        error => {
+            $('#ErrorMessage').empty();
+            $('#ErrorMessage').append(JSON.parse(error.response).messages);
+        }
+    );
+
 }
 
 
 
-function log(v){
+function log(v) {
     console.log(v);
 }
 
@@ -177,11 +188,15 @@ function modal(html, id) {
             close: function () { // Действие по крестику
                 $(this).remove()
             },
-            modal: true, // Можно взаимойдействовать с страницей
+            modal: true, // Нельзя взаимойдействовать с страницей
             draggable: true
         })
 }
 
+// Закрыть окно по клику за пределами модального окна
+$(document).on("click", function (e) {
+    $(e.target).closest(".ui-dialog").length || $(".dialog").dialog("close");
+})
 
 /**
  *

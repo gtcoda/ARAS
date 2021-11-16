@@ -9,14 +9,18 @@
     <link href="css/bootstrap.css" rel="stylesheet">
 
 
+
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 
 
 
-    <script src="js/rest-client.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="js/lib/rest-client.js"></script>
+    <script src="js/lib/jquery.min.js"></script>
+
+    <script src="js/lib/bootstrap.js"></script>
+
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <script src="js/lib/jquery-ui.min.js"></script>
 
 
     <!--  SPA   
@@ -198,7 +202,6 @@
 
     <!--  MVC   -->
     <script src="js/entry.js" type="module"></script>
-    <script src="js/bootstrap.js"></script>
     <script src="js/main.js" type="module"></script>
 
 

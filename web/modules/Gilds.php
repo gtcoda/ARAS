@@ -54,6 +54,13 @@ class Gilds extends Modules
         return $row;
     }
 
+    // Получение всех машин цеха с id
+    public function GetsM($id)
+    {
+        $all = $this->db->getAll("SELECT * FROM ?n WHERE gild_id=?i", "machines", $id);
+        return $all;
+    }
+
     public function Add($arr)
     {
         $fields = ['gild_number', 'gild_name', 'gild_desc', 'gild_dimX', 'gild_dimY'];
