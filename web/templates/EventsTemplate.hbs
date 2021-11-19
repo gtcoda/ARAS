@@ -1,11 +1,42 @@
 <script id="eventsTemplate" type="text/template">
     <div>
-       <form>
-            <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Описание</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+
+        <div class="overflow-auto " style="height: 30rem;" >
+            {{#each events}}
+                <div class="card w-50">
+                    <div class="card-body ">
+                        {{event_data}}
+                        <h5 class="bg-primary card-title">{{event_message}}</h5>
+                        {{user_id}}
+
+                        {{event_modif_1}}
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+
+       <form id="addEventForm">
+           <input type="hidden" name="machine_id" value="{{machine_id}}">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name ="Open" value="Open">
+                <label class="form-check-label" for="inlineCheckbox1">Начало ремонта</label>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="Close" value="Close">
+                <label class="form-check-label" for="inlineCheckbox2">Готов</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" name="Info" value="Info">
+                <label class="form-check-label" for="inlineCheckbox3">Инфо</label>
+            </div>
+            <div class="mb-3">
+                <label for="event_message" class="form-label">Описание</label>
+                <textarea class="form-control" id="event_message" rows="3"></textarea>
+            </div>
+                
+            
+            <button type="submit" class="btn btn-primary">Записать</button>
+            <label  id="ErrorMessage" class="col-sm control-label"></label>
         </form>
     </div>
 </script>

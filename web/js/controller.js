@@ -44,8 +44,11 @@ export default {
 
 
     async EventsRoute(param) {
+
+        const eventsM = await Model.getEvents(param.id);
         console.log(param);
-        eventsPage.render(param.id);
+        eventsPage.setData(eventsM, param.id);
+        eventsPage.render();
     },
 
 

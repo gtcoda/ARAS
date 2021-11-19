@@ -76,7 +76,7 @@ class Events extends Modules
      * @return array
      */
     public function GetM($machine_id){
-        $all = $this->db->getAll("SELECT * FROM ?n WHERE machine_id=?n ORDER BY `event_id` Desc LIMIT 10 ", $this->table, $machine_id);
+        $all = $this->db->getAll("SELECT * FROM ?n WHERE machine_id=?i ORDER BY `event_id` Desc LIMIT 10 ", $this->table, $machine_id);
         return $all;
     }
     /**
@@ -192,4 +192,5 @@ class Events extends Modules
 
         return false;
     }
+
 }

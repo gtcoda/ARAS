@@ -85,13 +85,13 @@ export default {
     },
 
 
-    // Получить все события
-    getEvents() {
+    // Получить все события конкретной машины
+    getEvents(machine_id) {
 
         return new Promise((resolve, reject) => {
 
             API.res('events');
-            API.events.get().then(function (events) {
+            API.events('machine/'+machine_id).get().then(function (events) {
                 if (events.status == 'success') {
                     resolve(events.data);
                 }
@@ -102,6 +102,52 @@ export default {
 
         });
 
+    },
+
+    // Добавить событие
+    setEvents(event) {
+
+        return new Promise((resolve, reject) => {
+
+            API.res('events');
+            API.events.post(event).then(function (response) {
+                resolve(response.data);
+            },
+            function (xnr) {
+                reject(xnr);
+            })
+
+        });
+
+    },
+
+    openRepair(){
+        return new Promise((resolve, reject) => {
+
+            API.res('repairs');
+            API.repairs.post({ jwt: settings.getJWT() }).then(function (response) {
+                resolve(response.repair_id);
+            },
+            function (xnr) {
+                reject(xnr);
+            })
+
+        });
+    },
+
+    // Получить Последний открытый repair_id
+    curentRepair(machine_id){
+        return new Promise((resolve, reject) => {
+
+            API.res('repairs');
+            API.repairs(machine_id).get({ jwt: settings.getJWT() }).then(function (response) {
+                resolve(response.repair_id);
+            },
+            function (xnr) {
+                reject(xnr);
+            })
+
+        });
     },
 
     // Проверить корректность токена

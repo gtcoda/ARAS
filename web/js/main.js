@@ -15,9 +15,9 @@ $('body').on('click', 'button', function (e) {
     switch (this.id) {
         case 'setModelButton': setModelButton(e);
             break;
-        case 'setGildButton': setModalButton(e,'setGild');
+        case 'setGildButton': setModalButton(e, 'setGild');
             break;
-        case 'overviewIdGildButton': {console.log(this)};
+        case 'overviewIdGildButton': { console.log(this) };
             break;
         case '': ;
             break;
@@ -59,7 +59,7 @@ $('body').on('submit', 'form', function (e) {
             break;
         case 'addGildForm': addGild(this);
             break;
-        case '': ;
+        case 'addEventForm': addEvent(this);
             break;
         case '': ;
             break;
@@ -128,7 +128,7 @@ $('body').on('click', '.gildMachineSet', async function (e) {
 
 $('body').on('click', '.eventsMachineSet', async function (e) {
 
-    
+
 
 
     modal(html);
@@ -138,7 +138,7 @@ $('body').on('click', '.eventsMachineSet', async function (e) {
 
 
 // Обработчик модального окна добавления
-function setModalButton(e,template) {
+function setModalButton(e, template) {
     // Отменить действие браузера по умолчанию
     e.preventDefault();
     // Остановка всплытия события
@@ -340,7 +340,7 @@ async function updateModelBotton(e) {
 }
 
 function UpdateModel(form) {
-    
+
     var val = {
         model_id: form.model_id.value,
         model_namr: form.model_name.value,
@@ -375,28 +375,28 @@ function UpdateModel(form) {
 
 
 // Обработчик формы добавления цеха
-function addGild(form){
+function addGild(form) {
     var val = {
-            gild_number:    form.gild_number.value,
-            gild_name:      form.gild_name.value,
-            gild_desc:      form.gild_desc.value,
-            gild_dimX:      form.gild_dimX.value,
-            gild_dimY:      form. gild_dimY.value
-        }
-    
-        let res = Model.setGild(val);
+        gild_number: form.gild_number.value,
+        gild_name: form.gild_name.value,
+        gild_desc: form.gild_desc.value,
+        gild_dimX: form.gild_dimX.value,
+        gild_dimY: form.gild_dimY.value
+    }
 
-        res.then(result => {
-            // Закроем окно
-            $(".dialog").dialog("close");
-            hashRefresh();
-    
-        },
-            error => {
-                $('#ErrorMessage').empty();
-                $('#ErrorMessage').append(JSON.parse(error.response).messages);
-            }
-        );
+    let res = Model.setGild(val);
+
+    res.then(result => {
+        // Закроем окно
+        $(".dialog").dialog("close");
+        hashRefresh();
+
+    },
+        error => {
+            $('#ErrorMessage').empty();
+            $('#ErrorMessage').append(JSON.parse(error.response).messages);
+        }
+    );
 
 
 }
@@ -436,4 +436,73 @@ function addMachineGilds(form) {
         }
     );
 
+}
+
+
+
+
+/**
+ * 
+ * 
+ * Функции работы с событиями
+ * 
+ */
+
+
+async function addEvent(form) {
+
+    var modif;
+    if (form.Open.checked) {
+        // Установим модификатор и откроем новый ремонт
+        modif = "Open";
+        try{
+            var repair_id = await Model.openRepair();
+        }
+        catch(e){
+            console.log(e);
+        }
+    }
+    else if(form.Close.checked){
+        modif = "Close";
+         // Нет ни одного модификатора. Добавляем в последний ремонт.
+         try{
+            var repair_id = await Model.curentRepair(form.machine_id.value);
+        }
+        catch(e){
+            console.log(e);
+        }
+    }
+    else if(form.Close.checked){
+
+    }
+    else{
+        // Нет ни одного модификатора. Добавляем в последний ремонт.
+        try{
+            var repair_id = await Model.curentRepair(form.machine_id.value);
+        }
+        catch(e){
+            console.log(e);
+        }
+    }
+
+    var event = {
+        machine_id: form.machine_id.value,
+        event_message: form.event_message.value,
+        repair_id:repair_id,
+        event_modif_1: modif,
+        jwt: settings.getJWT()
+    }
+
+    console.log(event);
+
+    let res = Model.setEvents(event);
+
+    res.then(result => {
+        hashRefresh();
+    },
+        error => {
+            $('#ErrorMessage').empty();
+            $('#ErrorMessage').append(JSON.parse(error.response).messages);
+        }
+    );
 }

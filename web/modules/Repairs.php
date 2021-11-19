@@ -52,6 +52,23 @@ class Repairs extends Modules  {
         
     }
 
+    // Вернуть id последнего ремонта на машине с {id}
+    public function Сurrent($machine_id){
+        try {
+
+
+
+            $res = $this->db->getOne("SELECT * FROM ?n WHERE (machine_id = ?s) AND (repair_id IS NOT NULL) ORDER BY `event_id` Desc LIMIT 1","events",$machine_id);
+
+            return $res['repair_id']; 
+        } catch (Exception $e) {
+            $this->log->add($e->getMessage());
+            // Выдадим выше ошибку, но без подробностей
+            throw new RuntimeException('Request is bad');
+        }
+        return false;
+    }
+
 
 
 }

@@ -1,5 +1,3 @@
-import Template from './template.js';
-
 
 export default {
     render(templateName, data = {}) {

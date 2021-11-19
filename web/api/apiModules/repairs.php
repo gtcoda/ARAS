@@ -39,7 +39,24 @@ class repairsApi extends Api
      */
     public function viewAction()
     {
-        return $this->response("", 404);
+        try {
+            $res = $this->repair->Сurrent($this->requestUri[0]);
+            $answer = array(
+                'status'    => 'success',
+                'messages'  => 'Current repair_id',
+                'repair_id'      => $res,
+            );
+            return $this->response($answer, 200);
+        } catch (Exception $e) {
+
+            $answer = array(
+                'status' => 'error',
+                'messages' => $e->getMessage(),
+            );
+
+            return $this->response($answer, 400);
+        }
+
     }
 
     /**

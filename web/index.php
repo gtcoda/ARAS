@@ -83,7 +83,22 @@
     </div>
 
     <div id="templates">
+    <?php
+    $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
+    require_once($config['dirConfig'] . 'log.php');
 
+    $log = Logi::getInstance();
+
+    $file = scandir($config['dirTemplate']);
+
+ 
+    for($i=2;$i<count($file);$i++){
+        echo file_get_contents($config['dirTemplate'].$file[$i],true);
+    }
+    
+
+    
+    ?>
 
     </div>
 

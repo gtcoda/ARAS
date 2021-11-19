@@ -60,10 +60,14 @@ class eventsApi extends Api
     {
         try {
            
-           
-           
             if($this->requestUri[0]=="machine"){
-                
+                $data = $this->event->GetM($this->requestUri[1]);
+                $answer = array(
+                    'status' => 'success',
+                    'messages' => 'Machine Event',
+                    'data' => $data,
+                );
+                return $this->response($answer, 200);
 
             }
             else{
@@ -148,8 +152,8 @@ class eventsApi extends Api
             $param["event_modif_3"] = $this->requestParams['event_modif_3'];
         }
 
-        
-
+        $log->add("После получени user_id");        
+        $log->add($param);
         try {
             $res = $this->event->Add($param);
             $answer = array(

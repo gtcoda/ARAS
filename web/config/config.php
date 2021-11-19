@@ -72,6 +72,7 @@ return array(
     'dirObject'     => $_SERVER['DOCUMENT_ROOT'].'/object/',
     'dirConfig'     => $_SERVER['DOCUMENT_ROOT'].'/config/',
     'dirLog'        => $_SERVER['DOCUMENT_ROOT'].'/log/',
+    'dirTemplate'   => $_SERVER['DOCUMENT_ROOT'].'/templates/',
     
 
 );
