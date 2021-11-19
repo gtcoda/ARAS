@@ -43,7 +43,7 @@ class Events extends Modules
     }
 
     /**
-     * Получить список всех машин
+     * Получить список всех последних событий
      * 
      * @return array
      */
@@ -53,7 +53,7 @@ class Events extends Modules
         return $all;
     }
     /**
-     * Получить машину по $id
+     * Получить событие по event_id
      * 
      * @return array
      */
@@ -67,6 +67,17 @@ class Events extends Modules
         }
 
         return $row;
+    }
+
+
+   /**
+     * Получить последние события по machine_id
+     * 
+     * @return array
+     */
+    public function GetM($machine_id){
+        $all = $this->db->getAll("SELECT * FROM ?n WHERE machine_id=?n ORDER BY `event_id` Desc LIMIT 10 ", $this->table, $machine_id);
+        return $all;
     }
     /**
      * Добавить машину

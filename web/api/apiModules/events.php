@@ -51,20 +51,39 @@ class eventsApi extends Api
      * 
      * Получить информацию о сообщении, оборудовании с {id}
      * http://ДОМЕН/events/1
+     * 
+     * Получить все сооющения относящиеся к машине с {id}
+     * http://ДОМЕН/events/machine/{id}
      * @return string
      */
     public function viewAction()
     {
-
-
         try {
-            $data = $this->event->Get($this->requestUri[0]);
-            $answer = array(
-                'status' => 'success',
-                'messages' => 'Event',
-                'data' => $data,
-            );
-            return $this->response($answer, 200);
+           
+           
+           
+            if($this->requestUri[0]=="machine"){
+                
+
+            }
+            else{
+                $data = $this->event->Get($this->requestUri[0]);
+                $answer = array(
+                    'status' => 'success',
+                    'messages' => 'Event',
+                    'data' => $data,
+                );
+                return $this->response($answer, 200);
+            }
+
+           
+           
+
+
+
+
+
+
         } catch (Exception $e) {
             $answer = array(
                 'status' => 'error',

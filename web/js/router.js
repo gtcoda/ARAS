@@ -1,4 +1,5 @@
 import Controller from './controller.js'
+import Template from './template.js'
 import * as settings from './settings.js';
 
 function getRouteInfo() {
@@ -9,11 +10,17 @@ function getRouteInfo() {
 
 function handleHash() {
     const { name, params } = getRouteInfo();
+
+    // Загрузим шаблоны
+    Template.getTemplate(name)
+
+
     if (name) {
         const routeName = name + 'Route';
-        console.log(routeName);
         Controller[routeName](params);
     }
+
+
 }
 
 
@@ -21,5 +28,7 @@ export default {
     init() {
         addEventListener('hashchange', handleHash);
         handleHash();
+
+        Template.getTemplate('sing');
     }
 }

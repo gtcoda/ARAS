@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+
     <link href="css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" href="css/jquery-ui.min.css">
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
@@ -16,26 +16,6 @@
     <script src="js/lib/bootstrap.js"></script>
     <script src="js/lib/jquery-ui.min.js"></script>
 
-    <script>
-        // Загрузка шаблонов
-        $(function() {
-            function getTemplate(templateName) {
-                var templateUrl = "templates/" + templateName + "Template.hbs";
-
-                $.ajax({
-                    url: templateUrl,
-                    success: function(data) {
-                        $("#templates").append(data);
-                    }
-                });
-            }
-            getTemplate('sing');
-            getTemplate('models');
-            getTemplate('gilds');
-
-        });
-
-    </script>
     <title>ARAS</title>
 </head>
 
@@ -77,7 +57,7 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="#Gilds">Цех</a></li>
-                                <li><a class="dropdown-item" href="#Model">Модель</a></li>
+                                <li><a class="dropdown-item" href="#Models">Модель</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
@@ -96,61 +76,17 @@
 
         <!--  Основная часть   -->
 
-        <div class="mt-3"  id="app">
+        <div class="mt-3" id="app">
 
         </div>
 
     </div>
-
-
-    <script id="userTemplate" type="text/template">
-
-        <div>
-        <p class=".font-weight-bold">Id : {{user_id}}</p>
-        <p>Login: {{user_login}}</p>
-        <p>Name: {{user_name}}</p>
-    </div>
-
-    </script>
-
-    <script id="usersTemplate" type="text/template">
-        <div class="flex-container">
-        {{#each this}}
-        <div>
-            <p>Id : {{user_id}}</p>
-            <p>Login: {{user_login}}</p>
-            <p>Name: {{user_name}}</p>
-        </div>
-        {{/each}}
-    </div>
-    </script>
-
-
-    <script id="eventsTemplate" type="text/template">
-        <div>
-            <select data-role="sort">
-                <option value="event_id"> По event_id </option>
-                <option value="user_id"> По user_id </option>
-            </select>    
-            <div class="flex-container">
-            {{#each this}}
-                <div>
-                    <p>Id : {{event_id}}</p>
-                    <p>Message: {{event_message}}</p>
-                    <p>MachineId: {{machine_id}}</p>
-                    <p>UserId: {{user_id}}</p>
-                </div>
-            {{/each}}   
-            </div>
-        </div>
-    </script>
-
-
 
     <div id="templates">
 
 
     </div>
+
 
     <!--  MVC   -->
     <script src="js/entry.js" type="module"></script>

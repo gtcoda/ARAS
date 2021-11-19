@@ -1,0 +1,24 @@
+<!---
+Шаблоны для страницы #overwiew
+-->
+
+
+<!--- Список цехов -->
+<script id="overviewTemplate" type="text/template">
+    <div>
+        <div>
+
+            <ul class="nav nav-tabs">
+                {{#each this}}
+                <li class="nav-item">
+                    <a class="nav-link" data-role="nav-overview-gild-{{gild_id}}" href="#Overview/{{gild_id}}">Цех №{{gild_number}}</a>
+                </li>
+                 {{/each}}
+            </ul>
+
+        </div>
+        <div class="flex-container" id="owerviewMachineTable">
+            
+        </div>
+    </div>
+</script>

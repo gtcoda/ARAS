@@ -1,9 +1,12 @@
 import Model from "./model.js";
-import View from "./view.js";
+
+import overviewPage from "./pages/overview.js"
 import eventsPage from "./pages/events.js"
-import usersPage from "./pages/users.js"
+
+
 import modelsPage from "./pages/models.js"
 import gildsPage from "./pages/gilds.js"
+import view from "./view.js";
 
 const overwiewNavNode = document.querySelector('[data-role=nav-over]');
 const settingsNavNode = document.querySelector('[data-role=nav-set]');
@@ -18,29 +21,36 @@ function setActiveNavNode(node) {
     activeNavNode.classList.add('active');
 }
 
+
+// Добавим в хеш параметр
+function hashAddParam(param) {
+    let hash = document.location.hash;
+    document.location.hash = hash + "/"+param;
+}
+
+
 export default {
-    async OverviewRoute() {
-        const users = await Model.getUsers();
 
-        usersPage.setData(users);
-        usersPage.render();
-
-        setActiveNavNode(overwiewNavNode);
-    },
-
-    async SettingsRoute() {
-        const events = await Model.getEvents();
-
-        eventsPage.setData(events);
-        eventsPage.render();
-
-
-        setActiveNavNode(settingsNavNode);
+    async OverviewRoute(param) {
+        if(param.id){
+            overviewPage.machineTable(param.id);
+        }
+        else{
+            const gilds = await Model.getGilds();
+            hashAddParam(gilds[0].gild_id);
+        }
+        
     },
 
 
+    async EventsRoute(param) {
+        console.log(param);
+        eventsPage.render(param.id);
+    },
 
-    async ModelRoute(){
+
+
+    async ModelsRoute(){
         const models = await Model.getModels();
 
         modelsPage.setData(models);

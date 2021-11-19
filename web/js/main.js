@@ -17,7 +17,7 @@ $('body').on('click', 'button', function (e) {
             break;
         case 'setGildButton': setModalButton(e,'setGild');
             break;
-        case '': ;
+        case 'overviewIdGildButton': {console.log(this)};
             break;
         case '': ;
             break;
@@ -99,6 +99,9 @@ $('body').on('click', 'a', function (e) {
 
 });
 
+
+
+
 /**
  *
  * Функции страницы добавления машины на странице настроек
@@ -123,6 +126,15 @@ $('body').on('click', '.gildMachineSet', async function (e) {
 
 
 
+$('body').on('click', '.eventsMachineSet', async function (e) {
+
+    
+
+
+    modal(html);
+});
+
+
 
 
 // Обработчик модального окна добавления
@@ -142,6 +154,8 @@ function hashRefresh() {
     document.location.hash = '';
     document.location.hash = hash;
 }
+
+
 
 // Создать модальное окно
 // html - код модального окна 
