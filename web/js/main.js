@@ -100,6 +100,22 @@ $('body').on('click', 'a', function (e) {
 });
 
 
+// Обработчик события изменения на все кнопки по типу <input>
+$('body').on('change', 'input', function (e) {
+    // Определим то за ссылка, и запустим обработчик
+    switch (this.id) {
+        case 'inputEventFile': inputEventFile(this);
+            break;
+        case '': ;
+            break;
+        case '': ;
+            break;
+        default: {
+        }
+    }
+
+});
+
 
 
 /**
@@ -127,10 +143,6 @@ $('body').on('click', '.gildMachineSet', async function (e) {
 
 
 $('body').on('click', '.eventsMachineSet', async function (e) {
-
-
-
-
     modal(html);
 });
 
@@ -439,8 +451,6 @@ function addMachineGilds(form) {
 }
 
 
-
-
 /**
  * 
  * 
@@ -448,39 +458,38 @@ function addMachineGilds(form) {
  * 
  */
 
-
 async function addEvent(form) {
 
     var modif;
     if (form.Open.checked) {
         // Установим модификатор и откроем новый ремонт
         modif = "Open";
-        try{
+        try {
             var repair_id = await Model.openRepair();
         }
-        catch(e){
+        catch (e) {
             console.log(e);
         }
     }
-    else if(form.Close.checked){
+    else if (form.Close.checked) {
         modif = "Close";
-         // Нет ни одного модификатора. Добавляем в последний ремонт.
-         try{
+        // Нет ни одного модификатора. Добавляем в последний ремонт.
+        try {
             var repair_id = await Model.curentRepair(form.machine_id.value);
         }
-        catch(e){
+        catch (e) {
             console.log(e);
         }
     }
-    else if(form.Close.checked){
+    else if (form.Close.checked) {
 
     }
-    else{
+    else {
         // Нет ни одного модификатора. Добавляем в последний ремонт.
-        try{
+        try {
             var repair_id = await Model.curentRepair(form.machine_id.value);
         }
-        catch(e){
+        catch (e) {
             console.log(e);
         }
     }
@@ -488,12 +497,17 @@ async function addEvent(form) {
     var event = {
         machine_id: form.machine_id.value,
         event_message: form.event_message.value,
-        repair_id:repair_id,
+        repair_id: repair_id,
         event_modif_1: modif,
         jwt: settings.getJWT()
     }
 
     console.log(event);
+
+    console.log(form.inputEventFile.files);
+
+
+
 
     let res = Model.setEvents(event);
 
@@ -505,4 +519,80 @@ async function addEvent(form) {
             $('#ErrorMessage').append(JSON.parse(error.response).messages);
         }
     );
+
 }
+
+// Преобразование файла в base64
+function _arrayBufferToBase64(buffer) {
+    var binary = '';
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i])
+    }
+    return window.btoa(binary);
+}
+
+
+// Отправка фото на сервер и создание нового события с ссылкой на фото
+async function inputEventFile(input) {
+    // Получим форму
+    var form = ($(input).parents('form'))[0];
+
+    // Получим файлы
+    var files = $(input)[0].files;
+
+    // Фото добавляются в последний ремонт. Получим id
+    try {
+        var repair_id = await Model.curentRepair(form.machine_id.value);
+    }
+    catch (e) {
+        console.log(e);
+    }
+
+
+    var event = {
+        machine_id: form.machine_id.value,
+        event_message: "",
+        repair_id: repair_id,
+        jwt: settings.getJWT()
+    }
+
+
+
+    console.log(event);
+
+
+    for (var i = 0; i < files.length; i++) {
+
+        var img = {
+            img: files[i],
+            jwt: settings.getJWT(),
+            machine_id: form.machine_id.value
+        };
+
+        console.log(img);
+        try {
+            // Загрузим фото
+            var imgUrl = await Model.uploadImg(img);
+
+            // Создадим новое событие
+            event.event_message = imgUrl.url;
+            console.log(event);
+
+            // Добавим событиe
+            let res = await Model.setEvents(event);
+
+        }
+        catch (e) {
+            console.log(e);
+            alert(e.messages);
+        }
+
+
+    }
+
+    hashRefresh();
+
+}
+

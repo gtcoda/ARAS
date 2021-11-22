@@ -56,6 +56,10 @@ return array(
             'class' => 'repairsApi',
             'file'  => 'repairs.php',
         ),
+        'img' => array(
+            'class' => 'imgApi',
+            'file'  => 'img.php',
+        ),
     ),
 
     // Сообщения о ошибках
@@ -73,6 +77,7 @@ return array(
     'dirConfig'     => $_SERVER['DOCUMENT_ROOT'].'/config/',
     'dirLog'        => $_SERVER['DOCUMENT_ROOT'].'/log/',
     'dirTemplate'   => $_SERVER['DOCUMENT_ROOT'].'/templates/',
+    'dirIMG'        => $_SERVER['DOCUMENT_ROOT'].'/img/',
     
 
 );

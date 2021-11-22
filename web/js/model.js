@@ -1,6 +1,15 @@
 import * as settings from './settings.js';
 
-
+// Преобразуем файл в base64
+function _arrayBufferToBase64(buffer) {
+    var binary = '';
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i])
+    }
+    return window.btoa(binary);
+}
 
 
 
@@ -121,6 +130,7 @@ export default {
 
     },
 
+    // открыть ремонт
     openRepair(){
         return new Promise((resolve, reject) => {
 
@@ -149,6 +159,41 @@ export default {
 
         });
     },
+
+
+    uploadImg(value){
+        
+        return new Promise((resolve, reject) => {
+
+            var file = value.img;
+            var fileReader = new FileReader();
+
+
+            fileReader.onloadend = function () {
+                var base64img = "data:" + file.type + ";base64," + _arrayBufferToBase64(fileReader.result);
+    
+                API.res('img');
+    
+    
+                API.img.post({
+                    img: base64img,
+                    jwt: value.jwt,
+                    machine_id: value.machine_id
+                }).then(function (response) {
+                    resolve(response.data);
+                },
+                    function (xnr) {
+                        reject(xnr);
+                    })
+    
+            };
+            fileReader.readAsArrayBuffer(file);
+
+        
+        });
+
+    },
+
 
     // Проверить корректность токена
     checkJWT(value) {
@@ -341,8 +386,3 @@ export default {
 
 
 };
-
-
-
-
-// return new Promise((resolve,reject)=>{      });
