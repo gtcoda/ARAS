@@ -1,19 +1,46 @@
 <script id="eventsTemplate" type="text/template">
     <div>
 
-        <div class="overflow-auto " style="height: 30rem;" >
-            {{#each events}}
-                <div class="card w-50  shadow mb-3 bg-white rounded">
-                    <div class="card-body ">
-                        {{event_data}}
-                        <h5 class="bg-primary card-title">{{setImg event_message}}</h5>
-                        {{user_id}}
+<div class="overflow-auto " style="height: 30rem;" >
 
-                        {{event_modif_1}}
+    {{#each events}}
+
+        <div class="card shadow mb-3 bg-white rounded">
+            <div class="card-body ">
+
+            <h5 class="card-title">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#block{{this.[0].event_id }}" aria-expanded="false" aria-controls="block{{this.[0].event_id }}">
+                   {{this.[0].event_message }}
+                </button>
+                {{this.[0].event_data }}
+            </h5>
+
+            <div class="collapse" id="block{{this.[0].event_id }}">
+                {{#each this}}
+
+                    <div class="card shadow mb-3 bg-white rounded">
+                        <div class="card-body ">
+                            {{event_data}}
+                            <h5 class="bg-primary card-title">{{setImg event_message}}</h5>
+                            {{setUser user_id}}
+
+                            {{event_modif_1}}
+                        </div>
                     </div>
-                </div>
-            {{/each}}
+
+                {{/each}}
+            </div>
+
+
+            </div>
         </div>
+
+
+    {{/each}}
+
+</div>
+
+
 
        <form id="addEventForm">
            <input type="hidden" name="machine_id" value="{{machine_id}}">

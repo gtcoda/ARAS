@@ -36,10 +36,16 @@ class repairsApi extends Api
     /**
      * Метод GET
      * @return string
+     * 
+     * site/repairs/{id} - получить номер последнего ремента для машины с id
      */
     public function viewAction()
     {
         try {
+
+
+
+
             $res = $this->repair->Сurrent($this->requestUri[0]);
             $answer = array(
                 'status'    => 'success',
@@ -47,6 +53,9 @@ class repairsApi extends Api
                 'repair_id'      => $res,
             );
             return $this->response($answer, 200);
+
+
+
         } catch (Exception $e) {
 
             $answer = array(

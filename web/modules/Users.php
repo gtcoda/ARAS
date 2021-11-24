@@ -41,7 +41,7 @@ class Users extends Modules
 
 
         try {
-            $row = $this->db->getRow("SELECT user_id, user_login, user_name FROM ?n WHERE user_id=?i", "users", $id);
+            $row = $this->db->getRow("SELECT user_id, user_name FROM ?n WHERE user_id=?i", "users", $id);
         } catch (Exception $e) {
             $this->log->add(print_r($e->getMessage(), true));
         }
@@ -115,7 +115,7 @@ class Users extends Modules
     public function GetUsers()
     {
 
-        $all = $this->db->getAll("SELECT user_id, user_login, user_name FROM ?n", "users");
+        $all = $this->db->getAll("SELECT user_id, user_name FROM ?n", "users");
         return $all;
     }
 

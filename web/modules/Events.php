@@ -79,6 +79,24 @@ class Events extends Modules
         $all = $this->db->getAll("SELECT * FROM ?n WHERE machine_id=?i ORDER BY `event_id` Desc LIMIT 10 ", $this->table, $machine_id);
         return $all;
     }
+
+    /**
+     * Получить последние события по machine_id обьеденив по ремонтам
+     * 
+     * @return array
+     */
+    public function GetMUnionRepair($machine_id){
+        $all = $this->db->getAll("SELECT DISTINCT repair_id FROM ?n WHERE machine_id=?i ORDER BY `repair_id` Desc LIMIT 10 ", $this->table, $machine_id);
+        //$all = array_reverse($all);
+        $this->log->add($all);
+        
+        foreach ($all as &$value) {
+            $out[$value["repair_id"]] = $this->db->getAll("SELECT * FROM ?n WHERE repair_id=?i ORDER BY `repair_id`,`event_id` LIMIT 10 ", $this->table, $value["repair_id"]);
+        }
+        
+        return $out;
+    }
+
     /**
      * Добавить машину
      * 

@@ -44,9 +44,19 @@ export default {
 
 
     async EventsRoute(param) {
-
+/*
+        События просто в линию
         const eventsM = await Model.getEvents(param.id);
-        console.log(param);
+        eventsPage.setData(eventsM, param.id);
+        eventsPage.render();
+
+*/
+        const users = await Model.getUsers();
+        eventsPage.setUsers(users);
+
+
+        // События обьедененные по repair_id
+        const eventsM = await Model.getEventsUnionRepair(param.id);
         eventsPage.setData(eventsM, param.id);
         eventsPage.render();
     },

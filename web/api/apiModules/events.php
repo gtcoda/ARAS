@@ -52,8 +52,11 @@ class eventsApi extends Api
      * Получить информацию о сообщении, оборудовании с {id}
      * http://ДОМЕН/events/1
      * 
-     * Получить все сооющения относящиеся к машине с {id}
+     * Получить все сообщения относящиеся к машине с {id}
      * http://ДОМЕН/events/machine/{id}
+     * 
+     * Получить все сообщения относящиеся к машине с {id} и обьеденит  их по repair_id
+     * http://ДОМЕН/events/machine/{id}&union=repair
      * @return string
      */
     public function viewAction()
@@ -61,6 +64,17 @@ class eventsApi extends Api
         try {
            
             if($this->requestUri[0]=="machine"){
+               if($this->requestGET['filter'] == "repair"){
+                    $data = $this->event->GetMUnionRepair($this->requestUri[1]);
+                    $answer = array(
+                        'status' => 'success',
+                        'messages' => 'Machine Event',
+                        'data' => $data,
+                    );
+                    return $this->response($answer, 200);
+               }
+
+
                 $data = $this->event->GetM($this->requestUri[1]);
                 $answer = array(
                     'status' => 'success',

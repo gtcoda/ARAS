@@ -56,11 +56,14 @@ class Repairs extends Modules  {
     public function Сurrent($machine_id){
         try {
 
+            $this->log->add("Cvjnhbv id машины для получения помледнего ремонта");
 
+            $this->log->add($machine_id);
+            $res = $this->db->getOne("SELECT `repair_id` FROM ?n WHERE (machine_id = ?s) AND (repair_id IS NOT NULL) ORDER BY `repair_id` DESC LIMIT 1","events",$machine_id);
 
-            $res = $this->db->getOne("SELECT * FROM ?n WHERE (machine_id = ?s) AND (repair_id IS NOT NULL) ORDER BY `event_id` Desc LIMIT 1","events",$machine_id);
+            $this->log->add($res);
 
-            return $res['repair_id']; 
+            return $res; 
         } catch (Exception $e) {
             $this->log->add($e->getMessage());
             // Выдадим выше ошибку, но без подробностей

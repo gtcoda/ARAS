@@ -6,6 +6,8 @@ let templateApp = 'templates';
 
 let eventsSort = localStorage.eventsSort || 'event_id';
 
+
+
 export function setEventsSort(sort){
     eventsSort = sort;
     localStorage.eventsSort = sort;

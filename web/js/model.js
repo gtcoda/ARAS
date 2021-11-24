@@ -80,13 +80,11 @@ export default {
             API.res('users');
             API.users().get({
                 jwt: settings.getJWT()
-            }).then(function (users) {
-                if (users.status == 'success') {
-                    resolve(users.data);
-                }
-                else {
-                    reject(new Error("Не удалось получить данные."));
-                }
+            }).then(function (response) {
+                resolve(response.data);
+            },
+            function (xnr) {
+                reject(xnr);
             })
 
         });
@@ -107,6 +105,23 @@ export default {
                 else {
                     reject(new Error("Не удалось получить данные."));
                 }
+            })
+
+        });
+
+    },
+
+        // Получить все события конкретной машины обьедененные по repair_id
+    getEventsUnionRepair(machine_id) {
+
+        return new Promise((resolve, reject) => {
+
+            API.res('events');
+            API.events('machine/'+machine_id).get({'filter':'repair'}).then(function (response) {
+                resolve(response.data);
+            },
+            function (xnr) {
+                reject(xnr);
             })
 
         });
