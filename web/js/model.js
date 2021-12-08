@@ -32,7 +32,23 @@ export default {
         });
     },
 
-    // Получить информацию о пользователе
+
+//########################################### Users
+    // Проверить корректность токена
+    checkJWT(value) {
+        return new Promise((resolve, reject) => {
+            API.res('login');
+            API.login.put({ jwt: value }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(true);
+                }
+                else {
+                    reject(new Error("Нет токена"));
+                }
+            });
+        });
+    },
+
     // токен из jwt
     getUserNameJWT() {
         API.res('login');
@@ -91,7 +107,7 @@ export default {
 
     },
 
-
+//########################################### Events
     // Получить все события конкретной машины
     getEvents(machine_id) {
 
@@ -145,6 +161,7 @@ export default {
 
     },
 
+//########################################### Repair    
     // открыть ремонт
     openRepair(){
         return new Promise((resolve, reject) => {
@@ -175,7 +192,7 @@ export default {
         });
     },
 
-
+//########################################### Upload
     uploadImg(value){
         
         return new Promise((resolve, reject) => {
@@ -209,23 +226,7 @@ export default {
 
     },
 
-
-    // Проверить корректность токена
-    checkJWT(value) {
-        return new Promise((resolve, reject) => {
-            API.res('login');
-            API.login.put({ jwt: value }).then(function (res) {
-                if (res.status == 'success') {
-                    resolve(true);
-                }
-                else {
-                    reject(new Error("Нет токена"));
-                }
-            });
-        });
-    },
-
-    ////////////////////////////////////////////////////////////// Models /////////////////////////////////////////////////////    
+ //########################################### Models 
 
     // Получить список моделей или модель
     getModels(id) {
@@ -299,7 +300,7 @@ export default {
         });
     },
 
-    ////////////////////////////////////////////////////////////// Gilds /////////////////////////////////////////////////////    
+//########################################### Gilds 
 
     // Получить список цехов
     getGilds(id) {
@@ -374,7 +375,7 @@ export default {
 
 
     },
-    ////////////////////////////////////////////////////////////// Machines /////////////////////////////////////////////////////
+//########################################### Machines 
 
 
     // Добавить станок

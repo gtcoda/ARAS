@@ -67,8 +67,14 @@ export default {
 
     Преобразуем обьект в массив и развернем, что бы более новые ремонты оказались первыми
 */
-
-    newItem = Object.values(newItem).reverse();
+    if(newItem == null){
+      newItem == {};
+    }
+    else{
+      newItem = Object.values(newItem).reverse();
+    }
+    
+   
     items = {
       events: newItem,
       machine_id: machine_id

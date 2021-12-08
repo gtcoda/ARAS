@@ -500,7 +500,7 @@ class SafeMySQL
 	{
 		$query = '';
 		$raw   = array_shift($args);
-		$array = preg_split('~(\?[nsiuap])~u',$raw,null,PREG_SPLIT_DELIM_CAPTURE);
+		$array = preg_split('~(\?[nsiuapl])~u',$raw,null,PREG_SPLIT_DELIM_CAPTURE);
 		$anum  = count($args);
 		$pnum  = floor(count($array) / 2);
 		if ( $pnum != $anum )
@@ -537,6 +537,9 @@ class SafeMySQL
 				case '?p':
 					$part = $value;
 					break;
+				case '?l':
+						$part = $this->escapeLIST($value);;
+						break;	
 			}
 			$query .= $part;
 		}
@@ -544,15 +547,37 @@ class SafeMySQL
 
 		$log = Logi::getInstance();
 		$log->add(" ## " . $query);
-
-
-
-
 ###############################
 
 		return $query;
 	}
 
+############################################
+/**
+ *	Плейсхолдер ?l обрабатывает массив имен полей для вставки в SELECT
+ *  
+ * 
+ */
+
+protected function escapeList($value)
+{
+	if ($value)
+	{
+		$query ="";
+		foreach ($value as $val) {
+			$query .= "`".str_replace("`","``",$val)."`" ;
+			$query .= ",";
+		}
+		$query = trim($query,",");
+		return $query;
+
+	} else {
+		$this->error("Empty value for identifier (?l) placeholder");
+	}
+}
+
+
+############################################
 	protected function escapeInt($value)
 	{
 		if ($value === NULL)

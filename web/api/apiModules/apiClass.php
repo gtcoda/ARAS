@@ -23,7 +23,7 @@ abstract class Api
 
     protected $config = [];
     protected $log;
- 
+
 
     public function __construct()
     {
@@ -48,7 +48,7 @@ abstract class Api
         $this->requestParams = json_decode(file_get_contents("php://input"), true);
 
 
-       
+
         $this->log->add("##################### Полученые данные в запросе ##############");
         $this->log->add($this->requestGET);
         $this->log->add($this->requestUri);
@@ -218,7 +218,8 @@ abstract class Api
      */
 
 
-    protected function login(){
+    protected function login()
+    {
         $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
 
         // Какой из массивов параметрое будет заполнен неизвестно, 
@@ -236,18 +237,36 @@ abstract class Api
                 }
 
                 $login_data = Firebase\JWT\JWT::decode($jwt, $config['JWT']['key'], array('HS256'));
-               
+
                 return (array)$login_data;
             } catch (Exception $e) {
-                throw new RuntimeException('Invalid token',2);
+                throw new RuntimeException('Invalid token', 2);
             }
         } else {
-            throw new RuntimeException('No token',1);
+            throw new RuntimeException('No token', 1);
         }
     }
 
+    /**
+     * Получает подстроку между двух строк 
+     * @return array
+     * 
+     * 
+     * $fullstring = 'this is my [tag]dog[/tag]';
+     * $parsed = get_string_between($fullstring, '[tag]', '[/tag]');
+     * echo $parsed; // (result = dog)
+     * 
+     */
 
-
+    protected function get_string_between($string, $start, $end)
+    {
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0) return '';
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        return substr($string, $ini, $len);
+    }
 
 
 }

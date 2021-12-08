@@ -39,10 +39,27 @@ class Models extends Modules
     }
 
 
-    public function Gets()
+    public function Gets($fields = [], $view = 'all')
     {
 
-        $all = $this->db->getAll("SELECT * FROM ?n", $this->table);
+        try {
+
+            if (empty($fields)) {
+                $all = $this->db->getAll("SELECT * FROM ?n", $this->table);
+            } else {
+                if($view == "all"){
+                    $all = $this->db->getAll("SELECT ?l FROM ?n", $fields, $this->table);
+                }
+                if($view == "index"){
+                    $all = $this->db->getIndCol($fields[0],"SELECT ?l FROM ?n", $fields, $this->table);
+                }
+            }
+        } catch (Exception $e) {
+            $this->log->add($e->getMessage());         
+            throw new RuntimeException($this->eraseMySQLError($e->getMessage()));
+        }
+
+
         return $all;
     }
 

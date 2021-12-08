@@ -55,8 +55,10 @@ export default {
         eventsPage.setUsers(users);
 
 
+
         // События обьедененные по repair_id
         const eventsM = await Model.getEventsUnionRepair(param.id);
+
         eventsPage.setData(eventsM, param.id);
         eventsPage.render();
     },
