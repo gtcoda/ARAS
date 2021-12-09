@@ -259,6 +259,23 @@ export default {
 
     },
 
+    // Получить название моделей станкой проиндексированых по model_id
+    getModelsIndex() {
+
+        return new Promise((resolve, reject) => {
+            API.res('models');
+            API.models.get({ jwt: settings.getJWT(), view:"{model_id,model_name}",format:"index" }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+
+    },
+
     // Добавить модель
     setModel(value) {
 

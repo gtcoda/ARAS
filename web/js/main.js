@@ -106,7 +106,7 @@ $('body').on('change', 'input', function (e) {
     switch (this.id) {
         case 'inputEventFile': inputEventFile(this);
             break;
-        case '': ;
+        case 'owerMachineTableChecked': owerMachineTableChecked(this);
             break;
         case '': ;
             break;
@@ -596,3 +596,20 @@ async function inputEventFile(input) {
 
 }
 
+/**
+ * 
+ * 
+ * Функции работы с owerview
+ * 
+ */
+function owerMachineTableChecked(input){
+    console.log(input.checked);
+
+    if(input.checked){
+        settings.setOverviewMT("table");
+    }
+    else{
+        settings.setOverviewMT("plan");
+    }
+    hashRefresh();
+}

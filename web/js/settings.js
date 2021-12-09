@@ -1,10 +1,11 @@
 let jwt = localStorage.jwt
+let eventsSort = localStorage.eventsSort || 'event_id';
+let overviewMT = localStorage.overviewMT || 'plan'; // table - таблица, plan - графический план
+
 
 let app = 'app';
-
 let templateApp = 'templates';
 
-let eventsSort = localStorage.eventsSort || 'event_id';
 
 
 
@@ -37,4 +38,16 @@ export function getApp(){
 // id div с app
 export function getTemplateApp(){
     return templateApp;
+}
+
+export function getOverviewMT(){
+    if(overviewMT == "undefined"){
+        setOverviewMT("plan");
+    }
+    return overviewMT;
+}
+
+export function setOverviewMT(value){
+    overviewMT = value;
+    localStorage.overviewMT = value;
 }

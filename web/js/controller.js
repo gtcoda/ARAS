@@ -1,9 +1,9 @@
 import Model from "./model.js";
+import * as settings from './settings.js';
+
 
 import overviewPage from "./pages/overview.js"
 import eventsPage from "./pages/events.js"
-
-
 import modelsPage from "./pages/models.js"
 import gildsPage from "./pages/gilds.js"
 import view from "./view.js";
@@ -33,7 +33,17 @@ export default {
 
     async OverviewRoute(param) {
         if(param.id){
-            overviewPage.machineTable(param.id);
+            if (settings.getOverviewMT() == "plan"){
+                console.log("plan");
+                overviewPage.machinePlan(param.id);
+            }
+            else if(settings.getOverviewMT() == "table"){
+                console.log("table");
+                 overviewPage.machineTable(param.id);
+            }
+            
+            console.log(settings.getOverviewMT());
+
         }
         else{
             const gilds = await Model.getGilds();
