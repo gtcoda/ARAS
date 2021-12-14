@@ -323,8 +323,6 @@ export default {
     getGilds(id) {
 
         if (id) {
-
-
             return new Promise((resolve, reject) => {
                 API.res('gilds');
                 API.gilds(id).get({ jwt: settings.getJWT() }).then(function (res) {
@@ -364,6 +362,20 @@ export default {
         return new Promise((resolve, reject) => {
             API.res('gilds');
             API.gilds(id + "/machines").get({ jwt: settings.getJWT() }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
+    // Получить все станки конкретного цеха сгрупированые по модели
+    getGildsMIndex(id) {
+        return new Promise((resolve, reject) => {
+            API.res('gilds');
+            API.gilds(id + "/machines").get({ jwt: settings.getJWT(),view:"{model_id,machine_id,machine_number,gild_id,machine_desc}",format:"index" }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
                 }

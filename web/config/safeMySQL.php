@@ -347,14 +347,23 @@ class SafeMySQL
 		$index = array_shift($args);
 		$query = $this->prepareQuery($args);
 
+
 		$ret = array();
 		if ( $res = $this->rawQuery($query) )
 		{
 			while($row = $this->fetch($res))
 			{
+
 				$key = $row[$index];
 				unset($row[$index]);
-				$ret[$key] = reset($row);
+				
+				if(count($row) == 1){// Стандартное поведение
+					$ret[$key] = reset($row);
+				}
+				else{// Индексирование в массив 	
+					$ret[$key] = $row;
+				}
+				
 			}
 			$this->free($res);
 		}

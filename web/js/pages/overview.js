@@ -4,32 +4,36 @@ import * as settings from '../settings.js';
 
 const resultsNode = document.getElementById(settings.getApp());
 let items = [];
+let body;   // Данные с планом размещения или таблицей станков
+
+let overwiew_gilds; // Данные для строки с цехами
 
 // Обработчик для оборачивания фото в тег
 Handlebars.registerHelper('MTChecked', function (obj) {
-    if(settings.getOverviewMT() == "table"){
+    if (settings.getOverviewMT() == "table") {
         return new Handlebars.SafeString("checked");
     }
-    
-  });
+
+});
 
 
 
 export default {
-    setData(newItem) {
-        items = newItem;
+    async setData(o_gilds, o_body) {
+        overwiew_gilds = o_gilds;
+        body = o_body;
     },
 
-    async render() {
+    render() {
+    }, 
 
-    },
 
 
-    async machinePlan(gild_id){
-        try{
-            var gilds = await Model.getGilds();  
+    async machinePlan(gild_id) {
+        try {
+            var gilds = await Model.getGilds();
         }
-        catch(e){
+        catch (e) {
             console.log(e);
         }
 
@@ -77,14 +81,14 @@ export default {
                     };
                 }
 
-                if(models[machine.model_id] != undefined){
+                if (models[machine.model_id] != undefined) {
                     var model = models[machine.model_id];
                 }
-                else{
+                else {
                     var model = "";
                 }
 
-                
+
 
                 html += `
                 <th>
@@ -107,11 +111,11 @@ export default {
         tableNode.innerHTML = html;
     },
 
-    async machineTable(gild_id){
-        try{
-            var gilds = await Model.getGilds();  
+    async machineTable(gild_id) {
+        try {
+            var gilds = await Model.getGilds();
         }
-        catch(e){
+        catch (e) {
             console.log(e);
         }
 
@@ -119,6 +123,38 @@ export default {
         resultsNode.innerHTML = View.render('overview', gilds);
 
         const tableNode = document.getElementById('owerviewMachineTable');
+
+        try {
+            var data = await Model.getGilds(gild_id);
+            var machines = await Model.getGildsMIndex(gild_id);
+            var models = await Model.getModelsIndex();
+
+        }
+        catch (e) {
+            console.log(e);
+        }
+
+
+
+
+        console.log(data);
+        console.log(machines);
+        console.log(models);
+
+
+        var m={};
+
+        for(var key in machines){
+            m[models[key]] = machines[key];
+        }
+
+        console.log(m);
+
+
+
+
+
+
 
         tableNode.innerHTML = "<p>Table</p>";
     }

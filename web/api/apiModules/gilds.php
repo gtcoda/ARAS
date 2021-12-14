@@ -44,43 +44,101 @@ class gildsApi extends Api
      * http://ДОМЕН/gilds/1/machines
      * @return string
      */
+
+    /**
+     * Метод GET
+     * 
+     * @api {get} /gilds/:id/:parameters?view=:view&format=:format Вернуть все модели оборудования
+     * @apiVersion 0.1.0
+     * @apiName GetGilds
+     * @apiGroup Gilds
+     *
+     * @apiSuccess {Number}   id            id цеха  
+     * @apiSuccess {String}   parameters    Параметр запроса. machines - запрос всех машин входящих в определенный цех.
+     * 
+     * @apiSuccess {Object[]} view      Выбор полей в виде {поле1,поле2,поле3}
+     * @apiSuccess {String}   view.machine_id      id оборудования
+     * @apiSuccess {String}   view.model_id        id модели
+     * @apiSuccess {String}   view.machine_number  номер машины
+     * @apiSuccess {String}   view.gild_id         Номер цеха
+     * @apiSuccess {String}   view.machine_desc    Описание машины
+     * @apiSuccess {String}   view.machine_posX    Позиция по X
+     * @apiSuccess {String}   view.machine_posY    Позиция по Y
+     * 
+     * @apiSuccess {String}   format    Формат ответа all - все запрошеные поля в виде обьектов, index - индексирование по поле1
+     * 
+     * @apiSuccessExample {json} Success-Response(format=index&view={model_id,machine_number}):
+     *{
+     *	"status": "success",
+     *	"messages": "Machine Gild",
+     *	"data": {
+     *		"7": "5650",
+     *		"11": "41815",
+     *		"12": "5745"
+     *	}
+     *}
+     *
+     * @apiSuccessExample {json} Success-Response(format=index&view={model_id,machine_number,gild_id}):
+     * {
+     *    "status": "success",
+     *    "messages": "Machine Gild",
+     *    "data": {
+     *        "7": {
+     *            "machine_number": "5650",
+     *            "gild_id": "1"
+     *        },
+     *        "11": {
+     *            "machine_number": "41815",
+     *            "gild_id": "1"
+     *        }
+     *   }
+     *}
+     * 
+     * @apiSuccessExample {json} Success-Response(view={model_id,model_name}):
+     * {
+     *   "status": "success",
+     *   "messages": "Machine Gild",
+     *   "data": [
+     *       {
+     *          "model_id": "7",
+     *          "machine_number": "41812",
+     *          "gild_id": "1"
+     *      },
+     *      {
+     *          "model_id": "12",
+     *          "machine_number": "5745",
+     *          "gild_id": "1"
+     *      }
+     *  ]
+     *}
+     * 
+     */
+
     public function viewAction()
     {
-        if($this->requestUri[1]=="machines"){
-            try {
-                $data = $this->gild->GetsM($this->requestUri[0]);
-                $answer = array(
-                    'status' => 'success',
-                    'messages' => 'Machine Gild',
-                    'data' => $data,
-                );
-                return $this->response($answer, 200);
-            } catch (Exception $e) {
-                $answer = array(
-                    'status' => 'error',
-                    'messages' => $e->getMessage(),
-                );
-                return $this->response($answer, 400);
-            }
+        if ($this->requestUri[1] == "machines") {
+            $format = (empty($this->requestGET['format'])) ? 'all' : $this->requestGET['format'];
+            $data = $this->gild->GetsM(
+                $this->requestUri[0],
+                $this->viewGetArr($this->requestGET['view']),
+                $format
+            );
+
+            $answer = array(
+                'status' => 'success',
+                'messages' => 'Machine Gild',
+                'data' => $data,
+            );
+            return $this->response($answer, 200);
+        } else {
+            $data = $this->gild->Get($this->requestUri[0]);
+            $answer = array(
+                'status' => 'success',
+                'messages' => 'Gild',
+                'data' => $data,
+            );
+            return $this->response($answer, 200);
         }
-        else{
-            try {
-                $data = $this->gild->Get($this->requestUri[0]);
-                $answer = array(
-                    'status' => 'success',
-                    'messages' => 'Gild',
-                    'data' => $data,
-                );
-                return $this->response($answer, 200);
-            } catch (Exception $e) {
-                $answer = array(
-                    'status' => 'error',
-                    'messages' => $e->getMessage(),
-                );
-                return $this->response($answer, 400);
-            }
-        }
-        
     }
 
     /**

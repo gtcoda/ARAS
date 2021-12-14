@@ -25,42 +25,40 @@ function setActiveNavNode(node) {
 // Добавим в хеш параметр
 function hashAddParam(param) {
     let hash = document.location.hash;
-    document.location.hash = hash + "/"+param;
+    document.location.hash = hash + "/" + param;
 }
 
 
 export default {
 
     async OverviewRoute(param) {
-        if(param.id){
-            if (settings.getOverviewMT() == "plan"){
-                console.log("plan");
+        if (param.id) {
+
+            if (settings.getOverviewMT() == "plan") {
                 overviewPage.machinePlan(param.id);
             }
-            else if(settings.getOverviewMT() == "table"){
-                console.log("table");
-                 overviewPage.machineTable(param.id);
+            else if (settings.getOverviewMT() == "table") {
+                overviewPage.machineTable(param.id);
             }
-            
-            console.log(settings.getOverviewMT());
+
 
         }
-        else{
+        else {
             const gilds = await Model.getGilds();
             hashAddParam(gilds[0].gild_id);
         }
-        
+
     },
 
 
     async EventsRoute(param) {
-/*
-        События просто в линию
-        const eventsM = await Model.getEvents(param.id);
-        eventsPage.setData(eventsM, param.id);
-        eventsPage.render();
-
-*/
+        /*
+                События просто в линию
+                const eventsM = await Model.getEvents(param.id);
+                eventsPage.setData(eventsM, param.id);
+                eventsPage.render();
+        
+        */
         const users = await Model.getUsers();
         eventsPage.setUsers(users);
 
@@ -75,7 +73,7 @@ export default {
 
 
 
-    async ModelsRoute(){
+    async ModelsRoute() {
         const models = await Model.getModels();
 
         modelsPage.setData(models);
@@ -84,20 +82,20 @@ export default {
     },
 
 
-    async GildsRoute(param){
+    async GildsRoute(param) {
 
         console.log(param);
-        if(param.id){
+        if (param.id) {
             const gilds = await Model.getGilds(param.id);
             gildsPage.setDataId(gilds);
             //gildsPage.render();
         }
-        else{
+        else {
             const gilds = await Model.getGilds();
             gildsPage.setData(gilds);
             gildsPage.render();
         }
-        
+
     }
 
 

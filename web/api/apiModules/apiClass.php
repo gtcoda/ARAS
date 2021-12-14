@@ -90,7 +90,19 @@ abstract class Api
 
         //Если метод(действие) определен в дочернем классе API
         if (method_exists($this, $this->action)) {
-            return $this->{$this->action}();
+            //######################################################################################################
+            /**
+             * Поймаем все необработаные исключения и выведем ошибку
+             */
+            try {
+                return $this->{$this->action}();
+            } catch (Exception $e) {
+                $answer = array(
+                    'status' => 'error',
+                    'messages' => $e->getMessage(),
+                );
+                return $this->response($answer, 400);
+            }            
         } else {
             throw new RuntimeException('Invalid Method', 405);
         }
@@ -269,4 +281,17 @@ abstract class Api
     }
 
 
+
+    /**
+     * 
+     * Преобразует параметр view
+     * {model_id,model_name}
+     * в массив аргументов
+     */
+    protected function viewGetArr($value)
+    {
+        if (empty($value)) return;
+        $fields = $this->get_string_between($value, "{", "}");
+        return explode(',', (string)$fields);
+    }
 }

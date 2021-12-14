@@ -55,9 +55,40 @@ class Gilds extends Modules
     }
 
     // Получение всех машин цеха с id
-    public function GetsM($id)
+
+    public function GetsM($gild_id, $fields = [], $format = 'all')
     {
-        $all = $this->db->getAll("SELECT * FROM ?n WHERE gild_id=?i", "machines", $id);
+
+        $this->log->add($fields);
+        $this->log->add($format);
+
+        if(!empty($fields)){
+            if($format == "all"){
+                $all = $this->db->getAll("SELECT ?l FROM ?n WHERE gild_id=?i", $fields, "machines", $gild_id);
+                return $all;
+            }
+            if($format == "index"){
+               
+               
+                $all = $this->db->getAll("SELECT ?l FROM ?n WHERE gild_id=?i", $fields, "machines", $gild_id);
+
+
+                $res = [];
+                foreach ($all as $value) {
+                    $key = $value[$fields[0]];
+                    $key_count = count($res[$key]);
+                    $res[$key][$key_count] = $value;
+                }
+
+                $this->log->add($res);
+                
+                return $res;
+            }
+        }
+
+
+
+        $all = $this->db->getAll("SELECT * FROM ?n WHERE gild_id=?i", "machines", $gild_id);
         return $all;
     }
 

@@ -57,7 +57,7 @@ class Models extends Modules
             }
         } catch (Exception $e) {
             $this->log->add($e->getMessage());         
-            throw new RuntimeException($this->eraseMySQLError($e->getMessage()));
+            throw new RuntimeException((string)$this->eraseMySQLError($e->getMessage()));
         }
 
 
