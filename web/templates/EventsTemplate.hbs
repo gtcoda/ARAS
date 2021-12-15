@@ -1,35 +1,35 @@
 <script id="eventsTemplate" type="text/template">
     <div>
 
-<div class="overflow-auto " style="height: 30rem;" >
+<div class="overflow-auto border" style="height: 30rem; " >
 
     {{#each events}}
 
-        <div class="card shadow mb-3 bg-white rounded">
-            <div class="card-body ">
+        <div class="card  shadow mb-3 rounded">
+            <div class="card-body .bg-secondary .bg-gradient" >
 
-            <h5 class="card-title">
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#block{{this.[0].event_id }}" aria-expanded="false" aria-controls="block{{this.[0].event_id }}">
-                   {{this.[0].event_message }}
-                </button>
-                {{this.[0].event_data }}
-            </h5>
+                <h5 class="card-title">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#block{{this.[0].event_id }}" aria-expanded="false" aria-controls="block{{this.[0].event_id }}">
+                    {{this.[0].event_message }}
+                    </button>
+                    {{this.[0].event_data }}
+                </h5>
 
-            <div class="collapse" id="block{{this.[0].event_id }}">
-                {{#each this}}
+                <div class="collapse" id="block{{this.[0].event_id }}">
+                    {{#each this}}
 
-                    <div class="card shadow mb-3 bg-white rounded">
-                        <div class="card-body ">
-                            {{event_data}}
-                            <h5 class="bg-primary card-title">{{setImg event_message}}</h5>
-                            {{setUser user_id}}
+                        <div class="card shadow mb-3 rounded" style="background:#fff2d8">
+                            <div class="card-body ">
+                                {{event_data}}
+                                <h5 class="card-title">{{setImg event_message}}</h5>
+                                {{setUser user_id}}
 
-                            {{event_modif_1}}
+                                {{event_modif_1}}
+                            </div>
                         </div>
-                    </div>
 
-                {{/each}}
-            </div>
+                    {{/each}}
+                </div>
 
 
             </div>

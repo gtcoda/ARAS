@@ -6,6 +6,7 @@ import overviewPage from "./pages/overview.js"
 import eventsPage from "./pages/events.js"
 import modelsPage from "./pages/models.js"
 import gildsPage from "./pages/gilds.js"
+import calendarPage from "./pages/calendar.js"
 import view from "./view.js";
 
 const overwiewNavNode = document.querySelector('[data-role=nav-over]');
@@ -78,6 +79,12 @@ export default {
 
         modelsPage.setData(models);
         modelsPage.render();
+
+    },
+
+    async CalendarRoute() {
+        calendarPage.setData();
+        calendarPage.render();
 
     },
 

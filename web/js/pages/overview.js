@@ -148,15 +148,10 @@ export default {
             m[models[key]] = machines[key];
         }
 
-        console.log(m);
+        tableNode.innerHTML =  View.render('overviewTable', m);
 
-
-
-
-
-
-
-        tableNode.innerHTML = "<p>Table</p>";
+        
+        //tableNode.innerHTML = "<p>Table</p>";
     }
 
 }
