@@ -37,13 +37,13 @@ class modelsApi extends Api
      * @apiName GetModels
      * @apiGroup Models
      *
-     * @apiSuccess {Object[]} view      Выбор полей в виде {поле1,поле2,поле3}
+     * @apiSuccess {Object[]} view      Выбор полей в виде [поле1,поле2,поле3]
      * @apiSuccess {String}   view.model_id        id модели 
      * @apiSuccess {String}   view.model_name      Название модели 
      * @apiSuccess {String}   view.model_desc      Описание модели
      * @apiSuccess {String}   format    Формат ответа all - все запрошеные поля в виде обьектов, index - индексирование по поле1
      * 
-     * @apiSuccessExample {json} Success-Response(view={model_id,model_name}&format=index):
+     * @apiSuccessExample {json} Success-Response(view=[model_id,model_name]&format=index):
      * {
      * "status": "success",
      * "messages": "All models",
@@ -54,7 +54,7 @@ class modelsApi extends Api
      *        }
      * }
      * 
-     * @apiSuccessExample {json} Success-Response(view={model_id,model_name}):
+     * @apiSuccessExample {json} Success-Response(view=[model_id,model_name]):
      * {
      * "status": "success",
      * "messages": "All models",
@@ -77,18 +77,8 @@ class modelsApi extends Api
      */
     public function indexAction()
     {
-        $fields_arr = [];
-        if (!empty($this->requestGET['view'])) {
-            $fields = $this->get_string_between($this->requestGET['view'], "{", "}");
-            $fields_arr = explode(',', (string)$fields);
-        }
-
         try {
-            if (!empty($this->requestGET['format']) && $this->requestGET['format'] == "index") {
-                $data = $this->model->Gets($fields_arr, "index");
-            } else {
-                $data = $this->model->Gets($fields_arr, "all");
-            }
+                $data = $this->model->Gets($this->requestGETParam["view"],$this->requestGETParam["format"]);
         } catch (Exception $e) {
             $answer = array(
                 'status' => 'error',
@@ -123,21 +113,13 @@ class modelsApi extends Api
      */
     public function viewAction()
     {
-        try {
-            $data = $this->model->Get($this->requestUri[0]);
-            $answer = array(
-                'status' => 'success',
-                'messages' => 'Model',
-                'data' => $data,
-            );
-            return $this->response($answer, 200);
-        } catch (Exception $e) {
-            $answer = array(
-                'status' => 'error',
-                'messages' => $e->getMessage(),
-            );
-            return $this->response($answer, 400);
-        }
+        $data = $this->model->Get($this->requestUri[0]);
+        $answer = array(
+            'status' => 'success',
+            'messages' => 'Model',
+            'data' => $data,
+        );
+        return $this->response($answer, 200);
     }
 
     /**
@@ -156,22 +138,14 @@ class modelsApi extends Api
 
     public function createAction()
     {
-        try {
-            $res = $this->model->Add($this->requestParams);
-            $answer = array(
-                'status'    => 'success',
-                'messages'  => 'Model creation completed',
-                'data'      => $res,
-            );
-            return $this->response($answer, 200);
-        } catch (Exception $e) {
-            $answer = array(
-                'status' => 'error',
-                'messages' => $e->getMessage(),
-            );
 
-            return $this->response($answer, 400);
-        }
+        $res = $this->model->Add($this->requestParams);
+        $answer = array(
+            'status'    => 'success',
+            'messages'  => 'Model creation completed',
+            'data'      => $res,
+        );
+        return $this->response($answer, 200);
     }
 
 
@@ -187,21 +161,14 @@ class modelsApi extends Api
      */
     public function updateAction()
     {
-        try {
-            if ($this->model->Update($this->requestParams, $this->requestUri[0])) {
-                $answer = array(
-                    'status'    => 'success',
-                    'messages'  => 'Model update',
-                    'data'      => $this->model->Get($this->requestUri[0]),
-                );
-                return $this->response($answer, 200);
-            }
-        } catch (Exception $e) {
+
+        if ($this->model->Update($this->requestParams, $this->requestUri[0])) {
             $answer = array(
-                'status' => 'error',
-                'messages' => $e->getMessage(),
+                'status'    => 'success',
+                'messages'  => 'Model update',
+                'data'      => $this->model->Get($this->requestUri[0]),
             );
-            return $this->response($answer, 400);
+            return $this->response($answer, 200);
         }
     }
 
@@ -213,22 +180,12 @@ class modelsApi extends Api
      */
     public function deleteAction()
     {
-
-        try {
-            if ($this->model->Delite($this->requestUri[0])) {
-                $answer = array(
-                    'status' => 'success',
-                    'messages' => 'Model delete'
-                );
-                return $this->response($answer, 200);
-            }
-        } catch (Exception $e) {
+        if ($this->model->Delite($this->requestUri[0])) {
             $answer = array(
-                'status' => 'error',
-                'messages' => $e->getMessage(),
+                'status' => 'success',
+                'messages' => 'Model delete'
             );
-
-            return $this->response($answer, 400);
+            return $this->response($answer, 200);
         }
     }
 }

@@ -56,7 +56,7 @@ class gildsApi extends Api
      * @apiSuccess {Number}   id            id цеха  
      * @apiSuccess {String}   parameters    Параметр запроса. machines - запрос всех машин входящих в определенный цех.
      * 
-     * @apiSuccess {Object[]} view      Выбор полей в виде {поле1,поле2,поле3}
+     * @apiSuccess {Object[]} view      Выбор полей в виде [поле1,поле2,поле3]
      * @apiSuccess {String}   view.machine_id      id оборудования
      * @apiSuccess {String}   view.model_id        id модели
      * @apiSuccess {String}   view.machine_number  номер машины
@@ -67,7 +67,7 @@ class gildsApi extends Api
      * 
      * @apiSuccess {String}   format    Формат ответа all - все запрошеные поля в виде обьектов, index - индексирование по поле1
      * 
-     * @apiSuccessExample {json} Success-Response(format=index&view={model_id,machine_number}):
+     * @apiSuccessExample {json} Success-Response(format=index&view=[model_id,machine_number]):
      *{
      *	"status": "success",
      *	"messages": "Machine Gild",
@@ -78,7 +78,7 @@ class gildsApi extends Api
      *	}
      *}
      *
-     * @apiSuccessExample {json} Success-Response(format=index&view={model_id,machine_number,gild_id}):
+     * @apiSuccessExample {json} Success-Response(format=index&view=[model_id,machine_number,gild_id]):
      * {
      *    "status": "success",
      *    "messages": "Machine Gild",
@@ -94,7 +94,7 @@ class gildsApi extends Api
      *   }
      *}
      * 
-     * @apiSuccessExample {json} Success-Response(view={model_id,model_name}):
+     * @apiSuccessExample {json} Success-Response(view=[model_id,model_name]):
      * {
      *   "status": "success",
      *   "messages": "Machine Gild",
@@ -117,11 +117,11 @@ class gildsApi extends Api
     public function viewAction()
     {
         if ($this->requestUri[1] == "machines") {
-            $format = (empty($this->requestGET['format'])) ? 'all' : $this->requestGET['format'];
+            
             $data = $this->gild->GetsM(
                 $this->requestUri[0],
-                $this->viewGetArr($this->requestGET['view']),
-                $format
+                $this->requestGETParam["view"],
+                $this->requestGETParam["format"]
             );
 
             $answer = array(
@@ -160,23 +160,13 @@ class gildsApi extends Api
 
     public function createAction()
     {
-
-        try {
-            $res = $this->gild->Add($this->requestParams);
-            $answer = array(
-                'status'    => 'success',
-                'messages'  => 'Gild creation completed',
-                'data'      => $res,
-            );
-            return $this->response($answer, 200);
-        } catch (Exception $e) {
-            $answer = array(
-                'status' => 'error',
-                'messages' => $e->getMessage(),
-            );
-
-            return $this->response($answer, 400);
-        }
+        $res = $this->gild->Add($this->requestParams);
+        $answer = array(
+            'status'    => 'success',
+            'messages'  => 'Gild creation completed',
+            'data'      => $res,
+        );
+        return $this->response($answer, 200);
     }
 
 
@@ -187,23 +177,13 @@ class gildsApi extends Api
      */
     public function updateAction()
     {
-
-
-        try {
-            if ($this->gild->Update($this->requestParams, $this->requestUri[0])) {
-                $answer = array(
-                    'status'    => 'success',
-                    'messages'  => 'Gild update',
-                    'data'      => $this->gild->Get($this->requestUri[0]),
-                );
-                return $this->response($answer, 200);
-            }
-        } catch (Exception $e) {
+        if ($this->gild->Update($this->requestParams, $this->requestUri[0])) {
             $answer = array(
-                'status' => 'error',
-                'messages' => $e->getMessage(),
+                'status'    => 'success',
+                'messages'  => 'Gild update',
+                'data'      => $this->gild->Get($this->requestUri[0]),
             );
-            return $this->response($answer, 400);
+            return $this->response($answer, 200);
         }
     }
 
@@ -215,22 +195,12 @@ class gildsApi extends Api
      */
     public function deleteAction()
     {
-
-        try {
-            if ($this->gild->Delite($this->requestUri[0])) {
-                $answer = array(
-                    'status' => 'success',
-                    'messages' => 'Gild delete'
-                );
-                return $this->response($answer, 200);
-            }
-        } catch (Exception $e) {
+        if ($this->gild->Delite($this->requestUri[0])) {
             $answer = array(
-                'status' => 'error',
-                'messages' => $e->getMessage(),
+                'status' => 'success',
+                'messages' => 'Gild delete'
             );
-
-            return $this->response($answer, 400);
+            return $this->response($answer, 200);
         }
     }
 }

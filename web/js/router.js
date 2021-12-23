@@ -21,6 +21,11 @@ function handleHash() {
 
 export default {
     init() {
+        const { name, params } = getRouteInfo();
+        if(name == ''){
+            let hash = document.location.hash;
+            document.location.hash = hash + "#Overview";
+        }
         addEventListener('hashchange', handleHash);
         handleHash();
 

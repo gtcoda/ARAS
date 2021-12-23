@@ -72,8 +72,6 @@ export default {
         eventsPage.render();
     },
 
-
-
     async ModelsRoute() {
         const models = await Model.getModels();
 
@@ -87,8 +85,7 @@ export default {
         calendarPage.render();
 
     },
-
-
+ 
     async GildsRoute(param) {
 
         console.log(param);

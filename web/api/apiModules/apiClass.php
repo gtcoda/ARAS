@@ -18,6 +18,7 @@ abstract class Api
     public $requestUri = [];
     public $requestParams = [];
     public $requestGET = []; // параметры переданные через ?
+    public $requestGETParam = []; // обработаные параметры Get переданные через ?
 
     protected $action = ''; //Название метод для выполнения
 
@@ -36,6 +37,7 @@ abstract class Api
 
 
         $this->requestGET = $_GET;
+        $this->requestGETParam = $this->GETParamDecode($this->requestGET);
         $this->statusCode = array(
             'OK' => 200,
         );
@@ -47,6 +49,7 @@ abstract class Api
         #$this->requestParams = $_REQUEST;
         $this->requestParams = json_decode(file_get_contents("php://input"), true);
 
+        
 
 
         $this->log->add("##################### Полученые данные в запросе ##############");
@@ -173,6 +176,7 @@ abstract class Api
                 'responseJSON'  => $this->requestParams,
                 'responseURL'   => $this->requestUri,
                 'responseGET'   => $this->requestGET,
+                'responseGETParam'   => $this->requestGETParam,
             ]];
         }
 
@@ -291,7 +295,31 @@ abstract class Api
     protected function viewGetArr($value)
     {
         if (empty($value)) return;
-        $fields = $this->get_string_between($value, "{", "}");
+        $fields = $this->get_string_between($value, "[", "]");
         return explode(',', (string)$fields);
     }
+
+    /**
+     * 
+     * Преобразование известных параметров GET
+     * 
+     */
+    protected function GETParamDecode($get){
+        $this->log->add($get);
+        
+        $GETParam["format"] = (empty($this->requestGET['format'])) ? 'all' : $this->requestGET['format'];
+
+        foreach($get as $key => $value){
+            if($key == "view"){
+                $GETParam[$key] = $this->viewGetArr($value);
+            }
+            else{
+                $GETParam[$key] = $value;
+            }
+        }
+
+
+        return $GETParam;
+    }
+
 }

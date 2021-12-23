@@ -32,7 +32,6 @@ export default {
         });
     },
 
-
 //########################################### Users
     // Проверить корректность токена
     checkJWT(value) {
@@ -264,7 +263,7 @@ export default {
 
         return new Promise((resolve, reject) => {
             API.res('models');
-            API.models.get({ jwt: settings.getJWT(), view:"{model_id,model_name}",format:"index" }).then(function (res) {
+            API.models.get({ jwt: settings.getJWT(), view:"[model_id,model_name]",format:"index" }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
                 }
@@ -375,7 +374,7 @@ export default {
     getGildsMIndex(id) {
         return new Promise((resolve, reject) => {
             API.res('gilds');
-            API.gilds(id + "/machines").get({ jwt: settings.getJWT(),view:"{model_id,machine_id,machine_number,gild_id,machine_desc}",format:"index" }).then(function (res) {
+            API.gilds(id + "/machines").get({ jwt: settings.getJWT(),view:"[model_id,machine_id,machine_number,gild_id,machine_desc]",format:"index" }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
                 }
