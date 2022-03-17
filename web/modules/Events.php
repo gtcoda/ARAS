@@ -97,6 +97,59 @@ class Events extends Modules
         return $out;
     }
 
+
+    /**
+     * Получить последние события по machine_id обьеденив по ремонтам
+     * Костыль для android. Формат ответа с фиксированым количеством полей в обьекте
+     * @return array
+     */
+    public function GetMUnionRepairAndroid($machine_id){
+        $all = $this->db->getAll("SELECT DISTINCT repair_id FROM ?n WHERE machine_id=?i ORDER BY `repair_id` Desc LIMIT 10 ", $this->table, $machine_id);
+        //$all = array_reverse($all);
+        $this->log->add($all);
+        
+        $out = array();
+
+        foreach ($all as &$value) {
+           // $out[$value["repair_id"]] = $this->db->getAll("SELECT * FROM ?n WHERE repair_id=?i ORDER BY `repair_id`,`event_id` LIMIT 10 ", $this->table, $value["repair_id"]);
+       
+
+
+
+            $events = $this->db->getAll("SELECT event_id, machine_id, event_message FROM ?n WHERE repair_id=?i ORDER BY `repair_id`,`event_id` LIMIT 10 ", $this->table, $value["repair_id"]);
+            $this->log->add(  $events);
+
+            $events2 = array();
+            $i = 0;
+            foreach ($events as &$it) {
+               
+               
+               $m = array(  "event_id"      => (int)$it["event_id"],
+                            "machine_id"    => (int)$it["machine_id"],
+                            "event_message" => $it["event_message"]
+                            ) ;
+
+               $events2[$i] = $m;
+               $i++;
+            }
+
+            $this->log->add($events2);
+
+
+            $out_repair = array(
+                'repair_id' => (int)$value["repair_id"],
+                'repair_events' => $events2,
+            );
+       
+            array_push($out,$out_repair);
+        }
+
+        $this->log->add( $out_repair);
+
+        
+        return $out;
+    }
+
     /**
      * Добавить машину
      * 

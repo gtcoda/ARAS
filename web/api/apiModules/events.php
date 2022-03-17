@@ -65,6 +65,20 @@ class eventsApi extends Api
            
             if($this->requestUri[0]=="machine"){
                if($this->requestGET['filter'] == "repair"){
+                   // Костыль для Androida. Формат ответа с фиксированым количеством полей в обьекте
+                    if($this->requestGET['dest'] == "android"){
+                        $data = $this->event->GetMUnionRepairAndroid($this->requestUri[1]);
+                        $answer = array(
+                            'status' => 'success',
+                            'messages' => 'Machine Event',
+                            'data' => $data,
+                        );
+
+                        $this->log->add($answer);
+                        return $this->response($answer, 200);
+                    }
+                
+                
                     $data = $this->event->GetMUnionRepair($this->requestUri[1]);
                     $answer = array(
                         'status' => 'success',
@@ -72,7 +86,8 @@ class eventsApi extends Api
                         'data' => $data,
                     );
                     return $this->response($answer, 200);
-               }
+               
+                }
 
 
                 $data = $this->event->GetM($this->requestUri[1]);
