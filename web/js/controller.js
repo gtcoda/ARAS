@@ -8,6 +8,7 @@ import modelsPage from "./pages/models.js"
 import gildsPage from "./pages/gilds.js"
 import calendarPage from "./pages/calendar.js"
 import view from "./view.js";
+import model from "./model.js";
 
 const overwiewNavNode = document.querySelector('[data-role=nav-over]');
 const settingsNavNode = document.querySelector('[data-role=nav-set]');
@@ -60,15 +61,37 @@ export default {
                 eventsPage.render();
         
         */
+        
+        
         const users = await Model.getUsers();
         eventsPage.setUsers(users);
+        
+        const machine = await Model.getMachines(param.id);
+        
 
+        const models = await Model.getModels();
 
+        models.getModel = function(model_id){
+            for (const key in this) {
+                if(this[key].model_id == model_id){
+                    return this[key];
+                } 
+            }
+        };
 
         // События обьедененные по repair_id
         const eventsM = await Model.getEventsUnionRepair(param.id);
 
-        eventsPage.setData(eventsM, param.id);
+
+        const eventData = {
+            eventsM: eventsM,
+            machine: machine,
+            model: models.getModel(machine.model_id),
+        }
+
+        
+
+        eventsPage.setData(eventData);
         eventsPage.render();
     },
 

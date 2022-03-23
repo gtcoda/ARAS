@@ -62,7 +62,8 @@ class eventsApi extends Api
     public function viewAction()
     {
         try {
-           
+            $this->log->add($this->requestUri);
+
             if($this->requestUri[0]=="machine"){
                if($this->requestGET['filter'] == "repair"){
                    // Костыль для Androida. Формат ответа с фиксированым количеством полей в обьекте

@@ -77,8 +77,12 @@ class modelsApi extends Api
      */
     public function indexAction()
     {
+
+
+
         try {
                 $data = $this->model->Gets($this->requestGETParam["view"],$this->requestGETParam["format"]);
+
         } catch (Exception $e) {
             $answer = array(
                 'status' => 'error',
@@ -94,6 +98,9 @@ class modelsApi extends Api
             'data' => $data,
         );
         return $this->response($answer, 200);
+
+
+
     }
 
     /**
@@ -110,10 +117,24 @@ class modelsApi extends Api
      *
      * @apiSuccess {Number} id  id модели
      * 
+     * @api {get} /model/machine/:machine_id
+     * @apiVersion 0.1.0
+     * @apiName GetModelForMachineId
+     * @apiGroup Models
+     *
+     * @apiSuccess {Number} machine_id  id станка
+     * 
      */
     public function viewAction()
     {
-        $data = $this->model->Get($this->requestUri[0]);
+
+        // Запрос модели по machine_id
+        if($this->requestUri[0]=="machine"){
+            $data = $this->model->GetModelForMachine($this->requestUri[1]);
+        }else{
+            $data = $this->model->Get($this->requestUri[0]);
+        }
+
         $answer = array(
             'status' => 'success',
             'messages' => 'Model',

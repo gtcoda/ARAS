@@ -257,6 +257,19 @@ export default {
         }
 
     },
+    getModelForMachineId(id){
+        return new Promise((resolve, reject) => {
+            API.res('models');
+            API.models("machine/" + id).get({ jwt: settings.getJWT() }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
 
     // Получить название моделей станкой проиндексированых по model_id
     getModelsIndex() {
@@ -427,6 +440,21 @@ export default {
 
     },
 
+    getMachines(id){
+
+        return new Promise((resolve, reject) => {
+            API.res('machines');
+            API.machines(id).get({ jwt: settings.getJWT() }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+
+    }
 
 
 };

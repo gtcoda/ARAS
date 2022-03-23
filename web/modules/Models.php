@@ -1,5 +1,6 @@
 <?php
 require_once($config['dirModule'] . 'ModulesClass.php');
+require_once($config['dirModule'] . 'Machines.php');
 
 
 /**
@@ -73,6 +74,15 @@ class Models extends Modules
         }
 
         return $row;
+    }
+
+    public function GetModelForMachine($machine_id){
+        $M = Machines::getInstance();
+        $machine = $M->Get($machine_id);
+        
+        
+        
+        return $this->Get($machine['model_id']);
     }
 
     public function Add($arr)

@@ -8,7 +8,7 @@ Handlebars.registerHelper('setImg', function (obj) {
   if (obj != "undefined") {
     if (obj.split('/')[0] == "img") {
       return new Handlebars.SafeString(`
-    <img class="card-img-top" src="${obj}">
+    <img class="card-img-top img-fluid img-thumbnail" src="${obj}">
     `);
     }
   }
@@ -22,16 +22,51 @@ Handlebars.registerHelper('setImg', function (obj) {
 Handlebars.registerHelper('setUser', function (user_id) {
 
   if (user_id != "undefined") {
-
-
     return new Handlebars.SafeString(`
-    <p>${users.get(user_id)}</p>
+    ${users.get(user_id)}
     `);
-
-
   }
   
   return new Handlebars.SafeString(user_id);
+});
+
+// Обработчик для формирования даты
+Handlebars.registerHelper('setDateRepair', function (event_data) {
+
+
+  if (event_data != "undefined") {
+    var options = {
+      month: 'long',
+      day: 'numeric',
+      timezone: 'UTC'
+    };
+    var d = new Date(event_data).toLocaleString("ru",options);
+    
+    return new Handlebars.SafeString(`
+      ${d}
+    `);
+  }
+  
+  return new Handlebars.SafeString(event_data);
+});
+
+
+// Обработчик для формирования даты каждогоо сообщения
+Handlebars.registerHelper('setDate', function (event_data) {
+  var options = {
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    timezone: 'UTC'
+  };
+
+  if (event_data != "undefined") {
+    var d = new Date(event_data).toLocaleString("ru",options);
+    return new Handlebars.SafeString(`${d}`);
+  }
+  
+  return new Handlebars.SafeString(event_data);
 });
 
 const resultsNode = document.getElementById(settings.getApp());
@@ -50,7 +85,7 @@ export default {
 
 
 
-  setData(newItem, machine_id) {
+  setData(eventData) {
 
     /* Поля получаемого через API обьекта хоть и могут быть по разному отсортированы на сервере
     но js имеет право обращаться к ним в порялдке своего усмотрения.
@@ -67,18 +102,31 @@ export default {
 
     Преобразуем обьект в массив и развернем, что бы более новые ремонты оказались первыми
 */
-    if(newItem == null){
-      newItem == {};
+
+
+console.log(eventData.eventsM);
+
+var options = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timezone: 'UTC'
+};
+
+console.log(new Date().toLocaleString("ru", options));
+
+
+    var d = new Date(eventData.eventsM[11][0].event_data).toLocaleString("ru",options);
+    console.log(d);
+    if(eventData==null){
+      eventData = {}
     }
-    else{
-      newItem = Object.values(newItem).reverse();
+    else {
+      eventData.eventsM = Object.values(eventData.eventsM).reverse();
     }
-    
    
-    items = {
-      events: newItem,
-      machine_id: machine_id
-    }
+    
+    items = eventData;
   },
 
   render() {

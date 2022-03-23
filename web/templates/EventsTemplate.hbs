@@ -1,18 +1,26 @@
 <script id="eventsTemplate" type="text/template">
     <div>
+<div><!-- Описание станка -->
+    <div class="card" style="margin-bottom: 1rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{model.model_name}} ({{model.model_desc}})</h5>
+            <p class="card-text">Номер станка: {{machine.machine_number}}</p>
+            <p class="card-text">{{machine.machine_desc}}</p>
+        </div>
+    </div>
+</div>
 
-<div class="overflow-auto border" style="height: 30rem; " >
 
-    {{#each events}}
+    {{#each eventsM}}
 
         <div class="card  shadow mb-3 rounded">
             <div class="card-body .bg-secondary .bg-gradient" >
 
                 <h5 class="card-title">
+                    {{setDateRepair this.[0].event_data }}</br>
                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#block{{this.[0].event_id }}" aria-expanded="false" aria-controls="block{{this.[0].event_id }}">
                     {{this.[0].event_message }}
                     </button>
-                    {{this.[0].event_data }}
                 </h5>
 
                 <div class="collapse" id="block{{this.[0].event_id }}">
@@ -20,9 +28,9 @@
 
                         <div class="card shadow mb-3 rounded" style="background:#fff2d8">
                             <div class="card-body ">
-                                {{event_data}}
+                                {{setUser user_id}}  {{setDate event_data}}
                                 <h5 class="card-title">{{setImg event_message}}</h5>
-                                {{setUser user_id}}
+                                
 
                                 {{event_modif_1}}
                             </div>
@@ -38,42 +46,54 @@
 
     {{/each}}
 
-</div>
+
+    <div class="fixed-bottom card mt-3 container" style = "">
+        <a class="card text-center text-decoration-none text-reset" style="background:#0d6efd" data-bs-toggle="collapse" href="#collapseAddEventForm" role="button" aria-expanded="true" aria-controls="collapseAddEventForm">
+            <<<<<<<<>>>>>>>>
+        </a>
+
+        <div class="collapse" id="collapseAddEventForm">
+            <form id="addEventForm">
+                <input type="hidden" name="machine_id" value="{{machine.machine_id}}">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name ="Open" value="Open">
+                        <label class="form-check-label" for="inlineCheckbox1">Начало ремонта</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="Close" value="Close">
+                        <label class="form-check-label" for="inlineCheckbox2">Готов</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" name="Info" value="Info">
+                        <label class="form-check-label" for="inlineCheckbox3">Инфо</label>
+                    </div>
 
 
 
-       <form id="addEventForm">
-           <input type="hidden" name="machine_id" value="{{machine_id}}">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name ="Open" value="Open">
-                <label class="form-check-label" for="inlineCheckbox1">Начало ремонта</label>
+                    <div class="mb-3">
+                        <label for="formFileMultiple" class="form-label">Загрузить фото</label>
+                        <input id="inputEventFile" name="inputEventFile" class="form-control" type="file" id="formFileMultiple" multiple>
+                        
+                        <div id="formFileMultipleUpload">
+
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="event_message" class="form-label">Описание</label>
+                        <textarea class="form-control" id="event_message" rows="3"></textarea>
+                    </div>
+                        
+                    
+                    <button type="submit" class="btn btn-primary">Записать</button>
+                    <label  id="ErrorMessage" class="col-sm control-label"></label>
+                </form>
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="Close" value="Close">
-                <label class="form-check-label" for="inlineCheckbox2">Готов</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" name="Info" value="Info">
-                <label class="form-check-label" for="inlineCheckbox3">Инфо</label>
-            </div>
+        
+        </div>
 
-            <div class="mb-3">
-                <label for="formFileMultiple" class="form-label">Загрузить фото</label>
-                <input id="inputEventFile" name="inputEventFile" class="form-control" type="file" id="formFileMultiple" multiple>
-                
-                <div id="formFileMultipleUpload">
 
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="event_message" class="form-label">Описание</label>
-                <textarea class="form-control" id="event_message" rows="3"></textarea>
-            </div>
-                
-            
-            <button type="submit" class="btn btn-primary">Записать</button>
-            <label  id="ErrorMessage" class="col-sm control-label"></label>
-        </form>
     </div>
+
+
 </script>
