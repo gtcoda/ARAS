@@ -2,15 +2,21 @@ import View from "../view.js";
 import Model from "../model.js";
 import * as settings from '../settings.js';
 
-// Обработчик для оборачивания фото в тег
+// Обработчик для сообщения events
 Handlebars.registerHelper('setImg', function (obj) {
 
   if (obj != "undefined") {
+    // Фото. Обернем в тег.
     if (obj.split('/')[0] == "img") {
       return new Handlebars.SafeString(`
     <img class="card-img-top img-fluid img-thumbnail" src="${obj}">
     `);
     }
+    else{// Перевод строки в <br>
+      return new Handlebars.SafeString(`${obj.replace(/\n/g, "<br />")}`);
+    }
+
+
   }
 
   return new Handlebars.SafeString(obj);
@@ -102,28 +108,11 @@ export default {
 
     Преобразуем обьект в массив и развернем, что бы более новые ремонты оказались первыми
 */
+    
+    if(eventData==null){ eventData = {} }
 
-
-console.log(eventData.eventsM);
-
-var options = {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  timezone: 'UTC'
-};
-
-console.log(new Date().toLocaleString("ru", options));
-
-
-    var d = new Date(eventData.eventsM[11][0].event_data).toLocaleString("ru",options);
-    console.log(d);
-    if(eventData==null){
-      eventData = {}
-    }
-    else {
-      eventData.eventsM = Object.values(eventData.eventsM).reverse();
-    }
+    if(eventData.eventsM == null){ eventData.eventsM = {}; }
+    else{ eventData.eventsM = Object.values(eventData.eventsM).reverse(); }
    
     
     items = eventData;

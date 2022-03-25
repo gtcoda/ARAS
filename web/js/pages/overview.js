@@ -8,11 +8,62 @@ let body;   // Данные с планом размещения или табл
 
 let overwiew_gilds; // Данные для строки с цехами
 
-// Обработчик для оборачивания фото в тег
+// Обработчик для переключателя
 Handlebars.registerHelper('MTChecked', function (obj) {
     if (settings.getOverviewMT() == "table") {
         return new Handlebars.SafeString("checked");
     }
+
+});
+
+
+// Обработчик для статуса ремонта
+Handlebars.registerHelper('setStatusLastRepair', function (status) {
+    if(status != "undefined" && status != null){
+        return new Handlebars.SafeString(status);
+    }
+    return new Handlebars.SafeString("");
+});
+
+// Обработчик для даты последнего ремонта
+Handlebars.registerHelper('setDateLastRepair', function (lastdate) {
+    // Склонение существительных
+    let GetNoun = function(number, one, two, five) {
+        number = Math.abs(number);
+        number %= 100;
+        if (number >= 5 && number <= 20) {
+            return five;
+        }
+        number %= 10;
+        if (number == 1) {
+            return one;
+        }
+        if (number >= 2 && number <= 4) {
+            return two;
+        }
+        return five;
+    } 
+
+    if (lastdate != "undefined" && lastdate != null) {
+
+        let currentDate = Date.parse(new Date());
+        let days = (currentDate - Date.parse(lastdate))/86400000;       //86400000 - ms в дне
+        let divdays = Math.round(days);
+
+
+        var options = {
+          month: 'long',
+          day: 'numeric',
+          timezone: 'UTC'
+        };
+        var d = new Date(lastdate).toLocaleString("ru",options);
+        /** GetNoun(divdays,'день','дня','дней') */
+        return new Handlebars.SafeString(`
+          ${d} (${divdays}д назад...)
+        `);
+      }
+      
+      return new Handlebars.SafeString("");
 
 });
 
@@ -137,16 +188,17 @@ export default {
 
 
 
-        console.log(data);
-        console.log(machines);
-        console.log(models);
 
 
-        var m={};
+
+        var m = {};
 
         for(var key in machines){
             m[models[key]] = machines[key];
         }
+
+        console.log(m);
+
 
         tableNode.innerHTML =  View.render('overviewTable', m);
 

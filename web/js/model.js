@@ -107,6 +107,23 @@ export default {
     },
 
 //########################################### Events
+    
+    // Получить конкретное сообщение
+    getEvent(event_id){
+        return new Promise((resolve, reject) => {
+
+            API.res('events');
+            API.events(event_id).get({
+                jwt: settings.getJWT()
+            }).then(function (response) {
+                resolve(response.data);
+            },
+            function (xnr) {
+                reject(xnr);
+            })
+
+        });
+    },
     // Получить все события конкретной машины
     getEvents(machine_id) {
 
@@ -158,6 +175,21 @@ export default {
 
         });
 
+    },
+
+    // Обновить сообщение
+    updateEvent(event_id,data){
+        return new Promise((resolve, reject) => {
+
+            API.res('events');
+            API.events(event_id).put(data).then(function (response) {
+                resolve(response.data);
+            },
+            function (xnr) {
+                reject(xnr);
+            })
+
+        });
     },
 
 //########################################### Repair    

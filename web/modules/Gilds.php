@@ -1,5 +1,6 @@
 <?php
 require_once($config['dirModule'] . 'ModulesClass.php');
+require_once($config['dirModule'] . 'Repairs.php');
 
 
 /**
@@ -59,8 +60,7 @@ class Gilds extends Modules
     public function GetsM($gild_id, $fields = [], $format = 'all')
     {
 
-        $this->log->add($fields);
-        $this->log->add($format);
+
 
         if(!empty($fields)){
             if($format == "all"){
@@ -71,7 +71,12 @@ class Gilds extends Modules
                
                
                 $all = $this->db->getAll("SELECT ?l FROM ?n WHERE gild_id=?i", $fields, "machines", $gild_id);
-
+                
+                $repairs = Repairs::getInstance();
+                // Добавим к выводу еще и информацию о последнем ремонте
+                foreach($all as &$value){
+                    $value += ['repair'=>$repairs->CurrentData($value['machine_id'])];
+                }
 
                 $res = [];
                 foreach ($all as $value) {
@@ -79,6 +84,9 @@ class Gilds extends Modules
                     $key_count = count($res[$key]);
                     $res[$key][$key_count] = $value;
                 }
+
+
+
 
                 $this->log->add($res);
                 

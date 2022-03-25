@@ -81,7 +81,7 @@ $('body').on('click', 'a', function (e) {
             break;
         case 'updateModelButton': updateModelBotton(e);
             break;
-        case '': ;
+        case 'editEvent': editEvent(e);
             break;
         case '': ;
             break;
@@ -460,6 +460,30 @@ function addMachineGilds(form) {
 
 async function addEvent(form) {
 
+    if(form.getAttribute('task') == 'update'){
+        console.log(form);
+
+        var event = {
+            event_message: form.event_message.value,
+            jwt: settings.getJWT()
+        }
+
+        let res = Model.updateEvent(form.getAttribute('event_id'),event);
+
+        res.then(result => {
+            form.removeAttribute("task");
+            form.removeAttribute("event_id");
+            hashRefresh();
+        },
+            error => {
+                $('#ErrorMessage').empty();
+                $('#ErrorMessage').append(JSON.parse(error.response).messages);
+            }
+        );
+        
+        return 0;
+    }
+
     var modif;
     if (form.Open.checked) {
         // Установим модификатор и откроем новый ремонт
@@ -473,16 +497,13 @@ async function addEvent(form) {
     }
     else if (form.Close.checked) {
         modif = "Close";
-        // Нет ни одного модификатора. Добавляем в последний ремонт.
+        // Есть модификатор Close. Добавляем в последний ремонт.
         try {
             var repair_id = await Model.curentRepair(form.machine_id.value);
         }
         catch (e) {
             console.log(e);
         }
-    }
-    else if (form.Close.checked) {
-
     }
     else {
         // Нет ни одного модификатора. Добавляем в последний ремонт.
@@ -521,6 +542,25 @@ async function addEvent(form) {
     );
 
 }
+
+async function editEvent(e){
+    // Отменить действие браузера по умолчанию
+    e.preventDefault();
+    // Остановка всплытия события
+    e.stopPropagation();
+
+    let event_id = e.currentTarget.getAttribute('event_id');
+    let event = await Model.getEvent(event_id);
+
+    console.log(event);
+
+    var form = document.getElementById('addEventForm');
+    form.setAttribute("task","update");
+    form.setAttribute("event_id",event.event_id);
+    form.event_message.value = event.event_message;
+}
+
+
 
 // Преобразование файла в base64
 function _arrayBufferToBase64(buffer) {

@@ -1,6 +1,7 @@
 <?php
 require_once($config['dirModule'] . 'ModulesClass.php');
 
+
 /**
  * 
  * Класс отвечает за:
@@ -17,9 +18,11 @@ class Machines extends Modules
     private static $instance;
     private $table = "machines";
 
+
     protected function __construct()
     {
         parent::__construct();
+        
     }
     protected function __clone()
     {
@@ -31,6 +34,7 @@ class Machines extends Modules
 
     public static function getInstance()
     {
+
         if (empty(self::$instance)) {
             self::$instance = new self();
         }
@@ -44,7 +48,12 @@ class Machines extends Modules
      */
     public function Gets()
     {
+
+        
         $all = $this->db->getAll("SELECT * FROM ?n", $this->table);
+
+
+
         return $all;
     }
     /**

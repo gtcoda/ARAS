@@ -44,13 +44,13 @@ class repairsApi extends Api
         try {
 
 
-
-
             $res = $this->repair->Сurrent($this->requestUri[0]);
+            $data = $this->repair->CurrentData($this->requestUri[0]);
             $answer = array(
                 'status'    => 'success',
                 'messages'  => 'Current repair_id',
-                'repair_id'      => $res,
+                'repair_id' => $res,
+                'data'      => $data,
             );
             return $this->response($answer, 200);
 

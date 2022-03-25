@@ -161,12 +161,19 @@ class Events extends Modules
         $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
         $fields = ['machine_id', 'user_id', 'repair_id', 'event_data', 'event_message', 'event_modif_1', 'event_modif_2', 'event_modif_3'];
 
-        // Проверим заполнены ли поля
+        // Проверим заполнены ли поля. Без указания машины и юзера сразу отлуп
         if (
             empty($arr['machine_id']) ||
-            empty($arr['user_id']) ||
-            empty($arr['event_message'])
+            empty($arr['user_id'])   
         ) {
+            throw new RuntimeException($config['messages']['NoCompl']);
+        
+        }
+
+        // Проверка на заполнение сообщения. Пустое сообщение может быть только в запросе со статусом Close. 
+        if(empty($arr['event_message']) && $arr['event_modif_1'] == "Close" && $this->repair->IssetRepair($arr['repair_id'])){
+
+        }else{
             throw new RuntimeException($config['messages']['NoCompl']);
         }
 

@@ -30,4 +30,9 @@ abstract class Modules
         return substr($string, strlen("SafeMySQL: "), strpos($string, " Full query") - strlen("SafeMySQL: "));
 
     }
+
+
+    protected function logadd($value){
+        $this->log->add($value);
+    }
 }
