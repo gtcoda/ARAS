@@ -60,6 +60,10 @@ return array(
             'class' => 'imgApi',
             'file'  => 'img.php',
         ),
+        'files' => array(
+            'class' => 'filesApi',
+            'file'  => 'files.php',
+        ),
     ),
 
     // Сообщения о ошибках
@@ -78,6 +82,7 @@ return array(
     'dirLog'        => $_SERVER['DOCUMENT_ROOT'].'/log/',
     'dirTemplate'   => $_SERVER['DOCUMENT_ROOT'].'/templates/',
     'dirIMG'        => $_SERVER['DOCUMENT_ROOT'].'/img/',
+    'dirFILE'        => $_SERVER['DOCUMENT_ROOT'].'/files/',
     
 
 );

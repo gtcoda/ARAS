@@ -117,7 +117,6 @@ $('body').on('change', 'input', function (e) {
 });
 
 
-
 /**
  *
  * Функции страницы добавления машины на странице настроек
@@ -146,7 +145,9 @@ $('body').on('click', '.eventsMachineSet', async function (e) {
     modal(html);
 });
 
-
+function frame_11(){
+    console.log("frame");
+}
 
 
 // Обработчик модального окна добавления
