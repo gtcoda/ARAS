@@ -114,12 +114,38 @@ export default {
     if(eventData.eventsM == null){ eventData.eventsM = {}; }
     else{ eventData.eventsM = Object.values(eventData.eventsM).reverse(); }
    
-    
+    console.log(eventData);
+
     items = eventData;
   },
 
   render() {
     resultsNode.innerHTML = View.render('events', items);
+    
+    let myIframe = document.createElement('iframe');
+
+    let name = items.model.model_name;
+    console.log();
+
+    myIframe.src = `https://aras.gtcoda.ru/dokuwiki/doku.php?id=станки:` + String(name).toLowerCase();
+    myIframe.width = `100%`;
+    myIframe.id = `frame`;
+    myIframe.setAttribute(`scrolling`,`no`);
+    document.getElementById('wiki').append(myIframe);
+
+    // Вешаем обработчик события onload на наш элемент iframe, который лежит в myIframe
+    myIframe.onload = () => {
+
+        let interval = setInterval(function(){
+
+          if(myIframe.contentWindow != null){
+            myIframe.height = myIframe.contentWindow.document.body.scrollHeight;
+          }
+            
+        },1000);
+
+
+    }
   },
 
 

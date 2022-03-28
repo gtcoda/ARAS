@@ -6,6 +6,12 @@
             <h5 class="card-title">{{model.model_name}} ({{model.model_desc}})</h5>
             <p class="card-text">Номер станка: {{machine.machine_number}}</p>
             <p class="card-text">{{machine.machine_desc}}</p>
+            <a class="card text-center text-decoration-none text-reset" style="background: #49a2f5;" data-bs-toggle="collapse" href="#wiki" role="button" aria-expanded="true" aria-controls="wiki">
+                Открыть wiki
+            </a>
+            
+            <div id='wiki' class="collapse"> </div>
+            
         </div>
     </div>
 </div>

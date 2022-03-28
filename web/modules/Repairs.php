@@ -85,9 +85,6 @@ class Repairs extends Modules  {
             $repair_id
         );
 
-        $this->logadd($events_repair);
-
-
         $status = null;
         $lastdate = null;
         foreach($events_repair as $value){

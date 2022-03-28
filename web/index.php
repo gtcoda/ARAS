@@ -49,7 +49,7 @@
                             <a class="nav-link" data-role="nav-rep" href="#Report">Отчет</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-role="nav-task" href="#Task">Задания</a>
+                            <a class="nav-link" data-role="nav-task" href="#Wiki">Документация</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#Setting" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

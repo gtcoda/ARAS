@@ -171,12 +171,14 @@ class Events extends Modules
         }
 
         // Проверка на заполнение сообщения. Пустое сообщение может быть только в запросе со статусом Close. 
-        if(empty($arr['event_message']) && $arr['event_modif_1'] == "Close" && $this->repair->IssetRepair($arr['repair_id'])){
+if(empty($arr['event_message'])){
+
+ if($arr['event_modif_1'] == "Close" && $this->repair->IssetRepair($arr['repair_id'])){
 
         }else{
             throw new RuntimeException($config['messages']['NoCompl']);
         }
-
+}
         $data = $this->db->filterArray($arr, $fields);
 
         $data['event_data'] = date('Y-m-d H:i:s');

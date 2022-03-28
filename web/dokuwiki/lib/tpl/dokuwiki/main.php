@@ -78,7 +78,7 @@ $showSidebar = $hasSidebar && ($ACT=='show');
             </div>
         </div><!-- /wrapper -->
 
-        <?php include('tpl_footer.php') ?>
+        <?php //include('tpl_footer.php') ?>
     </div></div><!-- /site -->
 
     <div class="no"><?php tpl_indexerWebBug() /* provide DokuWiki housekeeping, required in all templates */ ?></div>

@@ -12,7 +12,7 @@ export default{
     },
 
     render() {
-
+/*
         let myIframe = document.createElement('iframe');
 
         myIframe.src = `https://aras.gtcoda.ru/dokuwiki/`;
@@ -20,6 +20,7 @@ export default{
         myIframe.id = `frame`;
         myIframe.setAttribute(`scrolling`,`no`);
         
+        resultsNode.innerHTML = "";
 
         resultsNode.append(myIframe);
 
@@ -32,6 +33,6 @@ export default{
 
 
         }
-
+*/
     },
 }

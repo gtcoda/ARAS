@@ -61,7 +61,6 @@ class Gilds extends Modules
     {
 
 
-
         if(!empty($fields)){
             if($format == "all"){
                 $all = $this->db->getAll("SELECT ?l FROM ?n WHERE gild_id=?i", $fields, "machines", $gild_id);
@@ -71,12 +70,18 @@ class Gilds extends Modules
                
                
                 $all = $this->db->getAll("SELECT ?l FROM ?n WHERE gild_id=?i", $fields, "machines", $gild_id);
-                
+               
+
+
                 $repairs = Repairs::getInstance();
                 // Добавим к выводу еще и информацию о последнем ремонте
                 foreach($all as &$value){
                     $value += ['repair'=>$repairs->CurrentData($value['machine_id'])];
                 }
+
+                // Удалим переменную $value иначе следующий foreach некоректно отработает.
+                unset($value);
+
 
                 $res = [];
                 foreach ($all as $value) {
@@ -85,11 +90,6 @@ class Gilds extends Modules
                     $res[$key][$key_count] = $value;
                 }
 
-
-
-
-                $this->log->add($res);
-                
                 return $res;
             }
         }

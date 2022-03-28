@@ -7,6 +7,7 @@ import eventsPage from "./pages/events.js"
 import modelsPage from "./pages/models.js"
 import gildsPage from "./pages/gilds.js"
 import calendarPage from "./pages/calendar.js"
+import wikiPage from "./pages/wiki.js"
 import view from "./view.js";
 import model from "./model.js";
 
@@ -107,6 +108,10 @@ export default {
         calendarPage.setData();
         calendarPage.render();
 
+    },
+
+    async WikiRoute(){
+        wikiPage.render();
     },
  
     async GildsRoute(param) {
