@@ -5,10 +5,10 @@
  * @author Andreas Gohr <andi@splitbrain.org>
  */
 
-$conf['debug'] = 0;
-$conf['dsn'] = '';
-$conf['user'] = '';
-$conf['pass'] = '';
+$conf['debug'] = 1;
+$conf['dsn'] = 'mysql:host=localhost;dbname=ARAS;charset=utf8';
+$conf['user'] = 'aras';
+$conf['pass'] = 'jj3ey7QiLUGvaO40';
 
 /**
  * statement to select a single user identified by its login name
@@ -16,7 +16,13 @@ $conf['pass'] = '';
  * input: :user
  * return: user, name, mail, (clear|hash), [uid], [*]
  */
-$conf['select-user'] = '';
+$conf['select-user'] = "SELECT user_id AS uid,
+user_login AS user,
+user_name AS name,
+user_password AS hash,
+user_mail AS mail
+FROM `users`
+WHERE user_login = :user";
 
 /**
  * statement to check the password in SQL, optional when above returned clear or hash
@@ -32,7 +38,9 @@ $conf['check-pass'] = '';
  * input: :user, [uid]
  * return: group
  */
-$conf['select-user-groups'] = '';
+$conf['select-user-groups'] = "SELECT role_name AS 'group' 
+FROM `roles` 
+WHERE role_id = :uid";
 
 /**
  * Select all the existing group names
