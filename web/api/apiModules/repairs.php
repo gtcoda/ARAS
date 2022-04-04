@@ -30,7 +30,13 @@ class repairsApi extends Api
      */
     public function indexAction()
     {
-        return $this->response("", 404);
+        $data = $this->repair->GetGrantt();
+        $answer = array(
+            'status'    => 'success',
+            'messages'  => 'GranttData',
+            'data'      => $data
+        );
+        return $this->response($answer, 200);
     }
 
     /**
@@ -41,31 +47,16 @@ class repairsApi extends Api
      */
     public function viewAction()
     {
-        try {
 
-
-            $res = $this->repair->Сurrent($this->requestUri[0]);
-            $data = $this->repair->CurrentData($this->requestUri[0]);
-            $answer = array(
-                'status'    => 'success',
-                'messages'  => 'Current repair_id',
-                'repair_id' => $res,
-                'data'      => $data,
-            );
-            return $this->response($answer, 200);
-
-
-
-        } catch (Exception $e) {
-
-            $answer = array(
-                'status' => 'error',
-                'messages' => $e->getMessage(),
-            );
-
-            return $this->response($answer, 400);
-        }
-
+        $res = $this->repair->Сurrent($this->requestUri[0]);
+        $data = $this->repair->CurrentData($this->requestUri[0]);
+        $answer = array(
+            'status'    => 'success',
+            'messages'  => 'Current repair_id',
+            'repair_id' => $res,
+            'data'      => $data,
+        );
+        return $this->response($answer, 200);
     }
 
     /**

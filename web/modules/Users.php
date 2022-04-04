@@ -145,17 +145,21 @@ class Users extends Modules
      */
     public function AddUser($arr)
     {
-        $fields = ['user_password', 'user_login', 'user_name', 'role_id'];
+        $fields = ['user_password', 'user_login', 'user_name', 'user_mail', 'role_id'];
 
         // Проверим заполнены ли поля
-        if (
-            empty($arr['user_login']) ||
-            empty($arr['user_password']) ||
-            empty($arr['user_name'])
-        ) {
-            throw new RuntimeException('Request is empty');
+        if (empty($arr['user_login'])) {
+            throw new RuntimeException('Login is empty');
         }
-
+        if (empty($arr['user_password'])) {
+            throw new RuntimeException('Password is empty');
+        }
+        if (empty($arr['user_mail'])) {
+            throw new RuntimeException('Name is empty');
+        }
+        if (empty($arr['user_mail'])) {
+            throw new RuntimeException('Email is empty');
+        }
 
         //Если такой пользователь существует
         if (!empty($this->GetUserLogin($arr['user_login']))) {

@@ -16,6 +16,9 @@
     <script src="js/lib/bootstrap.js"></script>
     <script src="js/lib/jquery-ui.min.js"></script>
 
+    <script src="js/lib/dhtmlx/dhtmlxgantt.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="js/lib/dhtmlx/dhtmlxgantt.css?v=7.1.10">
+
     <title>ARAS</title>
 </head>
 

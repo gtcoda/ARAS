@@ -70,12 +70,13 @@ class Events extends Modules
     }
 
 
-   /**
+    /**
      * Получить последние события по machine_id
      * 
      * @return array
      */
-    public function GetM($machine_id){
+    public function GetM($machine_id)
+    {
         $all = $this->db->getAll("SELECT * FROM ?n WHERE machine_id=?i ORDER BY `event_id` Desc LIMIT 10 ", $this->table, $machine_id);
         return $all;
     }
@@ -85,15 +86,16 @@ class Events extends Modules
      * 
      * @return array
      */
-    public function GetMUnionRepair($machine_id){
+    public function GetMUnionRepair($machine_id)
+    {
         $all = $this->db->getAll("SELECT DISTINCT repair_id FROM ?n WHERE machine_id=?i ORDER BY `repair_id` Desc LIMIT 10 ", $this->table, $machine_id);
         //$all = array_reverse($all);
         $this->log->add($all);
-        
+
         foreach ($all as &$value) {
             $out[$value["repair_id"]] = $this->db->getAll("SELECT * FROM ?n WHERE repair_id=?i ORDER BY `repair_id`,`event_id` LIMIT 10 ", $this->table, $value["repair_id"]);
         }
-        
+
         return $out;
     }
 
@@ -103,34 +105,36 @@ class Events extends Modules
      * Костыль для android. Формат ответа с фиксированым количеством полей в обьекте
      * @return array
      */
-    public function GetMUnionRepairAndroid($machine_id){
+    public function GetMUnionRepairAndroid($machine_id)
+    {
         $all = $this->db->getAll("SELECT DISTINCT repair_id FROM ?n WHERE machine_id=?i ORDER BY `repair_id` Desc LIMIT 10 ", $this->table, $machine_id);
         //$all = array_reverse($all);
         $this->log->add($all);
-        
+
         $out = array();
 
         foreach ($all as &$value) {
-           // $out[$value["repair_id"]] = $this->db->getAll("SELECT * FROM ?n WHERE repair_id=?i ORDER BY `repair_id`,`event_id` LIMIT 10 ", $this->table, $value["repair_id"]);
-       
+            // $out[$value["repair_id"]] = $this->db->getAll("SELECT * FROM ?n WHERE repair_id=?i ORDER BY `repair_id`,`event_id` LIMIT 10 ", $this->table, $value["repair_id"]);
+
 
 
 
             $events = $this->db->getAll("SELECT event_id, machine_id, event_message FROM ?n WHERE repair_id=?i ORDER BY `repair_id`,`event_id` LIMIT 10 ", $this->table, $value["repair_id"]);
-            $this->log->add(  $events);
+            $this->log->add($events);
 
             $events2 = array();
             $i = 0;
             foreach ($events as &$it) {
-               
-               
-               $m = array(  "event_id"      => (int)$it["event_id"],
-                            "machine_id"    => (int)$it["machine_id"],
-                            "event_message" => $it["event_message"]
-                            ) ;
 
-               $events2[$i] = $m;
-               $i++;
+
+                $m = array(
+                    "event_id"      => (int)$it["event_id"],
+                    "machine_id"    => (int)$it["machine_id"],
+                    "event_message" => $it["event_message"]
+                );
+
+                $events2[$i] = $m;
+                $i++;
             }
 
             $this->log->add($events2);
@@ -140,13 +144,13 @@ class Events extends Modules
                 'repair_id' => (int)$value["repair_id"],
                 'repair_events' => $events2,
             );
-       
-            array_push($out,$out_repair);
+
+            array_push($out, $out_repair);
         }
 
-        $this->log->add( $out_repair);
+        $this->log->add($out_repair);
 
-        
+
         return $out;
     }
 
@@ -164,29 +168,30 @@ class Events extends Modules
         // Проверим заполнены ли поля. Без указания машины и юзера сразу отлуп
         if (
             empty($arr['machine_id']) ||
-            empty($arr['user_id'])   
+            empty($arr['user_id'])
         ) {
             throw new RuntimeException($config['messages']['NoCompl']);
-        
         }
 
         // Проверка на заполнение сообщения. Пустое сообщение может быть только в запросе со статусом Close. 
-if(empty($arr['event_message'])){
+        if (empty($arr['event_message'])) {
 
- if($arr['event_modif_1'] == "Close" && $this->repair->IssetRepair($arr['repair_id'])){
-
-        }else{
-            throw new RuntimeException($config['messages']['NoCompl']);
+            if ($arr['event_modif_1'] == "Close" && $this->repair->IssetRepair($arr['repair_id'])) {
+            } else {
+                throw new RuntimeException($config['messages']['NoCompl']);
+            }
         }
-}
         $data = $this->db->filterArray($arr, $fields);
 
         $data['event_data'] = date('Y-m-d H:i:s');
 
         // Если нет id ремонта или введенный некоректный
-        if (empty($arr['repair_id']) || !$this->repair->IssetRepair($arr['repair_id'])) {
+        if (
+            empty($arr['repair_id']) ||
+            !$this->repair->IssetRepair($arr['repair_id'])
+        ) {
             // Если неверный repair_id. Отдадим ошибку.
-            if (!$this->repair->IssetRepair($arr['repair_id'])) {
+            if (!$this->repair->IssetRepair($arr['repair_id']) && $arr['repair_id'] != "") {
                 throw new RuntimeException($this->config['messages']['BadIdRepair']);
             }
 
@@ -194,7 +199,7 @@ if(empty($arr['event_message'])){
             if (
                 !empty($arr['event_modif_1']) &&
                 ($arr['event_modif_1'] == 'Open' ||
-                    $arr['event_modif_1'] == 'Info')
+                $arr['event_modif_1'] == 'Info')
             ) { // В сообщении есть модификатор Open или Info
                 // Откроем ремонт и добавим в запись
                 $data['repair_id'] = $this->repair->Open();
@@ -272,5 +277,4 @@ if(empty($arr['event_message'])){
 
         return false;
     }
-
 }

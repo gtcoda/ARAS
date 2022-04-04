@@ -86,7 +86,8 @@ class usersApi extends Api
      * {
      * "user_login": "freddy",
      * "user_password": "5453123",
-     * "user_name": "fred"
+     * "user_name": "fred",
+     * "user_email": "fred@gmail.com"
      * }
 
      */

@@ -276,7 +276,7 @@ function signUpBotton(e) {
 // Обработчик регистрации
 async function singUp(e) {
 
-    let res = Model.setUser(e.login.value, e.password.value, e.name.value);
+    let res = Model.setUser(e.login.value, e.password.value, e.name.value, e.email.value);
 
     res.then(result => {
         // Закроем окно
@@ -501,6 +501,16 @@ async function addEvent(form) {
         // Есть модификатор Close. Добавляем в последний ремонт.
         try {
             var repair_id = await Model.curentRepair(form.machine_id.value);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+    else if (form.Info.checked) {
+        modif = "Info";
+        // Есть модификатор Info. Отправим пустой repair_id
+        try {
+            var repair_id = "";
         }
         catch (e) {
             console.log(e);

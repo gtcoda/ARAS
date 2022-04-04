@@ -12,7 +12,7 @@ Handlebars.registerHelper('setImg', function (obj) {
     <img class="card-img-top img-fluid img-thumbnail" src="${obj}">
     `);
     }
-    else{// Перевод строки в <br>
+    else {// Перевод строки в <br>
       return new Handlebars.SafeString(`${obj.replace(/\n/g, "<br />")}`);
     }
 
@@ -22,8 +22,6 @@ Handlebars.registerHelper('setImg', function (obj) {
   return new Handlebars.SafeString(obj);
 });
 
-
-
 // Обработчик для описание user
 Handlebars.registerHelper('setUser', function (user_id) {
 
@@ -32,7 +30,7 @@ Handlebars.registerHelper('setUser', function (user_id) {
     ${users.get(user_id)}
     `);
   }
-  
+
   return new Handlebars.SafeString(user_id);
 });
 
@@ -46,16 +44,15 @@ Handlebars.registerHelper('setDateRepair', function (event_data) {
       day: 'numeric',
       timezone: 'UTC'
     };
-    var d = new Date(event_data).toLocaleString("ru",options);
-    
+    var d = new Date(event_data).toLocaleString("ru", options);
+
     return new Handlebars.SafeString(`
       ${d}
     `);
   }
-  
+
   return new Handlebars.SafeString(event_data);
 });
-
 
 // Обработчик для формирования даты каждогоо сообщения
 Handlebars.registerHelper('setDate', function (event_data) {
@@ -68,12 +65,24 @@ Handlebars.registerHelper('setDate', function (event_data) {
   };
 
   if (event_data != "undefined") {
-    var d = new Date(event_data).toLocaleString("ru",options);
+    var d = new Date(event_data).toLocaleString("ru", options);
     return new Handlebars.SafeString(`${d}`);
   }
-  
+
   return new Handlebars.SafeString(event_data);
 });
+
+// Обработчик для сравнения в IF/ELSE
+Handlebars.registerHelper('ifEq', function (a, b, obj) {
+  if (a == b) {
+    return obj.fn(this);
+  } else {
+    return obj.inverse(this);
+  }
+
+});
+
+
 
 const resultsNode = document.getElementById(settings.getApp());
 let items = [];
@@ -81,12 +90,10 @@ let users = new Map();
 
 export default {
 
-  setUsers(listUsers){
-
-    listUsers.forEach(function(item, i, arr) {
-      users.set(item.user_id,item.user_name);
+  setUsers(listUsers) {
+    listUsers.forEach(function (item, i, arr) {
+      users.set(item.user_id, item.user_name);
     });
-
   },
 
 
@@ -108,12 +115,12 @@ export default {
 
     Преобразуем обьект в массив и развернем, что бы более новые ремонты оказались первыми
 */
-    
-    if(eventData==null){ eventData = {} }
 
-    if(eventData.eventsM == null){ eventData.eventsM = {}; }
-    else{ eventData.eventsM = Object.values(eventData.eventsM).reverse(); }
-   
+    if (eventData == null) { eventData = {} }
+
+    if (eventData.eventsM == null) { eventData.eventsM = {}; }
+    else { eventData.eventsM = Object.values(eventData.eventsM).reverse(); }
+
     console.log(eventData);
 
     items = eventData;
@@ -121,7 +128,7 @@ export default {
 
   render() {
     resultsNode.innerHTML = View.render('events', items);
-    
+
     let myIframe = document.createElement('iframe');
 
     let name = items.model.model_name;
@@ -130,19 +137,19 @@ export default {
     myIframe.src = `https://aras.gtcoda.ru/dokuwiki/doku.php?id=станки:` + String(name).toLowerCase();
     myIframe.width = `100%`;
     myIframe.id = `frame`;
-    myIframe.setAttribute(`scrolling`,`no`);
+    myIframe.setAttribute(`scrolling`, `no`);
     document.getElementById('wiki').append(myIframe);
 
     // Вешаем обработчик события onload на наш элемент iframe, который лежит в myIframe
     myIframe.onload = () => {
 
-        let interval = setInterval(function(){
+      let interval = setInterval(function () {
 
-          if(myIframe.contentWindow != null){
-            myIframe.height = myIframe.contentWindow.document.body.scrollHeight;
-          }
-            
-        },1000);
+        if (myIframe.contentWindow != null) {
+          myIframe.height = myIframe.contentWindow.document.body.scrollHeight;
+        }
+
+      }, 1000);
 
 
     }

@@ -32,7 +32,7 @@ export default {
         });
     },
 
-//########################################### Users
+    //########################################### Users
     // Проверить корректность токена
     checkJWT(value) {
         return new Promise((resolve, reject) => {
@@ -68,14 +68,15 @@ export default {
     },
 
     // Добавить пользователя
-    setUser(login, password, name) {
+    setUser(login, password, name, email) {
         return new Promise((resolve, reject) => {
 
             API.res('users');
             API.users.post({
                 user_login: login,
                 user_password: password,
-                user_name: name
+                user_name: name,
+                user_mail: email
             }).then(
                 function (users) {
                     resolve(users.data);
@@ -98,18 +99,18 @@ export default {
             }).then(function (response) {
                 resolve(response.data);
             },
-            function (xnr) {
-                reject(xnr);
-            })
+                function (xnr) {
+                    reject(xnr);
+                })
 
         });
 
     },
 
-//########################################### Events
-    
+    //########################################### Events
+
     // Получить конкретное сообщение
-    getEvent(event_id){
+    getEvent(event_id) {
         return new Promise((resolve, reject) => {
 
             API.res('events');
@@ -118,9 +119,9 @@ export default {
             }).then(function (response) {
                 resolve(response.data);
             },
-            function (xnr) {
-                reject(xnr);
-            })
+                function (xnr) {
+                    reject(xnr);
+                })
 
         });
     },
@@ -130,7 +131,7 @@ export default {
         return new Promise((resolve, reject) => {
 
             API.res('events');
-            API.events('machine/'+machine_id).get().then(function (events) {
+            API.events('machine/' + machine_id).get().then(function (events) {
                 if (events.status == 'success') {
                     resolve(events.data);
                 }
@@ -143,18 +144,18 @@ export default {
 
     },
 
-        // Получить все события конкретной машины обьедененные по repair_id
+    // Получить все события конкретной машины обьедененные по repair_id
     getEventsUnionRepair(machine_id) {
 
         return new Promise((resolve, reject) => {
 
             API.res('events');
-            API.events('machine/'+machine_id).get({'filter':'repair'}).then(function (response) {
+            API.events('machine/' + machine_id).get({ 'filter': 'repair' }).then(function (response) {
                 resolve(response.data);
             },
-            function (xnr) {
-                reject(xnr);
-            })
+                function (xnr) {
+                    reject(xnr);
+                })
 
         });
 
@@ -169,63 +170,78 @@ export default {
             API.events.post(event).then(function (response) {
                 resolve(response.data);
             },
-            function (xnr) {
-                reject(xnr);
-            })
+                function (xnr) {
+                    reject(xnr);
+                })
 
         });
 
     },
 
     // Обновить сообщение
-    updateEvent(event_id,data){
+    updateEvent(event_id, data) {
         return new Promise((resolve, reject) => {
 
             API.res('events');
             API.events(event_id).put(data).then(function (response) {
                 resolve(response.data);
             },
-            function (xnr) {
-                reject(xnr);
-            })
+                function (xnr) {
+                    reject(xnr);
+                })
 
         });
     },
 
-//########################################### Repair    
+    //########################################### Repair    
     // открыть ремонт
-    openRepair(){
+    openRepair() {
         return new Promise((resolve, reject) => {
 
             API.res('repairs');
             API.repairs.post({ jwt: settings.getJWT() }).then(function (response) {
                 resolve(response.repair_id);
             },
-            function (xnr) {
-                reject(xnr);
-            })
+                function (xnr) {
+                    reject(xnr);
+                })
 
         });
     },
 
     // Получить Последний открытый repair_id
-    curentRepair(machine_id){
+    curentRepair(machine_id) {
         return new Promise((resolve, reject) => {
 
             API.res('repairs');
             API.repairs(machine_id).get({ jwt: settings.getJWT() }).then(function (response) {
                 resolve(response.repair_id);
             },
-            function (xnr) {
-                reject(xnr);
-            })
+                function (xnr) {
+                    reject(xnr);
+                })
 
         });
     },
 
-//########################################### Upload
-    uploadImg(value){
-        
+    // Получить данные для диаграммы Гранта
+    repairGranttData() {
+        return new Promise((resolve, reject) => {
+
+            API.res('repairs');
+            API.repairs().get({ jwt: settings.getJWT() }).then(function (response) {
+                resolve({data:response.data});
+            },
+                function (xnr) {
+                    reject(xnr);
+                })
+
+        });
+    },
+
+    //########################################### Upload
+    uploadImg(value) {
+
         return new Promise((resolve, reject) => {
 
             var file = value.img;
@@ -234,10 +250,10 @@ export default {
 
             fileReader.onloadend = function () {
                 var base64img = "data:" + file.type + ";base64," + _arrayBufferToBase64(fileReader.result);
-    
+
                 API.res('img');
-    
-    
+
+
                 API.img.post({
                     img: base64img,
                     jwt: value.jwt,
@@ -248,16 +264,16 @@ export default {
                     function (xnr) {
                         reject(xnr);
                     })
-    
+
             };
             fileReader.readAsArrayBuffer(file);
 
-        
+
         });
 
     },
 
- //########################################### Models 
+    //########################################### Models 
 
     // Получить список моделей или модель
     getModels(id) {
@@ -289,7 +305,7 @@ export default {
         }
 
     },
-    getModelForMachineId(id){
+    getModelForMachineId(id) {
         return new Promise((resolve, reject) => {
             API.res('models');
             API.models("machine/" + id).get({ jwt: settings.getJWT() }).then(function (res) {
@@ -308,7 +324,7 @@ export default {
 
         return new Promise((resolve, reject) => {
             API.res('models');
-            API.models.get({ jwt: settings.getJWT(), view:"[model_id,model_name]",format:"index" }).then(function (res) {
+            API.models.get({ jwt: settings.getJWT(), view: "[model_id,model_name]", format: "index" }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
                 }
@@ -361,7 +377,7 @@ export default {
         });
     },
 
-//########################################### Gilds 
+    //########################################### Gilds 
 
     // Получить список цехов
     getGilds(id) {
@@ -419,7 +435,7 @@ export default {
     getGildsMIndex(id) {
         return new Promise((resolve, reject) => {
             API.res('gilds');
-            API.gilds(id + "/machines").get({ jwt: settings.getJWT(),view:"[model_id,machine_id,machine_number,gild_id,machine_desc]",format:"index" }).then(function (res) {
+            API.gilds(id + "/machines").get({ jwt: settings.getJWT(), view: "[model_id,machine_id,machine_number,gild_id,machine_desc]", format: "index" }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
                 }
@@ -436,19 +452,19 @@ export default {
         return new Promise((resolve, reject) => {
             API.res('gilds');
             API.gilds.post(value).then(
-                    function (response) {
-                        resolve(response.data);
-                    },
-                    function (xnr) {
-                        reject(xnr);
-                    });
+                function (response) {
+                    resolve(response.data);
+                },
+                function (xnr) {
+                    reject(xnr);
+                });
 
         });
 
 
 
     },
-//########################################### Machines 
+    //########################################### Machines 
 
 
     // Добавить станок
@@ -472,7 +488,7 @@ export default {
 
     },
 
-    getMachines(id){
+    getMachines(id) {
 
         return new Promise((resolve, reject) => {
             API.res('machines');
