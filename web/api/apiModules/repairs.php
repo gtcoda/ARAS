@@ -30,7 +30,8 @@ class repairsApi extends Api
      */
     public function indexAction()
     {
-        $data = $this->repair->GetGrantt();
+        //$data = $this->repair->GetGrantt();
+        $data = $this->repair->getCalendar();
         $answer = array(
             'status'    => 'success',
             'messages'  => 'GranttData',

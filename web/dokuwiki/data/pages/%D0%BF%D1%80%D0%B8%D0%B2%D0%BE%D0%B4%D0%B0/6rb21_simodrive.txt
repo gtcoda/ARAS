@@ -1,0 +1,3 @@
+**Привод на шлифоальной линии**
+
+{{ :привода:573_6rb21_instruction_manual.pdf |6RB21 instructions manual}}

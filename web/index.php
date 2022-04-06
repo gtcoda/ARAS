@@ -15,9 +15,14 @@
     <script src="js/lib/jquery.min.js"></script>
     <script src="js/lib/bootstrap.js"></script>
     <script src="js/lib/jquery-ui.min.js"></script>
-
+<!--
     <script src="js/lib/dhtmlx/dhtmlxgantt.js?v=7.1.10"></script>
 	<link rel="stylesheet" href="js/lib/dhtmlx/dhtmlxgantt.css?v=7.1.10">
+    -->
+
+    <link href='js/lib/fullcalendar/main.css' rel='stylesheet' />
+<script src='js/lib/fullcalendar/main.js'></script>
+<script src='js/lib/fullcalendar/locales-all.js'></script>   
 
     <title>ARAS</title>
 </head>

@@ -230,7 +230,7 @@ export default {
 
             API.res('repairs');
             API.repairs().get({ jwt: settings.getJWT() }).then(function (response) {
-                resolve({data:response.data});
+                resolve(response.data);
             },
                 function (xnr) {
                     reject(xnr);
