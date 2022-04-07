@@ -7,6 +7,8 @@ require_once($config['dirConfig'] . 'log.php');
 
 require_once($config['dirModule'] . 'Repairs.php');
 
+require_once($config['dirModule'] . 'Cron.php');
+
 
 class repairsApi extends Api
 {
@@ -15,6 +17,7 @@ class repairsApi extends Api
 
 
     private $repair;
+    private $cron;
 
     function __construct()
     {
@@ -22,6 +25,7 @@ class repairsApi extends Api
         parent::__construct();
 
         $this->repair = Repairs::getInstance();
+        $this->cron = Cron::getInstance();
     }
 
     /**
@@ -31,7 +35,9 @@ class repairsApi extends Api
     public function indexAction()
     {
         //$data = $this->repair->GetGrantt();
-        $data = $this->repair->getCalendar();
+        $this->cron->checkCloseRepairNot();
+
+        $data = $this->repair->getCalendar($this->requestGETParam["start"],$this->requestGETParam["stop"]);
         $answer = array(
             'status'    => 'success',
             'messages'  => 'GranttData',
@@ -48,6 +54,10 @@ class repairsApi extends Api
      */
     public function viewAction()
     {
+
+        
+
+        
 
         $res = $this->repair->Сurrent($this->requestUri[0]);
         $data = $this->repair->CurrentData($this->requestUri[0]);
@@ -72,6 +82,11 @@ class repairsApi extends Api
     public function createAction()
     {
         try {
+
+
+            $this->cron->updateTimeCloseRepair();
+
+
             $res = $this->repair->Open();
             $answer = array(
                 'status'    => 'success',

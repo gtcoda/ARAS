@@ -13,6 +13,7 @@ export default {
 
 	async render() {
 
+
 		/*	console.log("grantt");
 			resultsNode.innerHTML ="<div id='gantt_here' style='height:500px;'></div>";
 		    
@@ -159,102 +160,142 @@ export default {
 	
 	*/
 
-		document.addEventListener('DOMContentLoaded', async function () {
-			var initialLocaleCode = 'ru';
-			var localeSelectorEl = document.getElementById('locale-selector');
-			//var calendarEl = document.getElementById('calendar');
-			var calendarEl = document.getElementById(settings.getApp());
+
+		// Очистим элемент для приложения
+		resultsNode.innerHTML = "";
+		var initialLocaleCode = 'ru';
+		var localeSelectorEl = document.getElementById('locale-selector');
+		//var calendarEl = document.getElementById('calendar');
+		let div = document.createElement('div');
+		div.id = "divCalendar";
+		document.getElementById(settings.getApp()).append(div);
 
 
-			var Repair_data = await Model.repairGranttData();
-	
-	
-	
-			console.log(Repair_data);
+		var calendarEl = document.getElementById("divCalendar");
 
-			var calendar = new FullCalendar.Calendar(calendarEl, {
-				headerToolbar: {
-					left: 'prev,next today',
-					center: 'title',
-					right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-				},
-				initialDate: '2022-04-01',
-				locale: initialLocaleCode,
-				buttonIcons: false, // show the prev/next text
-				weekNumbers: true,
-				navLinks: true, // can click day/week names to navigate views
-				editable: true,
-				dayMaxEvents: true, // allow "more" link when too many events
-				events: Repair_data,
-				eventClick: function(info) {
-					console.log(info);	
-				}
-			});
 
-			
-/*
-[
-					{
-						title: 'All Day Event',
-						start: '2020-09-01'
-					},
-					{
-						title: 'Long Event',
-						start: '2020-09-07',
-						end: '2020-09-10'
-					},
-					{
-						groupId: 999,
-						title: 'Repeating Event',
-						start: '2020-09-09T16:00:00'
-					},
-					{
-						groupId: 999,
-						title: 'Repeating Event',
-						start: '2020-09-16T16:00:00'
-					},
-					{
-						title: 'Conference',
-						start: '2020-09-11',
-						end: '2020-09-13'
-					},
-					{
-						title: 'Meeting',
-						start: '2020-09-12T10:30:00',
-						end: '2020-09-12T12:30:00'
-					},
-					{
-						title: 'Lunch',
-						start: '2020-09-12T12:00:00'
-					},
-					{
-						title: 'Meeting',
-						start: '2020-09-12T14:30:00'
-					},
-					{
-						title: 'Happy Hour',
-						start: '2020-09-12T17:30:00'
-					},
-					{
-						title: 'Dinner',
-						start: '2020-09-12T20:00:00'
-					},
-					{
-						title: 'Birthday Party',
-						start: '2020-09-13T07:00:00'
-					},
-					{
-						title: 'Click for Google',
-						url: 'http://google.com/',
-						start: '2020-09-28'
+		var Repair_data = await Model.repairGranttData();
+
+
+
+		console.log(Repair_data);
+
+		var calendar = new FullCalendar.Calendar(calendarEl, {
+			headerToolbar: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+			},
+			initialDate: '2022-04-01',
+			locale: initialLocaleCode,
+			buttonIcons: false, // show the prev/next text
+			weekNumbers: true,
+			navLinks: true, // can click day/week names to navigate views
+			editable: true,
+			dayMaxEvents: true, // allow "more" link when too many events
+			//events: Repair_data,
+			eventClick: function (info) {
+				console.log(info);
+			},
+			events: function (fetchInfo, successCallback, failureCallback) {
+
+
+
+				console.log(fetchInfo);
+
+				var options = {
+					year : 'numeric',
+					month: 'numeric',
+					day: 'numeric',
+					timezone: 'UTC'
+				  };
+				var start = new Date(fetchInfo.start).toLocaleString("fr-CA", options);
+				var end = new Date(fetchInfo.end).toLocaleString("fr-CA", options);
+
+				console.log(start);
+				console.log(end);
+
+
+				$.ajax({
+					url: '/api/repairs?start='+start+'&end='+end,
+					dataType: 'json',
+					type: 'GET',
+					success: function (response) {
+						console.log(response);
+						var user_events = response.data;
+						successCallback(user_events);
 					}
-				]
+				})
 
-*/
+			}
 
-			calendar.render();
 
 		});
+
+
+		/*
+		[
+							{
+								title: 'All Day Event',
+								start: '2020-09-01'
+							},
+							{
+								title: 'Long Event',
+								start: '2020-09-07',
+								end: '2020-09-10'
+							},
+							{
+								groupId: 999,
+								title: 'Repeating Event',
+								start: '2020-09-09T16:00:00'
+							},
+							{
+								groupId: 999,
+								title: 'Repeating Event',
+								start: '2020-09-16T16:00:00'
+							},
+							{
+								title: 'Conference',
+								start: '2020-09-11',
+								end: '2020-09-13'
+							},
+							{
+								title: 'Meeting',
+								start: '2020-09-12T10:30:00',
+								end: '2020-09-12T12:30:00'
+							},
+							{
+								title: 'Lunch',
+								start: '2020-09-12T12:00:00'
+							},
+							{
+								title: 'Meeting',
+								start: '2020-09-12T14:30:00'
+							},
+							{
+								title: 'Happy Hour',
+								start: '2020-09-12T17:30:00'
+							},
+							{
+								title: 'Dinner',
+								start: '2020-09-12T20:00:00'
+							},
+							{
+								title: 'Birthday Party',
+								start: '2020-09-13T07:00:00'
+							},
+							{
+								title: 'Click for Google',
+								url: 'http://google.com/',
+								start: '2020-09-28'
+							}
+						]
+		
+		*/
+
+		calendar.render();
+
+
 
 
 	},

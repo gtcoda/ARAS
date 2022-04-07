@@ -81,6 +81,7 @@ export default {
 
 
     async machinePlan(gild_id) {
+        
         try {
             var gilds = await Model.getGilds();
         }
@@ -92,6 +93,7 @@ export default {
         resultsNode.innerHTML = View.render('overview', gilds);
 
         const tableNode = document.getElementById('owerviewMachineTable');
+        tableNode.innerHTML = "";
 
         try {
             var data = await Model.getGilds(gild_id);
@@ -163,6 +165,7 @@ export default {
     },
 
     async machineTable(gild_id) {
+        
         try {
             var gilds = await Model.getGilds();
         }
@@ -174,6 +177,7 @@ export default {
         resultsNode.innerHTML = View.render('overview', gilds);
 
         const tableNode = document.getElementById('owerviewMachineTable');
+        tableNode.innerHTML = "";
 
         try {
             var data = await Model.getGilds(gild_id);
@@ -194,7 +198,7 @@ export default {
 
         console.log(m);
 
-
+        
         tableNode.innerHTML =  View.render('overviewTable', m);
 
         

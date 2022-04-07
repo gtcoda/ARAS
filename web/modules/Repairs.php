@@ -243,22 +243,15 @@ class Repairs extends Modules
             $start = date("Y-m-d", strtotime("-1 month"));
         }
 
-        $this->logadd($start);
-
-        $this->logadd($end);
 
         $repairs = $this->db->getAll("SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND ?s ORDER BY repair_id", $start, $end);
 
 
 
-        $this->logadd($repairs);
-
         $data = array();
         $end_date = array();
 
         $events = $this->db->getAll("SELECT machine_id, repair_id, event_data, event_message, DATE_FORMAT(event_data,'%Y-%m-%d') FROM `events` WHERE repair_id IN (SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND ?s ORDER BY repair_id) AND event_modif_1 = 'Open'", $start, $end);
-
-        $this->logadd($events);
 
 
         $repairs = $this->db->getAll("SELECT repair_id, event_data AS end_data FROM `events` WHERE repair_id IN (SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND ?s ORDER BY repair_id)  
@@ -277,31 +270,30 @@ class Repairs extends Modules
             );
         }
 
-        $this->logadd($end_date);
 
         foreach ($events as $event) {
-/*
-            $date1 = strtotime($this->format_data($event["event_data"]));
-            $date2 = strtotime($this->format_data($end_date[$event["repair_id"]]["end_data"]));
-            $diff = ABS($date1 - $date2);
-            if ($diff > 10000) { // Очень длинное событие разобьем на два
-                $data[] = array(
-                    "id" => $event["machine_id"],
-                    "title" => $event["event_message"]."...",
-                    "start" => $this->format_data($event["event_data"]),
-                    "end"   => $this->format_data(date_add($event["event_data"], date_interval_create_from_date_string('3 days')))
-                );
+            /*
+                        $date1 = strtotime($this->format_data($event["event_data"]));
+                        $date2 = strtotime($this->format_data($end_date[$event["repair_id"]]["end_data"]));
+                        $diff = ABS($date1 - $date2);
+                        if ($diff > 10000) { // Очень длинное событие разобьем на два
+                            $data[] = array(
+                                "id" => $event["machine_id"],
+                                "title" => $event["event_message"]."...",
+                                "start" => $this->format_data($event["event_data"]),
+                                "end"   => $this->format_data(date_add($event["event_data"], date_interval_create_from_date_string('3 days')))
+                            );
 
-                ;
+                            ;
 
-                $data[] = array(
-                    "id" => $event["machine_id"],
-                    "title" => "...".$event["event_message"],
-                    "start" => $this->format_data(date_add($end_date[$event["repair_id"]]["end_data"], date_interval_create_from_date_string('-3 days'))),
-                    "end"   => $this->format_data($end_date[$event["repair_id"]]["end_data"])
-                );
-            } else {
-*/
+                            $data[] = array(
+                                "id" => $event["machine_id"],
+                                "title" => "...".$event["event_message"],
+                                "start" => $this->format_data(date_add($end_date[$event["repair_id"]]["end_data"], date_interval_create_from_date_string('-3 days'))),
+                                "end"   => $this->format_data($end_date[$event["repair_id"]]["end_data"])
+                            );
+                        } else {
+            */
                 $data[] = array(
                     "id" => $event["machine_id"],
                     "title" => $event["event_message"],

@@ -155,7 +155,7 @@ class Events extends Modules
     }
 
     /**
-     * Добавить машину
+     * Добавить событие
      * 
      * @return array
      */
