@@ -71,6 +71,7 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="#Gilds">Цех</a></li>
                                 <li><a class="dropdown-item" href="#Models">Модель</a></li>
+                                <li><a class="dropdown-item" href="#PrevMain">ППР</a></li>
                             </ul>
                         </li>
 

@@ -41,7 +41,7 @@ class modelsApi extends Api
      * @apiSuccess {String}   view.model_id        id модели 
      * @apiSuccess {String}   view.model_name      Название модели 
      * @apiSuccess {String}   view.model_desc      Описание модели
-     * @apiSuccess {String}   format    Формат ответа all - все запрошеные поля в виде обьектов, index - индексирование по поле1
+     * @apiSuccess {String}   format    Формат ответа all - все запрошеные поля в виде обьектов, index - индексирование по поле1, machineIndex - все станки проиндексированные по модели
      * 
      * @apiSuccessExample {json} Success-Response(view=[model_id,model_name]&format=index):
      * {
@@ -74,33 +74,54 @@ class modelsApi extends Api
      *  ]
      * }
      * 
+     * 
+     * @apiSuccessExample {json} Success-Response(format=machineIndex):
+     * {
+     * "status": "success",
+     * "messages": "Machine index for model",
+     *   "data": {
+     *      "RS-25": [
+     *         {
+     *         "machine_id": "65",
+     *         "machine_number": "41693",
+     *         "model_desc": "Periton",
+     *         "model_name": "RS-25"
+     *          }
+     *        ],
+     *       "HMC560": [
+     *          {
+     *           "machine_id": "66",
+     *           "machine_number": "41579",
+     *           "model_desc": "HURON",
+     *           "model_name": "HMC560"
+     *           }
+     *        ]
+     *    }
+     *  }
+     * 
+     * 
+     * 
      */
     public function indexAction()
     {
 
-
-
-        try {
-                $data = $this->model->Gets($this->requestGETParam["view"],$this->requestGETParam["format"]);
-
-        } catch (Exception $e) {
-            $answer = array(
-                'status' => 'error',
-                'messages' => $e->getMessage(),
-            );
-            return $this->response($answer, 400);
+        $messages = "";
+        if ($this->requestGETParam["format"] == "machineIndex") {
+            $messages = "Machine index for model";
+            $data =  $this->model->GetMachinesIndexModel();
+        } else {
+            $data = $this->model->Gets($this->requestGETParam["view"], $this->requestGETParam["format"]);
         }
+
+
 
 
         $answer = array(
             'status' => 'success',
-            'messages' => 'All models',
+            'messages' => $messages,
             'data' => $data,
         );
         return $this->response($answer, 200);
-
-
-
     }
 
     /**
@@ -127,17 +148,23 @@ class modelsApi extends Api
      */
     public function viewAction()
     {
-
+        $messages = 'Model';
         // Запрос модели по machine_id
-        if($this->requestUri[0]=="machine"){
+        if ($this->requestUri[0] == "machine") {
             $data = $this->model->GetModelForMachine($this->requestUri[1]);
-        }else{
+            $messages = "Info for machine id";
+        }
+        // Запрос всех машин по модели
+        elseif ($this->requestUri[0] == "machines") {
+            $data = $this->model->GetMachinesIndexModel();
+            $messages = "Machine index for model";
+        } else {
             $data = $this->model->Get($this->requestUri[0]);
         }
 
         $answer = array(
             'status' => 'success',
-            'messages' => 'Model',
+            'messages' => $messages,
             'data' => $data,
         );
         return $this->response($answer, 200);

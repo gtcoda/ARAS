@@ -319,6 +319,21 @@ export default {
         });
     },
 
+    // Получить мтанки проиндексированные по модели
+    getMachinesIndexModel(){
+        return new Promise((resolve, reject) => {
+            API.res('models');
+            API.models.get({ jwt: settings.getJWT(), format: "machineIndex" }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
+
     // Получить название моделей станкой проиндексированых по model_id
     getModelsIndex() {
 
@@ -488,6 +503,7 @@ export default {
 
     },
 
+    // Получить информацию об оборудовании по id 
     getMachines(id) {
 
         return new Promise((resolve, reject) => {

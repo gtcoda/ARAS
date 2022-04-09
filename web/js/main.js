@@ -1,6 +1,7 @@
 import View from "./view.js";
 import Model from "./model.js";
 import * as settings from './settings.js';
+import prevMain from "./pages/prevMain.js"
 
 
 checkSingInMenu();
@@ -19,9 +20,9 @@ $('body').on('click', 'button', function (e) {
             break;
         case 'overviewIdGildButton': { console.log(this) };
             break;
-        case '': ;
+        case 'PrevMainGenerate': prevMain.generate(this);
             break;
-        case '': ;
+        case 'PrevMainSave': { console.log(this) };
             break;
         case '': ;
             break;

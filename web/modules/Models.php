@@ -44,20 +44,22 @@ class Models extends Modules
     public function Gets($fields = [], $view = 'all')
     {
 
+
+
         try {
 
             if (empty($fields)) {
                 $all = $this->db->getAll("SELECT * FROM ?n", $this->table);
             } else {
-                if($view == "all"){
+                if ($view == "all") {
                     $all = $this->db->getAll("SELECT ?l FROM ?n", $fields, $this->table);
                 }
-                if($view == "index"){
-                    $all = $this->db->getIndCol($fields[0],"SELECT ?l FROM ?n", $fields, $this->table);
+                if ($view == "index") {
+                    $all = $this->db->getIndCol($fields[0], "SELECT ?l FROM ?n", $fields, $this->table);
                 }
             }
         } catch (Exception $e) {
-            $this->log->add($e->getMessage());         
+            $this->log->add($e->getMessage());
             throw new RuntimeException((string)$this->eraseMySQLError($e->getMessage()));
         }
 
@@ -76,13 +78,28 @@ class Models extends Modules
         return $row;
     }
 
-    public function GetModelForMachine($machine_id){
+    public function GetModelForMachine($machine_id)
+    {
         $M = Machines::getInstance();
         $machine = $M->Get($machine_id);
-        
-        
-        
+
+
+
         return $this->Get($machine['model_id']);
+    }
+
+    // Вернуть станки интексированные по модели.
+    public function GetMachinesIndexModel()
+    {
+        try {
+            $raw = $this->db->getAll("SELECT machine_id, machine_number, model_desc, model_name FROM `machines` INNER JOIN models ON machines.model_id = models.model_id");
+        } catch (Exception $e) {
+            $this->log->add($e->getMessage());
+            throw new RuntimeException((string)$this->eraseMySQLError($e->getMessage()));
+        }
+
+        $machineIndexModel = $this->arrayInd($raw, "model_name");
+        return $machineIndexModel;
     }
 
     public function Add($arr)

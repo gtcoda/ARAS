@@ -8,6 +8,7 @@ import modelsPage from "./pages/models.js"
 import gildsPage from "./pages/gilds.js"
 import calendarPage from "./pages/calendar.js"
 import wikiPage from "./pages/wiki.js"
+import prevMain from "./pages/prevMain.js"
 import view from "./view.js";
 import model from "./model.js";
 
@@ -128,6 +129,10 @@ export default {
             gildsPage.render();
         }
 
+    },
+
+    async PrevMainRoute(){
+        prevMain.render();
     }
 
 

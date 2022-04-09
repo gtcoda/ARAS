@@ -1,0 +1,69 @@
+<script id="prevMainTemplate" type="text/template">
+     <div>
+        {{#each this}}
+           
+            <h5 class="card-title">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary " type="button" data-bs-toggle="collapse" data-bs-target="#block{{@key}}" aria-expanded="false" aria-controls="block">
+                            {{@key}}
+                    </button>
+                 <div>        
+            </h5>
+           
+
+            <div class="collapse" id="block{{@key}}">
+                <div class="flex-container">
+
+                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainGenerate" model="{{@key}}">Сгенерировать</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainSave" model="{{@key}}">Сохранить</button>
+
+                    <div id="table_{{@key}}">
+                        {{insertTable this}}
+                    </div>
+
+                </div>
+            </div>    
+        {{/each}}  
+    </div>
+
+</script>
+
+
+
+<script id="prevMainTableTemplate" type="text/template">
+
+        <table class="table .table-bordered text-center">
+            <thead>
+                <tr>
+                    <th scope="col" rowspan = "2" class = "align-middle" >Номер</th>
+                    <th scope="col" colspan="12"  > Месяц</th>
+
+
+                </tr>
+                <tr>
+                    <th scope="col">Январь</th>
+                    <th scope="col">Ферваль</th>
+                    <th scope="col">Март</th>
+                    <th scope="col">Апрель</th>
+                    <th scope="col">Май</th>
+                    <th scope="col">Июнь</th>
+                    <th scope="col">Июль</th>
+                    <th scope="col">Август</th>
+                    <th scope="col">Сентябрь</th>
+                    <th scope="col">Октябрь</th>
+                    <th scope="col">Ноябрь</th>
+                    <th scope="col">Декабрь</th>
+                </tr>
+            </thead>
+            <tbody>
+            {{#each this}}
+                <tr>
+                    <td scope="row">{{this.machine_number}}</td>
+                    {{#each this.ppr}}
+                        {{insertTO this}}
+                    {{/each}}
+                </tr>
+            {{/each}}  
+            </tbody>
+        </table>
+</script>
