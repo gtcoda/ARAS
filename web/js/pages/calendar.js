@@ -184,18 +184,23 @@ export default {
 			headerToolbar: {
 				left: 'prev,next today',
 				center: 'title',
-				right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+				right: 'dayGridMonth,listMonth'
 			},
+			themeSystem: 'bootstrap5',
 			initialDate: '2022-04-01',
 			locale: initialLocaleCode,
 			buttonIcons: false, // show the prev/next text
-			weekNumbers: true,
+			weekNumbers: false, // Номера недель
 			navLinks: true, // can click day/week names to navigate views
-			editable: true,
+			editable: false,
 			dayMaxEvents: true, // allow "more" link when too many events
 			//events: Repair_data,
 			eventClick: function (info) {
 				console.log(info);
+				console.log(info.event.id);
+
+				document.location.hash = "Events/" + info.event.id;
+
 			},
 			events: function (fetchInfo, successCallback, failureCallback) {
 

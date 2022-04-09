@@ -41,7 +41,7 @@ class Cron extends Modules
     function updateTimeCloseRepair()
     {
         $repairs = $this->db->getAll("SELECT * FROM events WHERE repair_id IN (SELECT repair_id FROM `events` WHERE event_modif_1 = 'Close')");
-        $data = $this->parce($repairs, "repair_id");
+        $data = $this->arrayInd($repairs, "repair_id");
 
         foreach ($data as $rep) {
             $end = end($rep);
@@ -57,7 +57,7 @@ class Cron extends Modules
     function closeRepair()
     {
         $repairs = $this->db->getAll("SELECT event_id, repair_id, event_data, event_modif_1 FROM events");
-        $data = $this->parce($repairs, "repair_id");
+        $data = $this->arrayInd($repairs, "repair_id");
 
         foreach ($data as $rep) {
             $end = end($rep);
@@ -75,7 +75,7 @@ class Cron extends Modules
     function checkCloseRepair()
     {
         $repairs = $this->db->getAll("SELECT DISTINCT machine_id, repair_id FROM `events`");
-        $data = $this->parce($repairs, "machine_id");
+        $data = $this->arrayInd($repairs, "machine_id");
         $this->logadd($data);
 
         foreach ($data as $rep) {
@@ -92,7 +92,7 @@ class Cron extends Modules
     function checkCloseRepairNot()
     {
         $repairs = $this->db->getAll("SELECT DISTINCT machine_id, repair_id FROM `events`");
-        $data = $this->parce($repairs, "machine_id");
+        $data = $this->arrayInd($repairs, "machine_id");
 
         foreach ($data as $rep) {
             // Если только один ремонт, он нами не нужен.
@@ -110,7 +110,8 @@ class Cron extends Modules
     }
 
 
-    function parce($arrs, $value)
+    // Преобразовать массив $arrs в ассоциативный массив по ключу $value
+    function arrayInd($arrs, $value)
     {
         $data = array();
         foreach ($arrs as $arr) {

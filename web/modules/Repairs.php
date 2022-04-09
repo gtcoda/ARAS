@@ -113,129 +113,10 @@ class Repairs extends Modules
     }
 
 
-    public function GetGrantt()
-    {
-
-        $repair_data = array();
-        $machine_data = array();
-        $model_data = array();
-
-        $repairs =  $this->db->getAll("SELECT * FROM ?n ORDER BY `repair_id` DESC LIMIT 10", "repairs");
-
-        foreach ($repairs as $repair) {
-            $events =  $this->db->getAll("SELECT *,DATE_FORMAT(event_data,'%Y-%m-%d') AS date FROM ?n WHERE `repair_id` = ?i", "events", $repair["repair_id"]);
-
-            if (empty($events)) {
-                continue;
-            }
-            $repair_data[$repair["repair_id"]] = array(
-                "machine_id" => $events[0]["machine_id"],
-                "event_message" => $events[0]["event_message"],
-                "start_date" => $events[0]["date"],
-                "end_date" => end($events)["date"],
-            );
-        }
-
-        foreach ($repair_data as $r_data) {
-            $machine = $this->db->getAll("SELECT * FROM ?n WHERE `machine_id` = ?i", "machines", $r_data["machine_id"]);
-
-
-            if (array_key_exists($machine[0]["machine_number"], $machine_data)) {
-
-                $temp = $machine_data[$machine[0]["machine_number"]];
-                array_push($temp, $r_data);
-                $machine_data[$machine[0]["machine_number"]] = $temp;
-            } else {
-                $machine_data[$machine[0]["machine_number"]][0] = $r_data;
-            }
-        }
-
-        foreach ($machine_data as $machine_number => $m_data) {
-            $model_id = $this->db->getOne("SELECT model_id FROM machines WHERE machine_number = ?i", $machine_number);
-            $model = $this->db->getAll("SELECT * FROM ?n WHERE `model_id` = ?i", "models", $model_id);
-
-            if (array_key_exists($model[0]["model_name"], $model_data)) {
-
-                $temp = $model_data[$model[0]["model_name"]];
-                array_push($temp, $m_data);
-                $model_data[$model[0]["model_name"]] = $temp;
-            } else {
-                $v = array($machine_number => $m_data);
-                $model_data[$model[0]["model_name"]] = $v;
-            }
-        }
-
-        $this->logadd($model_data);
-
-
-        //return $model_data;
-
-
-        $data = array();
-
-
-        $i_model = 1;
-        $i_machine = 100;
-        $i_repair = 1000;
-
-        foreach ($model_data as $md_key => $md) {
-
-
-            $data[] = array(
-                "id" => $i_model,
-                "text" => $md_key,
-                "start" => "2022-04-01",
-                "end" => "2022-04-28"
-            );
-
-
-            foreach ($md as $mac_key => $mach_data) {
-                $data[] = array(
-                    "id" => $i_machine,
-                    "text" => $mac_key,
-                    "start" => "2022-04-01",
-                    "end" => "2022-04-28"
-                );
-
-                foreach ($mach_data as $rep) {
-                    /*
-                    $data[] = array(
-                        "id" => $i_repair,
-                        "text" => $rep["event_message"],
-                        "start_date" => $rep["start_date"],
-                        "end_date" => $rep["end_date"],
-                        "duration" => 1,
-                        "open" => false,
-                        "parent" => $i_machine
-                    );
-                    */
-
-                    $data[] = array(
-                        "id" => $i_repair,
-                        "text" => $rep["event_message"],
-                        "start" => $rep["start_date"],
-                        "end" => $rep["end_date"]
-                    );
-                    $i_repair++;
-                }
-
-
-                $i_machine++;
-            }
-
-
-
-            $i_model++;
-        }
-
-
-        return $data;
-    }
-
-
-
+    // Сформировать данные для отображение на колендаре
     function getCalendar($start = null, $end = null)
     {
+
         if (empty($end)) {
             $end = date("Y-m-d");
         }
@@ -244,63 +125,52 @@ class Repairs extends Modules
         }
 
 
-        $repairs = $this->db->getAll("SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND ?s ORDER BY repair_id", $start, $end);
 
 
 
         $data = array();
         $end_date = array();
 
-        $events = $this->db->getAll("SELECT machine_id, repair_id, event_data, event_message, DATE_FORMAT(event_data,'%Y-%m-%d') FROM `events` WHERE repair_id IN (SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND ?s ORDER BY repair_id) AND event_modif_1 = 'Open'", $start, $end);
+        // Получиим сообщения всех интересующих ремонтов
+        $events = $this->db->getAll(
+            "SELECT machine_id, repair_id, event_data, event_message, DATE_FORMAT(event_data,'%Y-%m-%d') 
+                                    FROM `events` 
+                                    WHERE 
+                                            repair_id IN (SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND ?s ORDER BY repair_id) 
+                                        AND 
+                                            event_modif_1 = 'Open'",
+            $start,
+            $end
+        );
+
+        // Сформируем даты окончания ремонтов
+        $end_date = $this->db->getInd(
+            "repair_id",
+            "  SELECT repair_id, event_data AS end_data 
+                                        FROM `events` 
+                                        WHERE 
+                                            repair_id IN (SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND ?s ORDER BY repair_id)  
+                                        ORDER BY `events`.`repair_id` ASC",
+            $start,
+            $end
+        );
 
 
-        $repairs = $this->db->getAll("SELECT repair_id, event_data AS end_data FROM `events` WHERE repair_id IN (SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND ?s ORDER BY repair_id)  
-        ORDER BY `events`.`repair_id` ASC", $start, $end);
+        $this->logadd($end_date);
 
-
-
-        foreach ($repairs as $repair) {
-            if (array_key_exists($repair["repair_id"], $end)) {
-                $end_date[$repair["repair_id"]] = array(
-                    "end_data" => $repair["end_data"]
-                );
-            }
-            $end_date[$repair["repair_id"]] = array(
-                "end_data" => $repair["end_data"]
-            );
-        }
+        // Вытащим номера и название моделей для оборудования
+        $models = $this->db->getInd("machine_id", "SELECT machine_id, model_name, machine_number FROM `machines` INNER JOIN models ON machines.model_id = models.model_id");
 
 
         foreach ($events as $event) {
-            /*
-                        $date1 = strtotime($this->format_data($event["event_data"]));
-                        $date2 = strtotime($this->format_data($end_date[$event["repair_id"]]["end_data"]));
-                        $diff = ABS($date1 - $date2);
-                        if ($diff > 10000) { // Очень длинное событие разобьем на два
-                            $data[] = array(
-                                "id" => $event["machine_id"],
-                                "title" => $event["event_message"]."...",
-                                "start" => $this->format_data($event["event_data"]),
-                                "end"   => $this->format_data(date_add($event["event_data"], date_interval_create_from_date_string('3 days')))
-                            );
-
-                            ;
-
-                            $data[] = array(
-                                "id" => $event["machine_id"],
-                                "title" => "...".$event["event_message"],
-                                "start" => $this->format_data(date_add($end_date[$event["repair_id"]]["end_data"], date_interval_create_from_date_string('-3 days'))),
-                                "end"   => $this->format_data($end_date[$event["repair_id"]]["end_data"])
-                            );
-                        } else {
-            */
-                $data[] = array(
-                    "id" => $event["machine_id"],
-                    "title" => $event["event_message"],
-                    "start" => $this->format_data($event["event_data"]),
-                    "end"   => $this->format_data($end_date[$event["repair_id"]]["end_data"])
-                );
-           
+            $data[] = array(
+                "id" => $event["machine_id"],
+                "title" =>  $models[$event["machine_id"]]["machine_number"] .
+                    " (" .  $models[$event["machine_id"]]["model_name"] . ") " .
+                    $event["event_message"],
+                "start" => $this->format_data($event["event_data"]),
+                "end"   => $this->format_data($end_date[$event["repair_id"]]["end_data"])
+            );
         }
 
         return $data;

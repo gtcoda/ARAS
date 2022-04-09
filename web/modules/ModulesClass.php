@@ -35,4 +35,21 @@ abstract class Modules
     protected function logadd($value){
         $this->log->add($value);
     }
+
+
+    // Преобразовать массив $arrs в ассоциативный массив по ключу $value
+    function arrayInd($arrs, $value)
+    {
+        $data = array();
+        foreach ($arrs as $arr) {
+            if (array_key_exists($arr[$value], $data)) {
+                $data[$arr[$value]][] = $arr;
+            } else {
+                $data[$arr[$value]] = array($arr);
+            }
+        }
+
+        return $data;
+    }
+
 }
