@@ -132,6 +132,7 @@ export default {
     },
 
     async PrevMainRoute(){
+        await prevMain.setData();
         prevMain.render();
     }
 

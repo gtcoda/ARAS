@@ -53,8 +53,11 @@ abstract class Api
 
 
         $this->log->add("##################### Полученые данные в запросе ##############");
+        $this->log->add("requestGET:");
         $this->log->add($this->requestGET);
+        $this->log->add("requestUri:");
         $this->log->add($this->requestUri);
+        $this->log->add("requestParams:");
         $this->log->add($this->requestParams);
         $this->log->add("###############################################################");
 

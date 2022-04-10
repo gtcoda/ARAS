@@ -24,7 +24,7 @@ $('body').on('click', 'button', function (e) {
             break;
         case 'PrevMainSave': { console.log(this) };
             break;
-        case '': ;
+        case 'PrevMainSettings': prevMain.settings(this);
             break;
         case '': ;
             break;
@@ -62,7 +62,7 @@ $('body').on('submit', 'form', function (e) {
             break;
         case 'addEventForm': addEvent(this);
             break;
-        case '': ;
+        case 'addMaintenceForm': prevMain.addMaintence(this);
             break;
         case '': ;
             break;
@@ -84,7 +84,7 @@ $('body').on('click', 'a', function (e) {
             break;
         case 'editEvent': editEvent(e);
             break;
-        case '': ;
+        case 'MaintenenseNav': prevMain.navigate(e);
             break;
         case '': ;
             break;
@@ -109,7 +109,7 @@ $('body').on('change', 'input', function (e) {
             break;
         case 'owerMachineTableChecked': owerMachineTableChecked(this);
             break;
-        case '': ;
+        case 'MaintenanceCheckbox': prevMain.MaintenanceCheckbox(this);
             break;
         default: {
         }
@@ -189,9 +189,9 @@ function modal(html, id) {
 }
 
 // Закрыть окно по клику за пределами модального окна
-$(document).on("click", function (e) {
-    $(e.target).closest(".ui-dialog").length || $(".dialog").dialog("close");
-})
+//$(document).on("click", function (e) {
+  //  $(e.target).closest(".ui-dialog").length || $(".dialog").dialog("close");
+//})
 
 /**
  *

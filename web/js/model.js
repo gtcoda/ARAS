@@ -319,8 +319,8 @@ export default {
         });
     },
 
-    // Получить мтанки проиндексированные по модели
-    getMachinesIndexModel(){
+    // Получить cтанки проиндексированные по модели
+    getMachinesIndexModel() {
         return new Promise((resolve, reject) => {
             API.res('models');
             API.models.get({ jwt: settings.getJWT(), format: "machineIndex" }).then(function (res) {
@@ -518,7 +518,131 @@ export default {
             });
         });
 
-    }
+    },
+
+    //########################################## ППР
+
+    getMaintenceModelOn() {
+        return new Promise((resolve, reject) => {
+            API.res('maintenance');
+            API.maintenance("table").get({ jwt: settings.getJWT() }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
+
+    // Получить все доступные типы ТО
+    getMaintenceTypes() {
+        return new Promise((resolve, reject) => {
+            API.res('maintenance');
+            API.maintenance("types").get({ jwt: settings.getJWT() }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
+
+    // Обновить подключенный ремонт
+    setMaintenceTypes(model_id, mtype_id, value) {
+        return new Promise((resolve, reject) => {
+            API.res('maintenance');
+            API.maintenance("setModelMain").post({
+                jwt: settings.getJWT(),
+                model_id: model_id,
+                mtype_id: mtype_id,
+                value: value
+            }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
+
+    // Обновить подключенный ремонт
+    setMaintence(machine) {
+        return new Promise((resolve, reject) => {
+            API.res('maintenance');
+            API.maintenance("setShedulerMain").post({
+                jwt: settings.getJWT(),
+                data: machine
+            }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
+
+
+        // Обновить подключенный ремонт
+        setScheduleDate(schedule_id, m_date) {
+            return new Promise((resolve, reject) => {
+                API.res('maintenance');
+                API.maintenance("scheduler").post({
+                    jwt: settings.getJWT(),
+                    data: {
+                        schedule_id: schedule_id,
+						m_date: m_date
+                    }
+                }).then(function (res) {
+                    if (res.status == 'success') {
+                        resolve(res.data);
+                    }
+                    else {
+                        reject(new Error(res.message));
+                    }
+                });
+            });
+        },
+
+    // Получить все типы ТО модели
+    getMaintenceType(model_id) {
+        return new Promise((resolve, reject) => {
+            API.res('maintenance');
+            API.maintenance("type/" + model_id).get({
+                jwt: settings.getJWT()
+            }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
+
+    getMaintenceSchedule(machine_id = "") {
+        return new Promise((resolve, reject) => {
+            API.res('maintenance');
+            API.maintenance("scheduler/" + machine_id).get({
+                jwt: settings.getJWT()
+            }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    },
 
 
 };

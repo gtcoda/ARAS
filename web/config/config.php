@@ -60,9 +60,9 @@ return array(
             'class' => 'imgApi',
             'file'  => 'img.php',
         ),
-        'files' => array(
-            'class' => 'filesApi',
-            'file'  => 'files.php',
+        'maintenance' => array(
+            'class' => 'maintenanceApi',
+            'file'  => 'maintenance.php',
         ),
     ),
 

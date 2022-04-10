@@ -92,7 +92,7 @@ class Models extends Modules
     public function GetMachinesIndexModel()
     {
         try {
-            $raw = $this->db->getAll("SELECT machine_id, machine_number, model_desc, model_name FROM `machines` INNER JOIN models ON machines.model_id = models.model_id");
+            $raw = $this->db->getAll("SELECT machine_id, machine_number, model_desc, model_name, models.model_id FROM `machines` INNER JOIN models ON machines.model_id = models.model_id");
         } catch (Exception $e) {
             $this->log->add($e->getMessage());
             throw new RuntimeException((string)$this->eraseMySQLError($e->getMessage()));

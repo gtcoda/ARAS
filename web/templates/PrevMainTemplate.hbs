@@ -1,5 +1,31 @@
+<!--  Основной шаблон работы с ППР   -->
 <script id="prevMainTemplate" type="text/template">
+     
+     <!--   <div>   
+            <ul class="nav nav-tabs">
+               
+                <li class="nav-item">
+                    <a class="nav-link" data-role="nav-maintenence" id="MaintenenseNav" role="Set">Настройка</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-role="nav-maintenence" id="MaintenenseNav" role="Years">Годовой план</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-role="nav-maintenence" id="MaintenenseNav" role="Calendar">План на месяц</a>
+                </li>
+                
+            </ul>
+
+        </div>
+
+        <div id="MaintenenceApps">
+            {{insertYears this}}
+        </div>
+     -->
+     
      <div>
+         {{insertTypesMaintence}}
+
         {{#each this}}
            
             <h5 class="card-title">
@@ -14,8 +40,46 @@
             <div class="collapse" id="block{{@key}}">
                 <div class="flex-container">
 
-                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainGenerate" model="{{@key}}">Сгенерировать</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainGenerate" model_id="{{this.[0].model_id}}" model="{{@key}}">Сгенерировать</button>
                     <button type="button" class="btn btn-secondary btn-sm" id="PrevMainSave" model="{{@key}}">Сохранить</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainSettings" model="{{this.[0].model_id}}">Настроить</button>
+
+                    <div id="table_{{@key}}">
+                        {{insertTable this}}
+                    </div>
+
+                </div>
+            </div>    
+        {{/each}}  
+
+
+        {{insertCalendar}}
+    </div>
+
+</script>
+
+
+<script id="prevMainYearsTemplate" type="text/template">
+   
+     <div>
+
+        {{#each this}}
+           
+            <h5 class="card-title">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary " type="button" data-bs-toggle="collapse" data-bs-target="#block{{@key}}" aria-expanded="false" aria-controls="block">
+                            {{@key}}
+                    </button>
+                 <div>        
+            </h5>
+           
+
+            <div class="collapse" id="block{{@key}}">
+                <div class="flex-container">
+
+                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainGenerate" model_id="{{this.[0].model_id}}" model="{{@key}}">Сгенерировать</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainSave" model="{{@key}}">Сохранить</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainSettings" model="{{this.[0].model_id}}">Настроить</button>
 
                     <div id="table_{{@key}}">
                         {{insertTable this}}
@@ -29,7 +93,7 @@
 </script>
 
 
-
+<!--  Шаблон таблицы Годичного ТО   -->
 <script id="prevMainTableTemplate" type="text/template">
 
         <table class="table .table-bordered text-center">
@@ -66,4 +130,116 @@
             {{/each}}  
             </tbody>
         </table>
+</script>
+
+
+<script id="prevMainAddMaintenceTemplate" type="text/template">
+    <form>
+        <div class="flex-container">
+            <table class="table .table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th scope="col" class = "align-middle" >Модель</th>
+                        <th>TO1</th>
+                        <th>TO2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {{#each this}}
+                    <tr>
+                        <td scope="row">{{}}</td>
+                        <td scope="row"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></td>
+                        <td scope="row"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></td>
+                        
+                    </tr>
+                    {{/each}}
+
+                </tbody>
+            </table>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>    
+</script>
+
+
+
+<script id="prevMainSettingsTemplate" type="text/template">
+    
+    <div class="flex-container" data-dialog-title="Добавить вид ППР">
+        <form id="addMaintenceForm">
+            <input type="hidden" name="model_id" value="{{model_id}}">   
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Название:</label>
+                <input name="mtype_name" value="" class="form-control" >
+            </div>
+            <div class="mb-3">
+                 <label for="exampleInputEmail1" class="form-label">Переодичность(мес):</label>
+                <select class="form-select form-select-lg mb-3" name="mtype_period" aria-label=".form-select-lg example">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label id="ErrorMessage" class="col-sm control-label"></label>
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </form>
+    </div>
+   
+</script>
+
+<!--  Шаблон таблицы выбора вида ТО для модели   -->
+<script id="prevMainMaintenanceTypesTemplate" type="text/template">
+    
+    <div class="flex-container">
+        <table class="table .table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th scope="col" class = "align-middle" >Модель</th>
+                        {{#each Mtypes}}    
+                            <th>{{mtype_name}}</th>
+                        {{/each}}
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {{#each ModelOn}}
+                        <tr>
+
+                            <td scope="row">{{model_name}}</td>
+                            {{#each mtype}}
+                                <td scope="row"><input class="form-check-input" type="checkbox" model_id="{{../model_id}}" mtype_id="{{@key}}" 
+                                {{#if this}}
+                                checked
+                                {{/if}}
+                                 value="" id="MaintenanceCheckbox"></td>
+                            {{/each}}
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+    </div>
+   
+</script>
+
+<!--  Шаблон календаря Плановых ремонтов   -->
+<script id="prevMainCalendarTemplate" type="text/template">
+    
+    <div class="flex-container">
+        <div id="MaintenenceCalendar">
+            
+        </div>
+    </div>
+   
 </script>
