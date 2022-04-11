@@ -10,27 +10,23 @@ const TO1 = 1;
 const TO2 = 2;
 
 
-var MaintenanceTypes = [];
-var MaintenanceModelOn;
+var MaintenanceTypesData = {};
 
 // Обработчик вставки таблицы
 Handlebars.registerHelper('insertTypesMaintence', function (obj) {
-	let data = {
-		Mtypes: MaintenanceTypes,
-		ModelOn: MaintenanceModelOn
-	}
-	return new Handlebars.SafeString(View.render("prevMainMaintenanceTypes", data));
+	return new Handlebars.SafeString(View.render("prevMainMaintenanceTypes", MaintenanceTypesData));
 });
 
 
 // Обработчик вставки годового плана
-Handlebars.registerHelper('insertYears', function (obj) {
-	return new Handlebars.SafeString(View.render("prevMainYears", obj));
+Handlebars.registerHelper('insertYears', function () {
+	return new Handlebars.SafeString(View.render("prevMainYears", items));
 });
 
 
-// Обработчик вставки таблицы
+// Обработчик вставки таблицы генерации годичного плана ТО
 Handlebars.registerHelper('insertTable', function (obj) {
+	console.log(obj);
 	return new Handlebars.SafeString(View.render("prevMainTable", obj));
 });
 
@@ -46,7 +42,7 @@ Handlebars.registerHelper('insertTO', function (obj) {
 	switch (obj) {
 		case "ТО2": m = "<td class ='bg-success'>TO2</td>"; break;
 		case "ТО1": m = "<td class ='bg-primary'>TO1</td>"; break;
-		case NoTo: m = "<td>-</td>"; break;
+		case 0: m = "<td>-</td>"; break;
 	}
 
 	return new Handlebars.SafeString(m);
@@ -72,155 +68,117 @@ function modal(html, id) {
 }
 
 
+function AddCalendar() {
+
+	var Calendar = FullCalendar.Calendar;
+	var Draggable = FullCalendar.Draggable;
+
+	var Mapp = document.getElementById("MaintenenceApps");
+
+	Mapp.innerHTML = View.render("prevMainCalendar");
+	var calendarEl = document.getElementById('MaintenenceCalendar');
+
+	// initialize the calendar
+	// -----------------------------------------------------------------
+
+	var calendar = new Calendar(calendarEl, {
+		headerToolbar: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'dayGridMonth'
+		},
+		editable: true,
+		droppable: true, // this allows things to be dropped onto the calendar
+		drop: function (info) {
+			// is the "remove after drop" checkbox checked?
+			//if (checkbox.checked) {
+			// if so, remove the element from the "Draggable Events" list
+			info.draggedEl.parentNode.removeChild(info.draggedEl);
+			//}
+
+
+		},
+		events: function (fetchInfo, successCallback, failureCallback) {
+
+			var options = {
+				year: 'numeric',
+				month: 'numeric',
+				day: 'numeric',
+				timezone: 'UTC'
+			};
+			var start = new Date(fetchInfo.start).toLocaleString("fr-CA", options);
+			var end = new Date(fetchInfo.end).toLocaleString("fr-CA", options);
+
+			$.ajax({
+				url: '/api/maintenance/scheduler/date?start=' + start + '&end=' + end,
+				dataType: 'json',
+				type: 'GET',
+				success: function (response) {
+					var user_events = response.data;
+					successCallback(user_events);
+				}
+			})
+
+		},
+		eventDrop: function (info) {
+			Model.setScheduleDate(info.event.id, info.event.startStr);
+		}
+	});
+
+	calendar.render();
+}
+
+
 
 export default {
 
-	async navigate(e){
+	async navigate(e) {
 		var Mapp = document.getElementById("MaintenenceApps");
 
+		document.querySelectorAll('#MaintenenseNav').forEach(function (elem) {
+			elem.classList.remove("active");
+		});
+		e.currentTarget.classList.add("active");
 
-		console.log(e.currentTarget.getAttribute("role"));
 
-
-		switch (e.currentTarget.getAttribute("role")){
-			case "Set":  break;
-			case "Years": break;
-			case "Calendar": Mapp.innerHTML = View.render("prevMainCalendar"); break;
-			
-
+		switch (e.currentTarget.getAttribute("role")) {
+			case "Set": Mapp.innerHTML = View.render("prevMainMaintenanceTypes", MaintenanceTypesData); break;
+			case "Years": Mapp.innerHTML = View.render("prevMainYears", items); break;
+			case "Calendar": AddCalendar(); break;
 		}
 
-
-
-		
 	},
 
 
 	async setData() {
-		MaintenanceTypes = await Model.getMaintenceTypes();
-		MaintenanceModelOn = await Model.getMaintenceModelOn();
-	},
+		let MaintenanceTypes = await Model.getMaintenceTypes();
+		let MaintenanceModelOn = await Model.getMaintenceModelOn();
 
-	async render() {
+		MaintenanceTypesData = {
+			Mtypes: MaintenanceTypes,
+			ModelOn: MaintenanceModelOn
+		}
 
 		items = await Model.getMachinesIndexModel();
 		let PPR = await Model.getMaintenceSchedule();
 
-		// Установим каждой машине пустой ппр
+		// Установим каждой машине ппр 
 		for (var item in items) {
 			items[item].forEach(element => {
-
-
-
-				element.ppr = PPR[element.machine_id];
-
-				//	element.ppr = [
-				//		NoTo, NoTo, NoTo, NoTo, NoTo, NoTo, NoTo, NoTo, NoTo, NoTo, NoTo, NoTo
-				//	];
-
-
-
+				element.maintence = PPR[element.machine_id];
 			});
 		}
 
-
-		resultsNode.innerHTML = View.render("prevMain", items);
-
-
-
-
-
-
-
-
-
-		var Calendar = FullCalendar.Calendar;
-		var Draggable = FullCalendar.Draggable;
-
-		
-		var calendarEl = document.getElementById('MaintenenceCalendar');
-		
-
-
-
-		// initialize the calendar
-		// -----------------------------------------------------------------
-
-		var calendar = new Calendar(calendarEl, {
-			headerToolbar: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'dayGridMonth'
-			},
-			editable: true,
-			droppable: true, // this allows things to be dropped onto the calendar
-			drop: function (info) {
-				// is the "remove after drop" checkbox checked?
-				//if (checkbox.checked) {
-					// if so, remove the element from the "Draggable Events" list
-					info.draggedEl.parentNode.removeChild(info.draggedEl);
-				//}
-
-				console.log(info);
-
-			},
-			events: function (fetchInfo, successCallback, failureCallback) {
-
-				console.log(fetchInfo);
-
-				var options = {
-					year : 'numeric',
-					month: 'numeric',
-					day: 'numeric',
-					timezone: 'UTC'
-				  };
-				var start = new Date(fetchInfo.start).toLocaleString("fr-CA", options);
-				var end = new Date(fetchInfo.end).toLocaleString("fr-CA", options);
-
-				console.log(start);
-				console.log(end);
-
-
-				$.ajax({
-					url: '/api/maintenance/scheduler/date?start='+start+'&end='+end,
-					dataType: 'json',
-					type: 'GET',
-					success: function (response) {
-						console.log(response);
-						var user_events = response.data;
-						successCallback(user_events);
-					}
-				})
-
-			},
-			eventDrop: function(info) {
-				console.log(info.event.startStr);
-				console.log(info.event.id);		
-
-				Model.setScheduleDate(info.event.id,info.event.startStr);
-
-
-			}
-		});
-
-		calendar.render();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		console.log(items);
 	},
 
+	async render() {
+		resultsNode.innerHTML = View.render("prevMain", items);
+		// Вкладка при загрузке календарь на месяц
+		AddCalendar();
+	},
+
+	// генерирование годового плана исходя из выбраных ТО
 	async generate(e) {
 		Array.prototype.rotateRight = function (n) {
 			this.unshift.apply(this, this.splice(n, this.length));
@@ -233,42 +191,36 @@ export default {
 		let model_div = document.getElementById("table_" + model);
 		let mod = items[model];
 
+		
+
 		let modelTypeTo = await Model.getMaintenceType(model_id);
 
-		let ar = [];
 		let shablon = [];
 
-		for (let n = 0; n < 12; n++) {
 
-			let z = false;
-
-
-			for (let i = 0; i < modelTypeTo.length; i++) {
-
-				if (n % modelTypeTo[i].mtype_period == 0) {
-					ar[n] = modelTypeTo[i].mtype_name;
-					shablon[n] = modelTypeTo[i].mtype_id;
-					z = true;
-					continue;
-				}
+		if (modelTypeTo.length == 0) {
+			for (let n = 0; n < 12; n++) {
+				shablon[n] = 0;
 			}
-
-			if (z) continue;
-
-			ar[n] = NoTo;
-			shablon[n] = 0;
-
 		}
-
-		console.log(modelTypeTo);
-		console.log(mod);
-		console.log(shablon);
+		else {
+			for (let n = 0; n < 12; n++) {
+				let z = false;
+				for (let i = 0; i < modelTypeTo.length; i++) {
+					if (n % modelTypeTo[i].mtype_period == 0) {
+						shablon[n] = modelTypeTo[i].mtype_id;
+						z = true;
+						continue;
+					}
+				}
+				if (z) continue;
+				shablon[n] = 0;
+			}
+		}
 
 
 		let raw = [];
 		for (var i = 0; i < mod.length; i++) {
-
-
 			let temp = [];
 			Object.assign(temp, shablon);
 			raw.push({
@@ -276,14 +228,21 @@ export default {
 				maintence: temp
 			});
 
-			shablon.rotateRight(-1);
 
-			Object.assign(mod[i].ppr, ar);
-			ar.rotateRight(-1);
+			mod[i].maintence = temp;
+
+			shablon.rotateRight(-1);
 		}
 
-		console.log(raw);
-		Model.setMaintence(raw);
+
+		//Обновим данные по модели с учетом вновь сгенерированных данных и выведем
+		items = await Model.getMachinesIndexModel();
+		let PPR = await Model.getMaintenceSchedule();
+		// Установим каждой машине ппр 
+		for (var item in items) {
+			items[item].forEach(element => { element.maintence = PPR[element.machine_id]; });
+		}
+		mod = items[model];
 
 		model_div.innerHTML = View.render("prevMainTable", mod);
 
@@ -320,7 +279,7 @@ export default {
 		console.log(val);
 	},
 
-	// Обработчик чекбоксов выбора ППР
+	// Обработчик чекбоксов выбора ППР для модели
 	async MaintenanceCheckbox(e) {
 		Model.setMaintenceTypes(
 			e.getAttribute("model_id"),

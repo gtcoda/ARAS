@@ -294,6 +294,33 @@ class Maintenance extends Modules
         }
     }
 
+// Вернем все назначеные машине ремонты на сегодня или на запрошеный день.
+    function GetMaintenceScheduleRepair($machine_id, $date=null)
+    {
+
+        $this->log->add($machine_id);
+        $this->log->add($date);
+
+        if(empty($date)){
+            
+                $date = date("Y-m-d");
+            
+        }
+
+
+        try {
+            $maintences = $this->db->getAll(
+                "SELECT * FROM `m_schedule` WHERE machine_id = ?i AND m_date = ?s",
+                $machine_id,
+                $date
+            );
+
+            return $maintences;
+        } catch (Exception $e) {
+            $this->log->add($e->getMessage());
+            throw new RuntimeException((string)$this->eraseMySQLError($e->getMessage()));
+        }
+    }
 
 
     function format_data($data)

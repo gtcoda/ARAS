@@ -24,7 +24,7 @@ class maintenanceApi extends Api
      */
     public function indexAction()
     {
-        
+
 
         $answer = array(
             'status' => 'success',
@@ -37,43 +37,83 @@ class maintenanceApi extends Api
     /**
      * Метод GET
      * 
-     * Получить информацию о цехе с {id}
-     * http://ДОМЕН/gilds/1
-     * Получить все машины цеха {id}
-     * http://ДОМЕН/gilds/1/machines
-     * @return string
+     * @api {get} /maintenance/:parameter1/:parameter2 Модуль ППР
+     * @apiVersion 0.1.0
+     * @apiName Maintenance
+     * @apiGroup Maintenance
+     *
+     * 
+     * @apiSuccess {String}   parameters1    Параметр запроса. types - возвращвет все типы ТО;
+     * type - все типы ТО конкретной модели задаваемый :parameter2
+     * table - возвращвет список активированых ППР по моделям
+     * 
+     */
+
+
+    /**
+     * Метод GET
+     * 
+     * @api {get} /maintenance/scheduler/:mod/:id[?date=:date] Назначеные ППР
+     * @apiVersion 0.1.0
+     * @apiName MaintenanceScheduler
+     * @apiGroup Maintenance
+     *
+     * @apiDescription
+     * Часть maintenance управляющая колендарем и событиями.
+     * :mod = repair - управление выполняния назначеными ППР 
+     * 
+     * 
+     * @apiSuccess {Number}   id        machine_id машины  
+     * @apiSuccess {String}   [date]    Необязательный парамет. Дата на которую запрошивается ППР.    
+     * 
+     * 
+     * * @apiSuccessExample {json} Success-Response(api/maintenance/scheduler/repair/44):
+     *  {
+     *     "status": "success",
+     *     "messages": "Maintense machines planed",
+     *     "data": [
+     *        {
+     *           "schedule_id": "134",
+     *           "machine_id": "44",
+     *           "m_date": "2022-04-11",
+     *           "mtype_id": "1"
+     *        }
+     *     ]
+     *   }
+     * 
+     * 
+     * 
+     * 
      */
 
     public function viewAction()
     {
 
+        $messages = "";
 
         if ($this->requestUri[0] == "types") {
             $data = $this->mt->GetTypes();
-        }
-        else if ($this->requestUri[0] == "type") {
+        } else if ($this->requestUri[0] == "type") {
             $data = $this->mt->GetType($this->requestUri[1]);
-        }
-        else if ($this->requestUri[0] == "table") {
+        } else if ($this->requestUri[0] == "table") {
             $data = $this->mt->GetTypeTable();
-        }
-        else if($this->requestUri[0] == "scheduler"){
-            if($this->requestUri[1] == "date"){
-                $data = $this->mt->GetMaintenceSchedulerDate($this->requestGETParam["start"],$this->requestGETParam["end"]);
-            }
-            else{
+        } else if ($this->requestUri[0] == "scheduler") {
+            if ($this->requestUri[1] == "date") {
+                $data = $this->mt->GetMaintenceSchedulerDate($this->requestGETParam["start"], $this->requestGETParam["end"]);
+            } else if ($this->requestUri[1] == "repair") {
+                $messages = "Maintense machines planed";
+                $data = $this->mt->GetMaintenceScheduleRepair($this->requestUri[2], $this->requestGETParam["date"]);
+            } else {
                 $data = $this->mt->GetMaintenceScheduler($this->requestUri[1]);
             }
-        }
-        else{
-
+        } else {
         }
 
 
 
         $answer = array(
             'status' => 'success',
-            'messages' => '',
+            'messages' => $messages,
             'data' => $data
         );
         return $this->response($answer, 200);
@@ -91,8 +131,8 @@ class maintenanceApi extends Api
 
     public function createAction()
     {
-        
-        
+
+
 
         if ($this->requestUri[0] == "setModelMain") {
             $this->mt->SetModelType(
@@ -100,14 +140,11 @@ class maintenanceApi extends Api
                 $this->requestParams["mtype_id"],
                 $this->requestParams["value"]
             );
-            $messages = "Model ".$this->requestParams["model_id"]." maintenance update.";
-        }
-
-        elseif($this->requestUri[0] == "setShedulerMain"){
-            $this->mt->SetMaintenceSheduler( $this->requestParams["data"]);
-        }
-        elseif($this->requestUri[0] == "scheduler"){
-            $this->mt->SetMaintenceShedulerEvent( $this->requestParams["data"]);
+            $messages = "Model " . $this->requestParams["model_id"] . " maintenance update.";
+        } elseif ($this->requestUri[0] == "setShedulerMain") {
+            $this->mt->SetMaintenceSheduler($this->requestParams["data"]);
+        } elseif ($this->requestUri[0] == "scheduler") {
+            $this->mt->SetMaintenceShedulerEvent($this->requestParams["data"]);
         }
 
 

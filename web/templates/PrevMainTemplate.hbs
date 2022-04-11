@@ -1,7 +1,7 @@
 <!--  Основной шаблон работы с ППР   -->
 <script id="prevMainTemplate" type="text/template">
      
-     <!--   <div>   
+       <div>   
             <ul class="nav nav-tabs">
                
                 <li class="nav-item">
@@ -19,43 +19,8 @@
         </div>
 
         <div id="MaintenenceApps">
-            {{insertYears this}}
+            {{insertCalendar}}
         </div>
-     -->
-     
-     <div>
-         {{insertTypesMaintence}}
-
-        {{#each this}}
-           
-            <h5 class="card-title">
-                <div class="d-grid gap-2">
-                    <button class="btn btn-primary " type="button" data-bs-toggle="collapse" data-bs-target="#block{{@key}}" aria-expanded="false" aria-controls="block">
-                            {{@key}}
-                    </button>
-                 <div>        
-            </h5>
-           
-
-            <div class="collapse" id="block{{@key}}">
-                <div class="flex-container">
-
-                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainGenerate" model_id="{{this.[0].model_id}}" model="{{@key}}">Сгенерировать</button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainSave" model="{{@key}}">Сохранить</button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainSettings" model="{{this.[0].model_id}}">Настроить</button>
-
-                    <div id="table_{{@key}}">
-                        {{insertTable this}}
-                    </div>
-
-                </div>
-            </div>    
-        {{/each}}  
-
-
-        {{insertCalendar}}
-    </div>
-
 </script>
 
 
@@ -123,7 +88,7 @@
             {{#each this}}
                 <tr>
                     <td scope="row">{{this.machine_number}}</td>
-                    {{#each this.ppr}}
+                    {{#each this.maintence}}
                         {{insertTO this}}
                     {{/each}}
                 </tr>
