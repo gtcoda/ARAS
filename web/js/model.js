@@ -590,26 +590,26 @@ export default {
     },
 
 
-        // Обновить подключенный ремонт
-        setScheduleDate(schedule_id, m_date) {
-            return new Promise((resolve, reject) => {
-                API.res('maintenance');
-                API.maintenance("scheduler").post({
-                    jwt: settings.getJWT(),
-                    data: {
-                        schedule_id: schedule_id,
-						m_date: m_date
-                    }
-                }).then(function (res) {
-                    if (res.status == 'success') {
-                        resolve(res.data);
-                    }
-                    else {
-                        reject(new Error(res.message));
-                    }
-                });
+    // Обновить подключенный ремонт
+    setScheduleDate(schedule_id, m_date) {
+        return new Promise((resolve, reject) => {
+            API.res('maintenance');
+            API.maintenance("scheduler").post({
+                jwt: settings.getJWT(),
+                data: {
+                    schedule_id: schedule_id,
+                    m_date: m_date
+                }
+            }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
             });
-        },
+        });
+    },
 
     // Получить все типы ТО модели
     getMaintenceType(model_id) {
@@ -644,5 +644,22 @@ export default {
         });
     },
 
+    // Получить назначеное ТО
+    getScheduleRepair(machine_id = "", date = "") {
+        return new Promise((resolve, reject) => {
+            API.res('maintenance');
+            API.maintenance("scheduler/repair/" + machine_id).get({
+                jwt: settings.getJWT(),
+                date: date
+            }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
+    }
 
 };

@@ -294,26 +294,48 @@ class Maintenance extends Modules
         }
     }
 
-// Вернем все назначеные машине ремонты на сегодня или на запрошеный день.
-    function GetMaintenceScheduleRepair($machine_id, $date=null)
+    // Вернем все назначеные машине ремонты на этот месяц или на запрошеный день.
+    // 
+    function GetMaintenceScheduleRepair($machine_id = null, $date = null)
     {
 
-        $this->log->add($machine_id);
-        $this->log->add($date);
-
-        if(empty($date)){
-            
-                $date = date("Y-m-d");
-            
-        }
-
-
         try {
-            $maintences = $this->db->getAll(
-                "SELECT * FROM `m_schedule` WHERE machine_id = ?i AND m_date = ?s",
-                $machine_id,
-                $date
-            );
+
+
+            if (empty($machine_id)) {
+                if (empty($date) || $date = null) {
+                    $maintences =   $this->db->getAll(
+                        "SELECT * FROM `m_schedule` INNER JOIN m_types ON m_schedule.mtype_id = m_types.mtype_id WHERE YEAR(`m_date`) = YEAR(NOW()) AND MONTH(`m_date`) = MONTH(NOW())"
+                    );
+                } else {
+                    $maintences =   $this->db->getAll(
+                        "SELECT * FROM `m_schedule` INNER JOIN m_types ON m_schedule.mtype_id = m_types.mtype_id WHERE m_date = ?s",
+                        $date
+                    );
+                    if (empty($maintences)) {
+                        return null;
+                    }
+                }
+            } else {
+                if (empty($date)) {
+                    $maintences =   $this->db->getAll(
+                        "SELECT * FROM `m_schedule` INNER JOIN m_types ON m_schedule.mtype_id = m_types.mtype_id WHERE YEAR(`m_date`) = YEAR(NOW()) AND MONTH(`m_date`) = MONTH(NOW()) AND machine_id = ?i",
+                        $machine_id
+                    );
+                } else {
+                    $maintences =   $this->db->getAll(
+                        "SELECT * FROM `m_schedule` INNER JOIN m_types ON m_schedule.mtype_id = m_types.mtype_id WHERE machine_id = ?i AND m_date = ?s",
+                        $machine_id,
+                        $date
+                    );
+
+                    if (empty($maintences)) {
+                        return null;
+                    }
+
+                    return $maintences[0];
+                }
+            }
 
             return $maintences;
         } catch (Exception $e) {

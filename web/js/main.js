@@ -86,7 +86,7 @@ $('body').on('click', 'a', function (e) {
             break;
         case 'MaintenenseNav': prevMain.navigate(e);
             break;
-        case '': ;
+        case 'MaintenenseNavEvent': prevMain.navigareEvent(e) ;
             break;
         case '': ;
             break;

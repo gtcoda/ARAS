@@ -86,6 +86,62 @@ class maintenanceApi extends Api
      * 
      */
 
+
+    /**
+     * Метод GET
+     * 
+     * @api {get} /maintenance/scheduler/repair/[:id][?date=:date] Назначеные  ППР
+     * @apiVersion 0.1.0
+     * @apiName MaintenanceSchedulerRepair
+     * @apiGroup Maintenance
+     *
+     * @apiDescription
+     * Возврашает все назначеные машине :id ППР  на текущий месяц.
+     * При указании даты, на дату.
+     * При отсутствии :id, все ППР на дату.
+     * При отсутствии :id и :date, все ППР на текущий
+     * 
+     * @apiSuccess {Number}   id        machine_id машины  
+     * @apiSuccess {String}   [date]    Необязательный парамет. Дата на которую запрошивается ППР.    
+     * 
+     * 
+     * @apiSuccessExample {json} Success-Response(api/maintenance/scheduler/repair/44):
+     *  {
+     *     "status": "success",
+     *     "messages": "Maintense machines planed",
+     *     "data": [
+     *        {
+     *           "schedule_id": "134",
+     *           "machine_id": "44",
+     *           "m_date": "2022-04-11",
+     *           "mtype_id": "1"
+     *        }
+     *     ]
+     *   }
+     * 
+     *  @apiSuccessExample {json} Success-Response(api/maintenance/scheduler/repair/44?date=2022-04-12):
+     *  {
+     *     "status": "success",
+     *     "messages": "Maintense machines planed",
+     *     "data": {
+     *           "schedule_id": "134",
+     *           "machine_id": "44",
+     *           "m_date": "2022-04-11",
+     *           "mtype_id": "1"
+     *        }
+     *   }
+     * 
+     * 
+     * @apiSuccessExample {json} Success-Response(api/maintenance/scheduler/repair/44?date=2022-04-13):
+     *  {
+     *     "status": "success",
+     *     "messages": "Maintense machines planed",
+     *     "data": null
+     *   }
+     * 
+     * 
+     */
+
     public function viewAction()
     {
 

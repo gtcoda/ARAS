@@ -49,6 +49,12 @@ Handlebars.registerHelper('insertTO', function (obj) {
 });
 
 
+// Работа со станицей Event
+
+Handlebars.registerHelper('maintenenceEvent', function (obj) {
+	return new Handlebars.SafeString(View.render("prevMainEvent", obj));
+});
+
 
 // Создать модальное окно
 // html - код модального окна 
@@ -149,6 +155,41 @@ export default {
 
 	},
 
+	// Навигация на странице Event
+	async navigareEvent(e) {
+		var Mapp = document.getElementById("MaintenenceEventMenu");
+
+		document.querySelectorAll('#MaintenenseNavEvent').forEach(function (elem) {
+			elem.classList.remove("active");
+		});
+		e.currentTarget.classList.add("active");
+
+		let machine_id = e.currentTarget.getAttribute("machine_id");
+
+		switch (e.currentTarget.getAttribute("role")) {
+			case "Current": {
+
+				var today = new Date();
+				var dd = String(today.getDate()).padStart(2, '0');
+				var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+				var yyyy = today.getFullYear();
+
+				today = yyyy + "-" + mm + "-" + dd;
+
+
+
+
+				let TOCurrent = await Model.getScheduleRepair(machine_id,today);
+				console.log(TOCurrent);
+				Mapp.innerHTML = View.render("prevMainEventCurrent", TOCurrent);
+				break;
+			}
+			case "List": {
+				Mapp.innerHTML = View.render("prevMainEventList");
+				break;
+			}
+		}
+	},
 
 	async setData() {
 		let MaintenanceTypes = await Model.getMaintenceTypes();
@@ -191,7 +232,7 @@ export default {
 		let model_div = document.getElementById("table_" + model);
 		let mod = items[model];
 
-		
+
 
 		let modelTypeTo = await Model.getMaintenceType(model_id);
 
