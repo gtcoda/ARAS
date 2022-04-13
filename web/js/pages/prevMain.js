@@ -55,6 +55,9 @@ Handlebars.registerHelper('maintenenceEvent', function (obj) {
 	return new Handlebars.SafeString(View.render("prevMainEvent", obj));
 });
 
+Handlebars.registerHelper('maintenenceEventCurrent', function (machine_id) {
+	return new Handlebars.SafeString(View.render("prevMainEventCurrent"));
+});
 
 // Создать модальное окно
 // html - код модального окна 
@@ -157,6 +160,36 @@ export default {
 
 	// Навигация на странице Event
 	async navigareEvent(e) {
+
+
+		var wiki = function(divwiki, src, ){
+			let myIframe = document.createElement('iframe');
+			console.log();
+		
+			myIframe.src = src;
+			myIframe.width = `100%`;
+			myIframe.id = `frame`;
+			myIframe.setAttribute(`scrolling`, `no`);
+			document.getElementById(divwiki).append(myIframe);
+		
+			// Вешаем обработчик события onload на наш элемент iframe, который лежит в myIframe
+			myIframe.onload = () => {
+		
+			  let interval = setInterval(function () {
+		
+				if (myIframe.contentWindow != null) {
+				  myIframe.height = myIframe.contentWindow.document.body.scrollHeight;
+				}
+		
+			  }, 1000);
+		
+		
+			}
+		}
+
+
+
+
 		var Mapp = document.getElementById("MaintenenceEventMenu");
 
 		document.querySelectorAll('#MaintenenseNavEvent').forEach(function (elem) {
@@ -179,9 +212,10 @@ export default {
 
 
 
-				let TOCurrent = await Model.getScheduleRepair(machine_id,today);
+				let TOCurrent = await Model.getScheduleRepair(machine_id, today);
 				console.log(TOCurrent);
 				Mapp.innerHTML = View.render("prevMainEventCurrent", TOCurrent);
+				wiki('maintenenceWiki',`https://aras.gtcoda.ru/dokuwiki/doku.php?id=ппр:` + String(TOCurrent.mtype_name).toLowerCase());
 				break;
 			}
 			case "List": {
@@ -327,6 +361,14 @@ export default {
 			e.getAttribute("mtype_id"),
 			e.checked
 		);
+	},
+
+	// Обработчик добавления отметки о выполнении ТО
+	addMaintenenceEvent(form) {
+		console.log(form);
+		console.log(form.schedule_id.value);
+		console.log(form.mevent_messages.value);
+		Model.addSheduleRepairEvent(form.schedule_id.value, form.mevent_messages.value);
 	}
 }
 

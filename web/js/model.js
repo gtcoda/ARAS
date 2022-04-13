@@ -660,6 +660,25 @@ export default {
                 }
             });
         });
+    },
+
+    // Отправить сообщение о выполненом ТО
+    addSheduleRepairEvent(schedule_id, mevent_messages) {
+        return new Promise((resolve, reject) => {
+            API.res('maintenance');
+            API.maintenance("scheduler/repair").post({
+                jwt: settings.getJWT(),
+                schedule_id: schedule_id,
+                mevent_messages: mevent_messages
+            }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
     }
 
 };

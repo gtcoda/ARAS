@@ -345,6 +345,26 @@ class Maintenance extends Modules
     }
 
 
+
+    function AddShedulerRepairEvent($data)
+    {
+        try {
+
+            // Удалим все записи для машины
+            $this->db->query("DELETE FROM m_events WHERE schedule_id = ?i ", $data["schedule_id"]);
+
+            $this->db->query(
+                "INSERT INTO m_events (user_id, schedule_id, mevent_messages) VALUES (?i,?i,?s)",
+                $data["user_id"],
+                $data["schedule_id"],
+                $data["mevent_messages"]
+            );
+        } catch (Exception $e) {
+            $this->log->add($e->getMessage());
+            throw new RuntimeException((string)$this->eraseMySQLError($e->getMessage()));
+        }
+    }
+
     function format_data($data)
     {
         if (!empty($data)) {

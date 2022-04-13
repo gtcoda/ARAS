@@ -188,6 +188,19 @@ class maintenanceApi extends Api
     public function createAction()
     {
 
+        try {
+            $login_data = $this->login();
+            $this->logadd($login_data);
+        } catch (Exception $e) {
+            $answer = array(
+                'status'    => 'error',
+                'messages'  => $e->getMessage()
+            );
+            return $this->response($answer, 400);
+        }
+
+
+
 
 
         if ($this->requestUri[0] == "setModelMain") {
@@ -200,7 +213,19 @@ class maintenanceApi extends Api
         } elseif ($this->requestUri[0] == "setShedulerMain") {
             $this->mt->SetMaintenceSheduler($this->requestParams["data"]);
         } elseif ($this->requestUri[0] == "scheduler") {
-            $this->mt->SetMaintenceShedulerEvent($this->requestParams["data"]);
+            if ($this->requestUri[1] == "repair") {
+
+                $event = array(
+                    "user_id" => ((array)$login_data['data'])['user_id'],
+                    "schedule_id" => $this->requestParams["schedule_id"],
+                    "mevent_messages" => $this->requestParams["mevent_messages"]
+                );
+
+
+                $this->mt->AddShedulerRepairEvent($event); 
+            } else {
+                $this->mt->SetMaintenceShedulerEvent($this->requestParams["data"]);
+            }
         }
 
 

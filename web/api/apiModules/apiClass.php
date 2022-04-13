@@ -352,4 +352,14 @@ abstract class Api
         return $output_file; 
     }
 
+
+    /**
+     * 
+     * Логирование в стандартный файл
+     * 
+     */
+    protected function logadd($value){
+        $this->log->add($value);
+    }
+
 }

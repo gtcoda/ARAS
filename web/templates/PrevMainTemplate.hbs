@@ -229,7 +229,7 @@
             <ul class="nav nav-tabs">
               
                 <li class="nav-item">
-                    <a class="nav-link" data-role="nav-maintenenceEvent" id="MaintenenseNavEvent" machine_id="{{this}}" role="Current"  
+                    <a class="nav-link"  data-role="nav-maintenenceEvent" id="MaintenenseNavEvent" machine_id="{{this}}" role="Current"  
                     >Текуший</a>
                 </li>
                 <li class="nav-item">
@@ -243,7 +243,7 @@
 
 
     <div id="MaintenenceEventMenu">
-
+       
     </div>
 
 
@@ -258,9 +258,24 @@
 <script id="prevMainEventCurrentTemplate" type="text/template">
   
 
-    <div class="card shadow mb-3 rounded" style="background:#fff2d8">
+    <div class="card shadow mb-3 rounded" style="background:#e6e6e6">
         <div class="card-body ">
             <h5 class="card-title">Выполнить техническое обслуживание в объеме {{mtype_name}}.</h5>
+            <div id="maintenenceWiki"></div>
+            
+            <form id="addMaintenenceEventForm">
+                    <input type="hidden" name="schedule_id" value="{{schedule_id}}">
+
+                    <div class="mb-3">
+                        <label for="mevent_messages" class="form-label">Замечания:</label>
+                        <textarea class="form-control" id="mevent_messages" rows="3"></textarea>
+                    </div>
+                        
+                    
+                    <button type="submit" class="btn btn-primary">Выполнено.</button>
+                    <label  id="ErrorMessage" class="col-sm control-label"></label>
+                </form>
+            </div>
         </div>
     </div>
 

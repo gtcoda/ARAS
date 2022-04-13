@@ -64,7 +64,7 @@ $('body').on('submit', 'form', function (e) {
             break;
         case 'addMaintenceForm': prevMain.addMaintence(this);
             break;
-        case '': ;
+        case 'addMaintenenceEventForm': prevMain.addMaintenenceEvent(this) ;
             break;
     }
 
