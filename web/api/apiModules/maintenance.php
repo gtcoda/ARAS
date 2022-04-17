@@ -148,19 +148,21 @@ class maintenanceApi extends Api
         $messages = "";
 
         if ($this->requestUri[0] == "types") {
-            $data = $this->mt->GetTypes();
+            $data = $this->mt->GetTypes();  // Список всех видов ППР
         } else if ($this->requestUri[0] == "type") {
-            $data = $this->mt->GetType($this->requestUri[1]);
+            $data = $this->mt->GetType($this->requestUri[1]); // Вернуть все типы ремонтов модели
         } else if ($this->requestUri[0] == "table") {
-            $data = $this->mt->GetTypeTable();
+            $data = $this->mt->GetTypeTable(); // Формируем список активированых ППР по моделям
         } else if ($this->requestUri[0] == "scheduler") {
             if ($this->requestUri[1] == "date") {
-                $data = $this->mt->GetMaintenceSchedulerDate($this->requestGETParam["start"], $this->requestGETParam["end"]);
+                $data = $this->mt->GetMaintenceSchedulerDate($this->requestGETParam["start"], $this->requestGETParam["end"]); // Сформируем список ППР на запрошеный месяц
             } else if ($this->requestUri[1] == "repair") {
                 $messages = "Maintense machines planed";
-                $data = $this->mt->GetMaintenceScheduleRepair($this->requestUri[2], $this->requestGETParam["date"]);
+                $data = $this->mt->GetMaintenceScheduleRepair($this->requestUri[2], $this->requestGETParam["date"]); // Вернем все назначеные машине ремонты на этот месяц или на запрошеный день.
+            } else if($this->requestUri[1] == "complited"){
+                $data = $this->mt->GetMaintenceScheduleComplited($this->requestUri[2]);
             } else {
-                $data = $this->mt->GetMaintenceScheduler($this->requestUri[1]);
+                $data = $this->mt->GetMaintenceScheduler($this->requestUri[1]); // Форминует список назначеных ППР по машинам или машине
             }
         } else {
         }

@@ -35,7 +35,7 @@ class Maintenance extends Modules
         return self::$instance;
     }
 
-
+    // Список всех видов ППР
     function GetTypes()
     {
         try {
@@ -173,6 +173,7 @@ class Maintenance extends Modules
         }
     }
 
+    // Форминует список назначеных ППР по машинам или машине
     function GetMaintenceScheduler($machine_id)
     {
 
@@ -346,6 +347,57 @@ class Maintenance extends Modules
 
 
 
+    // Сформируем список произведенных ППР. Все или за период.
+    function GetMaintenceScheduleComplited($machine_id = null, $start = null, $end = null)
+    {
+
+        try {
+
+            if (!empty($machine_id)) {
+
+                $data =   $this->db->getAll(
+                    "SELECT
+                    users.user_id,
+                    users.user_name,
+                    mevent_messages,
+                    machine_id,
+                    m_date,
+                    mtype_name,
+                    m_types.mtype_id
+                FROM
+                    `m_events`
+                INNER JOIN
+                    m_schedule
+                ON
+                    m_events.schedule_id = m_schedule.schedule_id
+                INNER JOIN
+                    m_types
+                ON
+                    m_types.mtype_id = m_schedule.mtype_id
+                INNER JOIN 
+                    users
+                ON
+                m_events.user_id = users.user_id
+                WHERE machine_id = ?i",
+                    $machine_id
+                );
+
+
+                return $data;
+
+
+
+
+
+                return "Comlited";
+            }
+        } catch (Exception $e) {
+            $this->log->add($e->getMessage());
+            throw new RuntimeException((string)$this->eraseMySQLError($e->getMessage()));
+        }
+    }
+
+
     function AddShedulerRepairEvent($data)
     {
         try {
@@ -364,6 +416,7 @@ class Maintenance extends Modules
             throw new RuntimeException((string)$this->eraseMySQLError($e->getMessage()));
         }
     }
+
 
     function format_data($data)
     {

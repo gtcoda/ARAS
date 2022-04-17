@@ -162,30 +162,7 @@ export default {
 	async navigareEvent(e) {
 
 
-		var wiki = function(divwiki, src, ){
-			let myIframe = document.createElement('iframe');
-			console.log();
 		
-			myIframe.src = src;
-			myIframe.width = `100%`;
-			myIframe.id = `frame`;
-			myIframe.setAttribute(`scrolling`, `no`);
-			document.getElementById(divwiki).append(myIframe);
-		
-			// Вешаем обработчик события onload на наш элемент iframe, который лежит в myIframe
-			myIframe.onload = () => {
-		
-			  let interval = setInterval(function () {
-		
-				if (myIframe.contentWindow != null) {
-				  myIframe.height = myIframe.contentWindow.document.body.scrollHeight;
-				}
-		
-			  }, 1000);
-		
-		
-			}
-		}
 
 
 
@@ -209,17 +186,20 @@ export default {
 
 				today = yyyy + "-" + mm + "-" + dd;
 
-
-
-
 				let TOCurrent = await Model.getScheduleRepair(machine_id, today);
-				console.log(TOCurrent);
 				Mapp.innerHTML = View.render("prevMainEventCurrent", TOCurrent);
-				wiki('maintenenceWiki',`https://aras.gtcoda.ru/dokuwiki/doku.php?id=ппр:` + String(TOCurrent.mtype_name).toLowerCase());
+
+				if (TOCurrent != null) {
+					View.wiki('maintenenceWiki', `https://aras.gtcoda.ru/dokuwiki/doku.php?id=ппр:` + String(TOCurrent.mtype_name).toLowerCase());
+				}
+
+
 				break;
 			}
 			case "List": {
-				Mapp.innerHTML = View.render("prevMainEventList");
+				let TOComplite = await Model.getSheduleComplite(machine_id);
+				console.log(TOComplite);
+				Mapp.innerHTML = View.render("prevMainEventList", TOComplite);
 				break;
 			}
 		}

@@ -7,6 +7,7 @@
             <p class="card-text">Номер станка: {{machine.machine_number}}</p>
             <p class="card-text">{{machine.machine_desc}} </p>
             <p class="card-text"> {{maintenenceEvent machine.machine_id}}   </p>
+            <p class="card-text" id="QRCode" machine_id = {{machine.machine_id}}> </p>
 
 
             <a class="card text-center text-decoration-none text-reset" style="background: #49a2f5;" data-bs-toggle="collapse" href="#wiki" role="button" aria-expanded="true" aria-controls="wiki">

@@ -72,15 +72,9 @@ Handlebars.registerHelper('setDate', function (event_data) {
   return new Handlebars.SafeString(event_data);
 });
 
-// Обработчик для сравнения в IF/ELSE
-Handlebars.registerHelper('ifEq', function (a, b, obj) {
-  if (a == b) {
-    return obj.fn(this);
-  } else {
-    return obj.inverse(this);
-  }
 
-});
+
+
 
 
 
@@ -129,31 +123,23 @@ export default {
   render() {
     resultsNode.innerHTML = View.render('events', items);
 
-    let myIframe = document.createElement('iframe');
+    var machine_id = document.getElementById("QRCode").getAttribute("machine_id");
+
+    var qrcode = new QRCode(document.getElementById("QRCode"), {
+      width : 100,
+      height : 100
+    });
+    
+    function makeCode () {		
+      qrcode.makeCode("https://aras.gtcoda.ru/#Events/"+machine_id);
+    }
+    
+    makeCode();
+
 
     let name = items.model.model_name;
-    console.log();
-
-    myIframe.src = `https://aras.gtcoda.ru/dokuwiki/doku.php?id=станки:` + String(name).toLowerCase();
-    myIframe.width = `100%`;
-    myIframe.id = `frame`;
-    myIframe.setAttribute(`scrolling`, `no`);
-    document.getElementById('wiki').append(myIframe);
-
-    // Вешаем обработчик события onload на наш элемент iframe, который лежит в myIframe
-    myIframe.onload = () => {
-
-      let interval = setInterval(function () {
-
-        if (myIframe.contentWindow != null) {
-          myIframe.height = myIframe.contentWindow.document.body.scrollHeight;
-        }
-
-      }, 1000);
-
-
-    }
-
+    View.wiki('wiki', `https://aras.gtcoda.ru/dokuwiki/doku.php?id=станки:` + String(name).toLowerCase());
+    
   },
 
 

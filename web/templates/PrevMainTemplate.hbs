@@ -258,27 +258,35 @@
 <script id="prevMainEventCurrentTemplate" type="text/template">
   
 
-    <div class="card shadow mb-3 rounded" style="background:#e6e6e6">
-        <div class="card-body ">
-            <h5 class="card-title">Выполнить техническое обслуживание в объеме {{mtype_name}}.</h5>
-            <div id="maintenenceWiki"></div>
-            
-            <form id="addMaintenenceEventForm">
-                    <input type="hidden" name="schedule_id" value="{{schedule_id}}">
 
-                    <div class="mb-3">
-                        <label for="mevent_messages" class="form-label">Замечания:</label>
-                        <textarea class="form-control" id="mevent_messages" rows="3"></textarea>
-                    </div>
+    {{#if this}}
+        <div class="card shadow mb-3 rounded" style="background:#e6e6e6">
+            <div class="card-body ">
+                <h5 class="card-title">Выполнить техническое обслуживание в объеме {{mtype_name}}.</h5>
+                <div id="maintenenceWiki"></div>
+                
+                <form id="addMaintenenceEventForm">
+                        <input type="hidden" name="schedule_id" value="{{schedule_id}}">
+
+                        <div class="mb-3">
+                            <label for="mevent_messages" class="form-label">Замечания:</label>
+                            <textarea class="form-control" id="mevent_messages" rows="3"></textarea>
+                        </div>
+                            
                         
-                    
-                    <button type="submit" class="btn btn-primary">Выполнено.</button>
-                    <label  id="ErrorMessage" class="col-sm control-label"></label>
-                </form>
+                        <button type="submit" class="btn btn-primary">Выполнено.</button>
+                        <label  id="ErrorMessage" class="col-sm control-label"></label>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-
+    {{else}}
+            <div class="card shadow mb-3 rounded" style="background:#e6e6e6">
+            <div class="card-body ">
+                <h5 class="card-title">На {{Date}} не запланировано технического обслуживания.</h5>
+            </div>
+        </div>
+    {{/if}}
 
    
 </script>
@@ -286,6 +294,26 @@
 
 <script id="prevMainEventListTemplate" type="text/template">
   
-  <p> List </p>
+  <div class="flex-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Вид ТО</th>
+                    <th scope="col">Исполнитель</th>
+                    <th scope="col">Замечания</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each this}}
+                        <td scope="row">{{m_date}}</td>
+                        <td scope="row">{{mtype_name}}</td>
+                        <td scope="row">{{user_name}}</td>
+                        <td scope="row">{{mevent_messages}}</td>
+                        </tr>
+                    {{/each}}  
+                </tbody>
+            </table>
+        </div>
    
 </script>

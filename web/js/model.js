@@ -679,6 +679,24 @@ export default {
                 }
             });
         });
+    },
+
+    // Cписок произведенных ППР
+    getSheduleComplite(machine_id) {
+        return new Promise((resolve, reject) => {
+            API.res('maintenance');
+            API.maintenance("scheduler/complited/" + machine_id).get({
+                jwt: settings.getJWT()
+            }).then(function (res) {
+                if (res.status == 'success') {
+                    resolve(res.data);
+                }
+                else {
+                    reject(new Error(res.message));
+                }
+            });
+        });
     }
+
 
 };
