@@ -43,7 +43,7 @@
                     <h5 class="card-title">
                         {{setDateRepair this.[0].event_data }}</br>
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#block{{this.[0].event_id }}" aria-expanded="false" aria-controls="block{{this.[0].event_id }}">
-                        {{this.[0].event_message }}
+                        {{setImg this.[0].event_message }}
                         </button>
                     </h5>
 
@@ -54,7 +54,7 @@
                             <div class="card shadow mb-3 rounded" style="background:#fff2d8">
                                 <div class="card-body ">
                                     {{setUser user_id}}  {{setDate event_data}} {{event_modif_1}}
-                                    <h5 class="card-title">{{setImg event_message}}</h5>
+                                    <p class="card-text">{{setImg event_message}}</p>
                                     
 
                                         <a href='' id='editEvent' event_id='{{event_id}}'>Редактировать</a>
@@ -106,6 +106,7 @@
 
                     <div class="mb-3">
                         <label for="event_message" class="form-label">Описание</label>
+                        <div id="toolbar"></div>
                         <textarea class="form-control" id="event_message" rows="3"></textarea>
                     </div>
                         

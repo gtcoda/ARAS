@@ -2,6 +2,7 @@ import View from "./view.js";
 import Model from "./model.js";
 import * as settings from './settings.js';
 import prevMain from "./pages/prevMain.js"
+import events from "./pages/events.js"
 
 
 checkSingInMenu();
@@ -11,7 +12,6 @@ checkSingInMenu();
 
 // Обработчик на все кнопки
 $('body').on('click', 'button', function (e) {
-
     // Обределим то за кнопка, и запустим обработчик
     switch (this.id) {
         case 'setModelButton': setModelButton(e);
@@ -25,8 +25,6 @@ $('body').on('click', 'button', function (e) {
         case 'PrevMainSave': { console.log(this) };
             break;
         case 'PrevMainSettings': prevMain.settings(this);
-            break;
-        case '': ;
             break;
         case '': ;
             break;
