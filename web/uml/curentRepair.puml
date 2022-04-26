@@ -1,0 +1,54 @@
+@startuml
+title "Выполнение текущего ремонта"
+
+actor "serviceman" as User
+boundary "Events" as Events
+
+control "Repairs" as Repairs
+control "Event" as Event
+ 
+database "База Данных" as DB
+
+' Настройки отображения
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+
+
+User->Events ++ : Создание нового ремонта
+Events -> Repairs ++ : Открыть новый ремонт
+Repairs -> DB++ : Получить информацию \n об открытых ремонтах
+Repairs <-- DB-- : Информация о ремонтах
+Repairs -> Repairs : Проверить открытые ремонты
+alt Существует открытый ремонт
+    Repairs -> Repairs : Закрывает ремонт
+end
+Events <-- Repairs-- : Идентификатор открытого ремонта
+
+User <-- Events-- : Новый ремонт создан
+
+
+User -> Events++ : Добавить сообщение
+Events -> Event++ : Добавляем сообщение
+Event -> Event : Проверяем данные
+alt validate true
+    Event -> DB ++ : Добавляем сообщение
+    Event <-- DB -- : Сообщение добавлено
+    Events <-- Event : Список актуальных сообщений
+    User <-- Events : Обновить актуальные сообщения
+else validate false
+    Events <-- Event-- : ErrorMessage
+    User <-- Events-- : Сообщение об ошибке
+end
+
+User -> Events++ : Закрыть текущий ремонт
+Events -> Repairs++ : Закрыть ремонт (идентификатор)
+
+Repairs -> DB++ : Получить информацию \n об открытых ремонтах
+Repairs <-- DB-- : Информация о ремонтах
+
+Repairs -> Repairs : Проверить открытые ремонты
+
+Events <-- Repairs-- : Ремонт закрыт
+User <-- Events-- : Ремонт закрыт
+
+@enduml

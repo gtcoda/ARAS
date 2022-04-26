@@ -1,0 +1,61 @@
+@startuml
+title Ввод информации о станке
+actor "Administrator" as User
+boundary "Страница ввода станка" as Page
+control "Gilds" as Gilds
+control "Machines" as Machines
+database "База данных" as DB
+
+' Начало построения схемы цеха
+User -> Page ++ : Номер цеха
+
+Page -> Gilds ++: Запрос информации о цехе \n  (номер цеха)
+
+Gilds -> DB ++: Запрос информации о цехе \n  (номер цеха)
+Gilds <-- DB --: Информация о цехе  \n ( номер цеха)
+
+Page <-- Gilds --: Информация о цехе  \n ( номер цеха)
+
+Page -> Page : Построить схему цеха
+User <-- Page -- : Схема цеха
+
+' Конец построения схемы цеха
+
+
+User -> Page ++ : Выбор позиции в схеме
+User <-- Page -- : Форма информации о станке
+
+
+
+User -> Page ++ : Добавить новый станок
+Page -> Machines ++ : Добавить станок
+
+Machines -> DB++ : Запрос данных о цехе
+Machines <-- DB -- : Данные о цехе
+
+Machines -> Machines : Проверить данные
+
+
+alt validate true
+
+    Machines -> DB ++ : Добавить станок
+    Machines <-- DB -- : Станок добавлен
+
+    Page <-- Machines -- : Станок добавлен
+    User <-- Page --  : Новая схема цеха
+
+
+else  validae false
+    
+    Page <-- Machines ++   : ErrorMessage
+    User <-- Page  -- : Cообщение об ошибке
+
+end
+
+
+
+
+
+
+
+@enduml
