@@ -1,0 +1,24 @@
+@startuml
+
+actor "Serviceman" as User
+boundary "MaintenancePage" as Page
+control "Maintenance" as Main 
+
+
+User -> Page ++ : Запрос сменного задания
+Page -> Main ++ : Сформировать сменное задание
+Main -> Main : Сформировать сменное задание
+Page <-- Main -- : Сменное задание
+User <-- Page -- : Получение сменного задания
+ 
+
+User -> Page ++ : Выполнено ППР
+Page -> Main ++ : Выполнено ППР(идентификатор)
+Main -> Main : Обработка и сохранение сообщения \nПереформирование сменного задания
+Page <-- Main -- :  Измененое сменное задание
+User <-- Page -- : Получение сменного задания
+ 
+
+
+
+@enduml

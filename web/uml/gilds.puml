@@ -1,5 +1,4 @@
 @startuml
-title Ввод информации о станке
 actor "Administrator" as User
 boundary "Страница ввода станка" as Page
 control "Gilds" as Gilds

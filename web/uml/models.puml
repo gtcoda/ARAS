@@ -1,37 +1,33 @@
 @startuml
-title Ввод модели
 actor "Administrator" as User
 boundary "Страница ввода модели" as Page
 control "Models" as Models
 database "База данных" as DB
 
-User -> Page : Кнопка добавить модель
-activate Page
-Page -> User : Форма добавления модели
+User -> Page ++ : Кнопка добавить модель
+
+User <-- Page : Форма добавления модели
 User -> Page : Ввести данные модели
 
-Page->Models : Создать модель
-activate Models
-Models->Models : Validate()
+Page-> Models ++ : Создать модель
+
+Models-> Models : Validate()
 
 alt validate ok
+ 
+    Models-> DB ++: Сохранить модель
 
-    Models->DB : Сохранить модель
+    Models <-- DB -- : Обновленный список
 
-    activate DB
-    DB->Models : Обновленный список
-    deactivate DB
+    Page <-- Models : Список моделей
+    
+    User <-- Page  : Обновленый список моделей
 
-    Models -> Page : Список моделей
-    deactivate Models
-    Page -> User : Обновленый список моделей
-    deactivate Page
 
 else validate not ok
-    activate Models
-    Models -> Page : ErrorMessage
-    deactivate Models
-    Page -> User : Вывод сообщения об ошибке
+    
+    Page <- Models -- : ErrorMessage
+    User <-- Page -- : Вывод сообщения об ошибке
 
 end
 

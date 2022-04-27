@@ -1,5 +1,4 @@
 @startuml
-title "Выполнение текущего ремонта"
 
 actor "serviceman" as User
 boundary "Events" as Events
@@ -52,3 +51,5 @@ Events <-- Repairs-- : Ремонт закрыт
 User <-- Events-- : Ремонт закрыт
 
 @enduml
+
+

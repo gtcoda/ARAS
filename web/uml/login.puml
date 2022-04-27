@@ -1,33 +1,29 @@
 @startuml
-title "Вход в систему"
 actor "Пользователь" as User
 boundary "Форма авторизации" as loginForm
 control "Модуль авторизации" as loginModul
 database "База данных" as DB
 
-User -> loginForm : Ввести данные (логин, пароль)
-activate loginForm
-loginForm -> loginModul : Передать данные (логин, пароль)
-activate loginModul
-loginModul -> DB : Получить данные пользователя (логин)
-activate DB
-DB -> loginModul : Данные пользователя
-deactivate DB
+User -> loginForm ++ : Ввести данные (логин, пароль)
+loginForm -> loginModul ++ : Передать данные (логин, пароль)
+loginModul -> DB ++ : Получить данные пользователя (логин)
+
+loginModul <-- DB -- : Данные пользователя
+
 loginModul -> loginModul : Проверить данные пользователя
 
 alt Логин, пароль верны
-    loginModul -> loginForm : JWT токен
-    deactivate loginModul
+    loginForm <-- loginModul : JWT токен
+    
     loginForm -> loginForm : сохранить JWT
-    loginForm -> User : Вход выполнен
-    deactivate loginForm
+    User <-- loginForm --: Вход выполнен
 
 else Данные не валидны
-    activate loginModul
-    loginModul -> loginForm : ErrorMessage
-    deactivate loginModul
+    
+    loginForm <-- loginModul --: ErrorMessage
+    
     activate loginForm
-    loginForm -> User : Сообщение о ошибке
+    User <-- loginForm : Сообщение о ошибке
     deactivate loginForm
 end
 

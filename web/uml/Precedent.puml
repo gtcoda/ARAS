@@ -1,0 +1,55 @@
+@startuml
+
+:Actor: as Actor
+:Administrator: as Admin
+:Serviceman: as Serv
+
+left to right direction
+
+(Вход в систему) as login
+
+(Выход из системы) as logout
+(Заполнение справочников) as AddDB
+
+
+
+(Заполнение графика ППР) as listPPR
+(Просмотр отчетной документации) as report
+
+(Просмотр профиля) as proful
+(Выполнение текущего ремонта) as currentRepair
+(Выполнение ППР) as PPR
+
+
+
+Actor --> login
+login --> Admin
+login --> Serv
+
+Admin -down-> logout
+Admin -down-> AddDB
+Admin -down-> listPPR
+Admin -down-> report
+Admin -down-> proful
+
+Serv -down-> logout
+Serv -down-> proful
+Serv -down-> currentRepair
+Serv -down-> PPR
+
+newpage 
+
+left to right direction
+
+(Заполнение справочников) as AddDB
+
+    (Добавление цехов) as AddGild
+    (Добавление моделей) as AddModel
+    (Добавление оборудования) as AddMachine
+
+AddDB -down->AddGild
+AddDB -down->AddModel
+AddDB -down->AddMachine
+
+
+@enduml

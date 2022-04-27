@@ -1,0 +1,23 @@
+@startuml
+
+actor "Administrator" as User
+control "Maintenance" as Main 
+
+
+User -> Main ++ : Создать вид ППР
+Main -> Main : validate()
+User <-- Main -- : Обновленый список видов ППР
+
+User ->Main ++ : Добавить ППР к модели
+Main -> Main : validate()
+User <-- Main -- : Обновленый список назначеных ППР
+
+User ->Main ++ : Сгенерировать годовой план
+Main -> Main : generate()
+User <-- Main -- : Обновленый годовой план
+
+User ->Main ++ : Создать месячный план-график
+Main -> Main : creation()
+User <-- Main -- : Обновленый месячный план-график
+
+@enduml

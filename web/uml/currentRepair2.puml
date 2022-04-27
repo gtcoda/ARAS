@@ -1,0 +1,44 @@
+@startuml
+
+actor "serviceman" as User
+boundary "Events" as Events
+
+control "Event" as Event
+ 
+
+
+' Настройки отображения
+
+skinparam sequenceMessageAlign center
+
+
+User->Events ++ : Создание нового ремонта
+Events -> Event ++ : Открыть новый ремонт
+
+Event -> Event : Проверить открытые ремонты
+alt Существует открытый ремонт
+    Event -> Event : Закрывает ремонт
+end
+Events <-- Event-- : Идентификатор открытого ремонта
+
+User <-- Events-- : Новый ремонт создан
+
+
+User -> Events++ : Добавить сообщение
+Events -> Event++ : Добавляем сообщение
+Event -> Event : Проверить \nи сохранить данные
+alt validate true
+    Events <-- Event : Список актуальных сообщений
+    User <-- Events : Обновить актуальные сообщения
+else validate false
+    Events <-- Event-- : ErrorMessage
+    User <-- Events-- : Сообщение об ошибке
+end
+
+User -> Events++ : Закрыть текущий ремонт
+Events -> Event++ : Закрыть ремонт (идентификатор)
+
+Events <-- Event-- : Ремонт закрыт
+User <-- Events-- : Ремонт закрыт
+
+@enduml

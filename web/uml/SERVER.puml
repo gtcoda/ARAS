@@ -1,0 +1,10 @@
+@startuml
+
+class SafeMySQL as SafeMySQL
+class Logi as Logi
+
+
+
+SafeMySQL --> Logi
+
+@enduml
