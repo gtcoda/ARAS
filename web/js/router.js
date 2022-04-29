@@ -1,6 +1,8 @@
 import Controller from './controller.js'
 import * as settings from './settings.js';
 
+const resultsNode = document.getElementById(settings.getApp());
+
 function getRouteInfo() {
     const hash = location.hash ? location.hash.slice(1) : '';
     const [name, id] = hash.split('/');
@@ -8,6 +10,15 @@ function getRouteInfo() {
 }
 
 function handleHash() {
+    resultsNode.innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Загрузка...</span>
+                </div>
+            </div>
+        `;
+
+
     const { name, params } = getRouteInfo();
 
     if (name) {
