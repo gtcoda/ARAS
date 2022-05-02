@@ -154,6 +154,62 @@ class Events extends Modules
         return $out;
     }
 
+
+
+    public function GetUnion($machine_id,$fields = [], $union = null, $limit_start = 0, $count = 10)
+    {
+
+        $this->log->add($fields);
+
+        $all = $this->db->getAll("SELECT
+                ?l
+            FROM
+                `events`
+            INNER JOIN
+                users USING(user_id)
+            INNER JOIN
+                repairs USING(repair_id)
+            INNER JOIN
+                machines USING(machine_id)
+            INNER JOIN
+                models USING(model_id)
+            INNER JOIN
+                gilds USING(gild_id)
+            WHERE
+                repair_id IN(
+                SELECT
+                    *
+                FROM
+                    (
+                    SELECT DISTINCT
+                        repair_id AS id
+                    FROM
+                        `events`
+                    WHERE
+                        machine_id = ?i
+                    ORDER BY
+                        `repair_id`
+                    DESC
+                    LIMIT ?i,?i
+                ) AS selected_repair
+            )
+        ", $fields,(int)$machine_id, $limit_start, $count);
+
+        if ($union) {
+            $res = $all;
+            foreach (array_reverse($union) as $u) {
+                $res = $this->arrayInd($res, $u);
+            }
+            return $res;
+        }
+
+        return $all;
+    }
+
+
+
+
+
     /**
      * Добавить событие
      * 
@@ -199,7 +255,7 @@ class Events extends Modules
             if (
                 !empty($arr['event_modif_1']) &&
                 ($arr['event_modif_1'] == 'Open' ||
-                $arr['event_modif_1'] == 'Info')
+                    $arr['event_modif_1'] == 'Info')
             ) { // В сообщении есть модификатор Open или Info
                 // Откроем ремонт и добавим в запись
                 $data['repair_id'] = $this->repair->Open();
@@ -218,6 +274,7 @@ class Events extends Modules
             throw new RuntimeException('Request is bad');
         }
     }
+
     /**
      * Изменить содержание записи по id
      * 

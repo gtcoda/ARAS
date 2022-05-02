@@ -385,11 +385,6 @@ class Maintenance extends Modules
 
                 return $data;
 
-
-
-
-
-                return "Comlited";
             }
         } catch (Exception $e) {
             $this->log->add($e->getMessage());

@@ -201,10 +201,6 @@ class maintenanceApi extends Api
             return $this->response($answer, 400);
         }
 
-
-
-
-
         if ($this->requestUri[0] == "setModelMain") {
             $this->mt->SetModelType(
                 $this->requestParams["model_id"],

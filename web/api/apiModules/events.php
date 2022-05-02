@@ -62,7 +62,36 @@ class eventsApi extends Api
     public function viewAction()
     {
         try {
+
+
+
+
+
             $this->log->add($this->requestUri);
+            
+            if($this->requestUri[0]=="union"){
+
+                $list = explode(",",$this->requestGETParam["fields"]);
+                $union = explode(",",$this->requestGETParam["union"]);
+
+                $data = $this->event->GetUnion(
+                    $this->requestUri[1],
+                    $list,
+                    $union,
+                    $this->requestGETParam["limit_start"],
+                    $this->requestGETParam["count"]
+                );
+                        $answer = array(
+                            'status' => 'success',
+                            'messages' => 'Event Union',
+                            'data' => $data,
+                        );
+
+                        $this->log->add($answer);
+                        return $this->response($answer, 200);
+            }
+
+
 
             if($this->requestUri[0]=="machine"){
                if($this->requestGET['filter'] == "repair"){

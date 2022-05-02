@@ -1,9 +1,9 @@
 <?php
 // Допишим логирование
-$config = include $_SERVER['DOCUMENT_ROOT'].'/config/config.php';
+$config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
 
 
-require_once($config['dirConfig'].'log.php');
+require_once($config['dirConfig'] . 'log.php');
 
 
 
@@ -33,6 +33,7 @@ require_once($config['dirConfig'].'log.php');
  * ?u ("update")  - complex placeholder for SET operator (substituted with string of `field`='value',`field`='value' format)
  * and
  * ?p ("parsed") - special type placeholder, for inserting already parsed statements without any processing, to avoid double parsing.
+ * ?l ("list") - 
  * 
  * Connection:
  *
@@ -102,33 +103,28 @@ class SafeMySQL
 
 	function __construct($opt = array())
 	{
-		$opt = array_merge($this->defaults,$opt);
+		$opt = array_merge($this->defaults, $opt);
 
 		$this->emode  = $opt['errmode'];
 		$this->exname = $opt['exception'];
 
-		if (isset($opt['mysqli']))
-		{
-			if ($opt['mysqli'] instanceof mysqli)
-			{
+		if (isset($opt['mysqli'])) {
+			if ($opt['mysqli'] instanceof mysqli) {
 				$this->conn = $opt['mysqli'];
 				return;
-
 			} else {
 
 				$this->error("mysqli option must be valid instance of mysqli class");
 			}
 		}
 
-		if ($opt['pconnect'])
-		{
-			$opt['host'] = "p:".$opt['host'];
+		if ($opt['pconnect']) {
+			$opt['host'] = "p:" . $opt['host'];
 		}
 
 		@$this->conn = mysqli_connect($opt['host'], $opt['user'], $opt['pass'], $opt['db'], $opt['port'], $opt['socket']);
-		if ( !$this->conn )
-		{
-			$this->error(mysqli_connect_errno()." ".mysqli_connect_error());
+		if (!$this->conn) {
+			$this->error(mysqli_connect_errno() . " " . mysqli_connect_error());
 		}
 
 		mysqli_set_charset($this->conn, $opt['charset']) or $this->error(mysqli_error($this->conn));
@@ -146,7 +142,7 @@ class SafeMySQL
 	 * @return resource|FALSE whatever mysqli_query returns
 	 */
 	public function query()
-	{	
+	{
 		return $this->rawQuery($this->prepareQuery(func_get_args()));
 	}
 
@@ -157,7 +153,7 @@ class SafeMySQL
 	 * @param int $mode - optional fetch mode, RESULT_ASSOC|RESULT_NUM, default RESULT_ASSOC
 	 * @return array|FALSE whatever mysqli_fetch_array returns
 	 */
-	public function fetch($result,$mode=self::RESULT_ASSOC)
+	public function fetch($result, $mode = self::RESULT_ASSOC)
 	{
 		return mysqli_fetch_array($result, $mode);
 	}
@@ -169,7 +165,7 @@ class SafeMySQL
 	 */
 	public function affectedRows()
 	{
-		return mysqli_affected_rows ($this->conn);
+		return mysqli_affected_rows($this->conn);
 	}
 
 	/**
@@ -215,8 +211,7 @@ class SafeMySQL
 	public function getOne()
 	{
 		$query = $this->prepareQuery(func_get_args());
-		if ($res = $this->rawQuery($query))
-		{
+		if ($res = $this->rawQuery($query)) {
 			$row = $this->fetch($res);
 			if (is_array($row)) {
 				return reset($row);
@@ -263,10 +258,8 @@ class SafeMySQL
 	{
 		$ret   = array();
 		$query = $this->prepareQuery(func_get_args());
-		if ( $res = $this->rawQuery($query) )
-		{
-			while($row = $this->fetch($res))
-			{
+		if ($res = $this->rawQuery($query)) {
+			while ($row = $this->fetch($res)) {
 				$ret[] = reset($row);
 			}
 			$this->free($res);
@@ -289,10 +282,8 @@ class SafeMySQL
 	{
 		$ret   = array();
 		$query = $this->prepareQuery(func_get_args());
-		if ( $res = $this->rawQuery($query) )
-		{
-			while($row = $this->fetch($res))
-			{
+		if ($res = $this->rawQuery($query)) {
+			while ($row = $this->fetch($res)) {
 				$ret[] = $row;
 			}
 			$this->free($res);
@@ -319,16 +310,16 @@ class SafeMySQL
 		$query = $this->prepareQuery($args);
 
 		$ret = array();
-		if ( $res = $this->rawQuery($query) )
-		{
-			while($row = $this->fetch($res))
-			{
+		if ($res = $this->rawQuery($query)) {
+			while ($row = $this->fetch($res)) {
 				$ret[$row[$index]] = $row;
 			}
 			$this->free($res);
 		}
 		return $ret;
 	}
+
+
 
 	/**
 	 * Helper function to get a dictionary-style array right out of query and optional arguments
@@ -349,21 +340,17 @@ class SafeMySQL
 
 
 		$ret = array();
-		if ( $res = $this->rawQuery($query) )
-		{
-			while($row = $this->fetch($res))
-			{
+		if ($res = $this->rawQuery($query)) {
+			while ($row = $this->fetch($res)) {
 
 				$key = $row[$index];
 				unset($row[$index]);
-				
-				if(count($row) == 1){// Стандартное поведение
+
+				if (count($row) == 1) { // Стандартное поведение
 					$ret[$key] = reset($row);
-				}
-				else{// Индексирование в массив 	
+				} else { // Индексирование в массив 	
 					$ret[$key] = $row;
 				}
-				
 			}
 			$this->free($res);
 		}
@@ -417,9 +404,9 @@ class SafeMySQL
 	 * @param  string $default - optional variable to set if no match found. Default to false.
 	 * @return string|FALSE    - either sanitized value or FALSE
 	 */
-	public function whiteList($input,$allowed,$default=FALSE)
+	public function whiteList($input, $allowed, $default = FALSE)
 	{
-		$found = array_search($input,$allowed);
+		$found = array_search($input, $allowed);
 		return ($found === FALSE) ? $default : $allowed[$found];
 	}
 
@@ -439,12 +426,10 @@ class SafeMySQL
 	 * @param  array $allowed - an array with allowed field names
 	 * @return array filtered out source array
 	 */
-	public function filterArray($input,$allowed)
+	public function filterArray($input, $allowed)
 	{
-		foreach(array_keys($input) as $key )
-		{
-			if ( !in_array($key,$allowed) )
-			{
+		foreach (array_keys($input) as $key) {
+			if (!in_array($key, $allowed)) {
 				unset($input[$key]);
 			}
 		}
@@ -490,15 +475,14 @@ class SafeMySQL
 			'start' => $start,
 			'timer' => $timer,
 		);
-		if (!$res)
-		{
+		if (!$res) {
 			$error = mysqli_error($this->conn);
-			
+
 			end($this->stats);
 			$key = key($this->stats);
 			$this->stats[$key]['error'] = $error;
 			$this->cutStats();
-			
+
 			$this->error("$error. Full query: [$query]");
 		}
 		$this->cutStats();
@@ -509,25 +493,21 @@ class SafeMySQL
 	{
 		$query = '';
 		$raw   = array_shift($args);
-		$array = preg_split('~(\?[nsiuapl])~u',$raw,null,PREG_SPLIT_DELIM_CAPTURE);
+		$array = preg_split('~(\?[nsiuapl])~u', $raw, null, PREG_SPLIT_DELIM_CAPTURE);
 		$anum  = count($args);
 		$pnum  = floor(count($array) / 2);
-		if ( $pnum != $anum )
-		{
+		if ($pnum != $anum) {
 			$this->error("Number of args ($anum) doesn't match number of placeholders ($pnum) in [$raw]");
 		}
 
-		foreach ($array as $i => $part)
-		{
-			if ( ($i % 2) == 0 )
-			{
+		foreach ($array as $i => $part) {
+			if (($i % 2) == 0) {
 				$query .= $part;
 				continue;
 			}
 
 			$value = array_shift($args);
-			switch ($part)
-			{
+			switch ($part) {
 				case '?n':
 					$part = $this->escapeIdent($value);
 					break;
@@ -547,78 +527,71 @@ class SafeMySQL
 					$part = $value;
 					break;
 				case '?l':
-						$part = $this->escapeLIST($value);;
-						break;	
+					$part = $this->escapeLIST($value);;
+					break;
 			}
 			$query .= $part;
 		}
-############################### Каждый запрос залогируем
+		############################### Каждый запрос залогируем
 
 		$log = Logi::getInstance();
 		$log->add(" ## " . $query);
-###############################
+		###############################
 
 		return $query;
 	}
 
-############################################
-/**
- *	Плейсхолдер ?l обрабатывает массив имен полей для вставки в SELECT
- *  
- * 
- */
+	############################################
+	/**
+	 *	Плейсхолдер ?l обрабатывает массив имен полей для вставки в SELECT
+	 *  
+	 * 
+	 */
 
-protected function escapeList($value)
-{
-	if ($value)
+	protected function escapeList($value)
 	{
-		$query ="";
-		foreach ($value as $val) {
-			$query .= "`".str_replace("`","``",$val)."`" ;
-			$query .= ",";
+		if ($value) {
+			$query = "";
+			foreach ($value as $val) {
+				$query .= "`" . str_replace("`", "``", $val) . "`";
+				$query .= ",";
+			}
+			$query = trim($query, ",");
+			return $query;
+		} else {
+			$this->error("Empty value for identifier (?l) placeholder");
 		}
-		$query = trim($query,",");
-		return $query;
-
-	} else {
-		$this->error("Empty value for identifier (?l) placeholder");
 	}
-}
 
 
-############################################
+	############################################
 	protected function escapeInt($value)
 	{
-		if ($value === NULL)
-		{
+		if ($value === NULL) {
 			return 'NULL';
 		}
-		if(!is_numeric($value))
-		{
-			$this->error("Integer (?i) placeholder expects numeric value, ".gettype($value)." given");
+		if (!is_numeric($value)) {
+			$this->error("Integer (?i) placeholder expects numeric value, " . gettype($value) . " given");
 			return FALSE;
 		}
-		if (is_float($value))
-		{
+		if (is_float($value)) {
 			$value = number_format($value, 0, '.', ''); // may lose precision on big numbers
-		} 
+		}
 		return $value;
 	}
 
 	protected function escapeString($value)
 	{
-		if ($value === NULL)
-		{
+		if ($value === NULL) {
 			return 'NULL';
 		}
-		return	"'".mysqli_real_escape_string($this->conn,$value)."'";
+		return	"'" . mysqli_real_escape_string($this->conn, $value) . "'";
 	}
 
 	protected function escapeIdent($value)
 	{
-		if ($value)
-		{
-			return "`".str_replace("`","``",$value)."`";
+		if ($value) {
+			return "`" . str_replace("`", "``", $value) . "`";
 		} else {
 			$this->error("Empty value for identifier (?n) placeholder");
 		}
@@ -626,19 +599,16 @@ protected function escapeList($value)
 
 	protected function createIN($data)
 	{
-		if (!is_array($data))
-		{
+		if (!is_array($data)) {
 			$this->error("Value for IN (?a) placeholder should be array");
 			return;
 		}
-		if (!$data)
-		{
+		if (!$data) {
 			return 'NULL';
 		}
 		$query = $comma = '';
-		foreach ($data as $value)
-		{
-			$query .= $comma.$this->escapeString($value);
+		foreach ($data as $value) {
+			$query .= $comma . $this->escapeString($value);
 			$comma  = ",";
 		}
 		return $query;
@@ -646,20 +616,17 @@ protected function escapeList($value)
 
 	protected function createSET($data)
 	{
-		if (!is_array($data))
-		{
-			$this->error("SET (?u) placeholder expects array, ".gettype($data)." given");
+		if (!is_array($data)) {
+			$this->error("SET (?u) placeholder expects array, " . gettype($data) . " given");
 			return;
 		}
-		if (!$data)
-		{
+		if (!$data) {
 			$this->error("Empty array for SET (?u) placeholder");
 			return;
 		}
 		$query = $comma = '';
-		foreach ($data as $key => $value)
-		{
-			$query .= $comma.$this->escapeIdent($key).'='.$this->escapeString($value);
+		foreach ($data as $key => $value) {
+			$query .= $comma . $this->escapeIdent($key) . '=' . $this->escapeString($value);
 			$comma  = ",";
 		}
 		return $query;
@@ -667,12 +634,11 @@ protected function escapeList($value)
 
 	protected function error($err)
 	{
-		$err  = __CLASS__.": ".$err;
+		$err  = __CLASS__ . ": " . $err;
 
-		if ( $this->emode == 'error' )
-		{
-			$err .= ". Error initiated in ".$this->caller().", thrown";
-			trigger_error($err,E_USER_ERROR);
+		if ($this->emode == 'error') {
+			$err .= ". Error initiated in " . $this->caller() . ", thrown";
+			trigger_error($err, E_USER_ERROR);
 		} else {
 			throw new $this->exname($err);
 		}
@@ -682,11 +648,9 @@ protected function escapeList($value)
 	{
 		$trace  = debug_backtrace();
 		$caller = '';
-		foreach ($trace as $t)
-		{
-			if ( isset($t['class']) && $t['class'] == __CLASS__ )
-			{
-				$caller = $t['file']." on line ".$t['line'];
+		foreach ($trace as $t) {
+			if (isset($t['class']) && $t['class'] == __CLASS__) {
+				$caller = $t['file'] . " on line " . $t['line'];
 			} else {
 				break;
 			}
@@ -700,8 +664,7 @@ protected function escapeList($value)
 	 */
 	protected function cutStats()
 	{
-		if ( count($this->stats) > 100 )
-		{
+		if (count($this->stats) > 100) {
 			reset($this->stats);
 			$first = key($this->stats);
 			unset($this->stats[$first]);
