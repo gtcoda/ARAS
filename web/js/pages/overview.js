@@ -99,7 +99,6 @@ export default {
             var data = await Model.getGilds(gild_id);
             var machines = await Model.getGildsM(gild_id);
             var models = await Model.getModelsIndex();
-
         }
         catch (e) {
             console.log(e);

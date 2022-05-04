@@ -117,13 +117,13 @@ class Repairs extends Modules
     function getCalendar($start = null, $end = null)
     {
 
+
         if (empty($end)) {
             $end = date("Y-m-d");
         }
         if (empty($start)) {
             $start = date("Y-m-d", strtotime("-1 month"));
         }
-
 
 
 
@@ -136,7 +136,7 @@ class Repairs extends Modules
             "SELECT machine_id, repair_id, event_data, event_message, DATE_FORMAT(event_data,'%Y-%m-%d') 
                                     FROM `events` 
                                     WHERE 
-                                            repair_id IN (SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND ?s ORDER BY repair_id) 
+                                            repair_id IN (SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND Date(?s)+1 ORDER BY repair_id) 
                                         AND 
                                             event_modif_1 = 'Open'",
             $start,
@@ -149,7 +149,7 @@ class Repairs extends Modules
             "  SELECT repair_id, event_data AS end_data 
                                         FROM `events` 
                                         WHERE 
-                                            repair_id IN (SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND ?s ORDER BY repair_id)  
+                                            repair_id IN (SELECT DISTINCT repair_id FROM `events` WHERE event_data BETWEEN ?s AND Date(?s)+1 ORDER BY repair_id)  
                                         ORDER BY `events`.`repair_id` ASC",
             $start,
             $end
@@ -169,7 +169,7 @@ class Repairs extends Modules
                     " (" .  $models[$event["machine_id"]]["model_name"] . ") " .
                     $event["event_message"],
                 "start" => $this->format_data($event["event_data"]),
-                "end"   => $this->format_data($end_date[$event["repair_id"]]["end_data"])
+                "end"   => $this->format_data($end_date[$event["repair_id"]]["end_data"]),
             );
         }
 

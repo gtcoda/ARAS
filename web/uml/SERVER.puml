@@ -1,10 +1,38 @@
 @startuml
 
-class SafeMySQL as SafeMySQL
-class Logi as Logi
+class SafeMySQL 
+class Logi 
 
-
+class Modules
 
 SafeMySQL --> Logi
+Modules -up-> SafeMySQL
+
+Modules -left-> Logi
+
+package "Modules" {
+Modules <|-- Module
+Modules <|-- Users
+Modules <|-- Events
+Modules <|-- Repair
+Modules <|-- Gilds
+Modules <|-- Machines
+}
+
+class API
+
+package "API" {
+API <|-- ApiModule
+API <|-- ApiUsers
+API <|-- ApiEvents
+API <|-- ApiRepair
+API <|-- ApiGilds
+API <|-- ApiMachines
+
+} 
+
+
+
+
 
 @enduml

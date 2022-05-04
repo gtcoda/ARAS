@@ -11,13 +11,24 @@ function _arrayBufferToBase64(buffer) {
     return window.btoa(binary);
 }
 
+API.res('login');
+API.res('users');
+API.res('events');
+API.res('repairs');
+API.res('img');
+API.res('models');
+API.res('gilds');
+API.res('machines');
+
+API.res('models');
+API.res('maintenance');
 
 
 export default {
 
     // Авторизироваться
     login(login = "", password = "") {
-        API.res('login');
+
 
         return new Promise((resolve, reject) => {
             API.login.post({
@@ -36,7 +47,6 @@ export default {
     // Проверить корректность токена
     checkJWT(value) {
         return new Promise((resolve, reject) => {
-            API.res('login');
             API.login.put({ jwt: value }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(true);
@@ -50,7 +60,6 @@ export default {
 
     // токен из jwt
     getUserNameJWT() {
-        API.res('login');
 
         return new Promise((resolve, reject) => {
             API.login.put({
@@ -71,7 +80,7 @@ export default {
     setUser(login, password, name, email) {
         return new Promise((resolve, reject) => {
 
-            API.res('users');
+
             API.users.post({
                 user_login: login,
                 user_password: password,
@@ -92,8 +101,6 @@ export default {
     // Получить всех пользователей
     getUsers() {
         return new Promise((resolve, reject) => {
-
-            API.res('users');
             API.users().get({
                 jwt: settings.getJWT()
             }).then(function (response) {
@@ -113,7 +120,7 @@ export default {
     getEvent(event_id) {
         return new Promise((resolve, reject) => {
 
-            API.res('events');
+
             API.events(event_id).get({
                 jwt: settings.getJWT()
             }).then(function (response) {
@@ -130,7 +137,7 @@ export default {
 
         return new Promise((resolve, reject) => {
 
-            API.res('events');
+
             API.events('machine/' + machine_id).get().then(function (events) {
                 if (events.status == 'success') {
                     resolve(events.data);
@@ -149,7 +156,7 @@ export default {
 
         return new Promise((resolve, reject) => {
 
-            API.res('events');
+
             API.events('machine/' + machine_id).get({ 'filter': 'repair' }).then(function (response) {
                 resolve(response.data);
             },
@@ -166,7 +173,6 @@ export default {
 
         return new Promise((resolve, reject) => {
 
-            API.res('events');
             API.events.post(event).then(function (response) {
                 resolve(response.data);
             },
@@ -182,7 +188,7 @@ export default {
     updateEvent(event_id, data) {
         return new Promise((resolve, reject) => {
 
-            API.res('events');
+
             API.events(event_id).put(data).then(function (response) {
                 resolve(response.data);
             },
@@ -198,7 +204,7 @@ export default {
     openRepair() {
         return new Promise((resolve, reject) => {
 
-            API.res('repairs');
+
             API.repairs.post({ jwt: settings.getJWT() }).then(function (response) {
                 resolve(response.repair_id);
             },
@@ -213,7 +219,7 @@ export default {
     curentRepair(machine_id) {
         return new Promise((resolve, reject) => {
 
-            API.res('repairs');
+
             API.repairs(machine_id).get({ jwt: settings.getJWT() }).then(function (response) {
                 resolve(response.repair_id);
             },
@@ -228,7 +234,7 @@ export default {
     repairGranttData() {
         return new Promise((resolve, reject) => {
 
-            API.res('repairs');
+
             API.repairs().get({ jwt: settings.getJWT() }).then(function (response) {
                 resolve(response.data);
             },
@@ -251,7 +257,7 @@ export default {
             fileReader.onloadend = function () {
                 var base64img = "data:" + file.type + ";base64," + _arrayBufferToBase64(fileReader.result);
 
-                API.res('img');
+
 
 
                 API.img.post({
@@ -279,7 +285,7 @@ export default {
     getModels(id) {
         if (id) {
             return new Promise((resolve, reject) => {
-                API.res('models');
+
                 API.models(id).get({ jwt: settings.getJWT() }).then(function (res) {
                     if (res.status == 'success') {
                         resolve(res.data);
@@ -292,7 +298,7 @@ export default {
         }
         else {
             return new Promise((resolve, reject) => {
-                API.res('models');
+
                 API.models.get({ jwt: settings.getJWT() }).then(function (res) {
                     if (res.status == 'success') {
                         resolve(res.data);
@@ -307,7 +313,7 @@ export default {
     },
     getModelForMachineId(id) {
         return new Promise((resolve, reject) => {
-            API.res('models');
+
             API.models("machine/" + id).get({ jwt: settings.getJWT() }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
@@ -322,7 +328,7 @@ export default {
     // Получить cтанки проиндексированные по модели
     getMachinesIndexModel() {
         return new Promise((resolve, reject) => {
-            API.res('models');
+
             API.models.get({ jwt: settings.getJWT(), format: "machineIndex" }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
@@ -338,7 +344,7 @@ export default {
     getModelsIndex() {
 
         return new Promise((resolve, reject) => {
-            API.res('models');
+
             API.models.get({ jwt: settings.getJWT(), view: "[model_id,model_name]", format: "index" }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
@@ -357,7 +363,7 @@ export default {
 
 
         return new Promise((resolve, reject) => {
-            API.res('models');
+
             API.models.post({
                 model_name: value.model_name,
                 model_desc: value.model_desc
@@ -377,7 +383,7 @@ export default {
 
     updateModel(value) {
         return new Promise((resolve, reject) => {
-            API.res('models');
+
             API.models(value.model_id).put({
                 model_name: value.model_name,
                 model_desc: value.model_desc
@@ -399,7 +405,7 @@ export default {
 
         if (id) {
             return new Promise((resolve, reject) => {
-                API.res('gilds');
+
                 API.gilds(id).get({ jwt: settings.getJWT() }).then(function (res) {
                     if (res.status == 'success') {
                         resolve(res.data);
@@ -416,7 +422,7 @@ export default {
 
 
             return new Promise((resolve, reject) => {
-                API.res('gilds');
+
                 API.gilds.get({ jwt: settings.getJWT() }).then(function (res) {
                     if (res.status == 'success') {
                         resolve(res.data);
@@ -435,7 +441,7 @@ export default {
     // Получить все станки конкретного цеха
     getGildsM(id) {
         return new Promise((resolve, reject) => {
-            API.res('gilds');
+
             API.gilds(id + "/machines").get({ jwt: settings.getJWT() }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
@@ -449,7 +455,7 @@ export default {
     // Получить все станки конкретного цеха сгрупированые по модели
     getGildsMIndex(id) {
         return new Promise((resolve, reject) => {
-            API.res('gilds');
+
             API.gilds(id + "/machines").get({ jwt: settings.getJWT(), view: "[model_id,machine_id,machine_number,gild_id,machine_desc]", format: "index" }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
@@ -465,7 +471,7 @@ export default {
     setGild(value) {
 
         return new Promise((resolve, reject) => {
-            API.res('gilds');
+
             API.gilds.post(value).then(
                 function (response) {
                     resolve(response.data);
@@ -485,7 +491,7 @@ export default {
     // Добавить станок
     setMachines(value) {
         return new Promise((resolve, reject) => {
-            API.res('machines');
+
             API.machines.post({
                 model_id: value.model_id,
                 machine_number: value.machine_number,
@@ -507,7 +513,7 @@ export default {
     getMachines(id) {
 
         return new Promise((resolve, reject) => {
-            API.res('machines');
+
             API.machines(id).get({ jwt: settings.getJWT() }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
@@ -524,7 +530,7 @@ export default {
 
     getMaintenceModelOn() {
         return new Promise((resolve, reject) => {
-            API.res('maintenance');
+
             API.maintenance("table").get({ jwt: settings.getJWT() }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
@@ -539,7 +545,7 @@ export default {
     // Получить все доступные типы ТО
     getMaintenceTypes() {
         return new Promise((resolve, reject) => {
-            API.res('maintenance');
+
             API.maintenance("types").get({ jwt: settings.getJWT() }).then(function (res) {
                 if (res.status == 'success') {
                     resolve(res.data);
@@ -554,7 +560,7 @@ export default {
     // Обновить подключенный ремонт
     setMaintenceTypes(model_id, mtype_id, value) {
         return new Promise((resolve, reject) => {
-            API.res('maintenance');
+
             API.maintenance("setModelMain").post({
                 jwt: settings.getJWT(),
                 model_id: model_id,
@@ -574,7 +580,7 @@ export default {
     // Обновить подключенный ремонт
     setMaintence(machine) {
         return new Promise((resolve, reject) => {
-            API.res('maintenance');
+
             API.maintenance("setShedulerMain").post({
                 jwt: settings.getJWT(),
                 data: machine
@@ -593,7 +599,7 @@ export default {
     // Обновить подключенный ремонт
     setScheduleDate(schedule_id, m_date) {
         return new Promise((resolve, reject) => {
-            API.res('maintenance');
+
             API.maintenance("scheduler").post({
                 jwt: settings.getJWT(),
                 data: {
@@ -614,7 +620,7 @@ export default {
     // Получить все типы ТО модели
     getMaintenceType(model_id) {
         return new Promise((resolve, reject) => {
-            API.res('maintenance');
+
             API.maintenance("type/" + model_id).get({
                 jwt: settings.getJWT()
             }).then(function (res) {
@@ -630,7 +636,7 @@ export default {
 
     getMaintenceSchedule(machine_id = "") {
         return new Promise((resolve, reject) => {
-            API.res('maintenance');
+
             API.maintenance("scheduler/" + machine_id).get({
                 jwt: settings.getJWT()
             }).then(function (res) {
@@ -647,7 +653,7 @@ export default {
     // Получить назначеное ТО
     getScheduleRepair(machine_id = "", date = "") {
         return new Promise((resolve, reject) => {
-            API.res('maintenance');
+
             API.maintenance("scheduler/repair/" + machine_id).get({
                 jwt: settings.getJWT(),
                 date: date
@@ -665,7 +671,7 @@ export default {
     // Отправить сообщение о выполненом ТО
     addSheduleRepairEvent(schedule_id, mevent_messages) {
         return new Promise((resolve, reject) => {
-            API.res('maintenance');
+
             API.maintenance("scheduler/repair").post({
                 jwt: settings.getJWT(),
                 schedule_id: schedule_id,
@@ -684,7 +690,7 @@ export default {
     // Cписок произведенных ППР
     getSheduleComplite(machine_id) {
         return new Promise((resolve, reject) => {
-            API.res('maintenance');
+
             API.maintenance("scheduler/complited/" + machine_id).get({
                 jwt: settings.getJWT()
             }).then(function (res) {
@@ -696,7 +702,19 @@ export default {
                 }
             });
         });
-    }
+    },
 
+
+    getS() {
+        return API.models().get({ jwt: settings.getJWT() }).then(function (res) {
+            if (res.status == 'success') {
+                return res.data;
+            }
+            else {
+                return new Error(res.message);
+            }
+        });
+
+    }
 
 };

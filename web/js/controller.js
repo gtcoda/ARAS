@@ -9,6 +9,7 @@ import gildsPage from "./pages/gilds.js"
 import calendarPage from "./pages/calendar.js"
 import wikiPage from "./pages/wiki.js"
 import prevMain from "./pages/prevMain.js"
+import userPage from "./pages/user.js"
 import view from "./view.js";
 import model from "./model.js";
 
@@ -53,7 +54,6 @@ export default {
         }
 
     },
-
 
     async EventsRoute(param) {
         /*
@@ -134,7 +134,10 @@ export default {
     async PrevMainRoute(){
         await prevMain.setData();
         prevMain.render();
-    }
+    },
 
+    async UserRoute(){
+        await userPage.setData();
+    }
 
 };

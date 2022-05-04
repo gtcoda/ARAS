@@ -1,10 +1,14 @@
 import * as settings from '../settings.js';
 
+
 const resultsNode = document.getElementById(settings.getApp());
 
 export default{
 
-    render() {
+    async render() {
+
+
+
 
         let myIframe = document.createElement('iframe');
 

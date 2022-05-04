@@ -1,0 +1,18 @@
+@startuml
+
+boundary "Маршрутизатор" as Router
+control "Run()" as Run 
+control "Action()" as Action
+control "Modules" as Modules
+control "responce()" as responce
+
+Router -> Run ++ : Выбор конечной \nточки API
+Run -> Action ++ : Выбор обработчика
+Action -> Modules ++ : Запрос данных
+Modules -> responce ++ : Структурированные \nданные
+Modules <-- responce -- : Данные JSON
+Action <-- Modules -- : Данные JSON
+Run <-- Action -- : Данные JSON
+Router <-- Run -- : Данные JSON
+
+@enduml

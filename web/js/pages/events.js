@@ -424,13 +424,7 @@ export default {
     let name = items.model.model_name;
     View.wiki('wiki', `https://aras.gtcoda.ru/dokuwiki/doku.php?id=станки:` + String(name).toLowerCase());
 
-
-
-
     initToolbar("toolbar", "event_message", toolbar, true);
-
-
-
 
   },
 
