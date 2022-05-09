@@ -44,27 +44,27 @@
     
     <div class="flex-container" data-dialog-title="Добавить цех">
         <form id="addGildForm">
-        <div class="mb-3">
+        <div class="form-group">
             <label class="form-label">Номер цеха</label>
             <input name="gild_number" class="form-control">
         </div>
 
-        <div class="mb-3">
+        <div class="form-group">
             <label class="form-label">Название цеха</label>
             <input name="gild_name" class="form-control">
         </div>
 
-        <div class="mb-3">
+        <div class="form-group">
             <label class="form-label">Описание</label>
             <input name="gild_desc" class="form-control">
         </div>
 
 
-        <div class="mb-3">
+        <div class="form-group">
             <label class="form-label">Размер</label>
         </div>
 
-        <div class="input-group mb-3">
+        <div class="input-group form-group">
             <span class="input-group-text">X</span>
             <input name="gild_dimX" class="form-control">
             <span class="input-group-text">Y</span>
@@ -72,10 +72,16 @@
         </div>
 
 
-        <div class="mb-3">
-            <label id="ErrorMessage" class="col-sm control-label"></label>
+        <div class="form-group">
+            <label id="ErrorMessage" class="col-sm control-label text-danger"></label>
         </div>
-        <button type="submit" class="btn btn-primary">Добавить</button>
+
+        <div class="form-group">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button  type="submit" class="btn btn-primary me-md-2 btn-sm">Добавить</button>
+            </div>
+        </div>
+
         </form>
     </div>
    
@@ -95,7 +101,7 @@
         <input type="hidden" name="gild_id" value="{{gild_id}}">
 
 
-        <div class="mb-3">
+        <div class="form-group">
             <label for="exampleInputEmail1" class="form-label">Модель</label>
             <select name="model_id" class="form-select form-select-sm" aria-label=".form-select-sm example">
                 {{#each models}}
@@ -103,20 +109,27 @@
                 {{/each}}
             </select>
         </div>
-        <div class="mb-3">
+        <div class="form-group">
             <label for="exampleInputPassword1" class="form-label">Номер</label>
             <input name="machine_number" class="form-control" id="exampleInputPassword1">
         </div>
 
-        <div class="mb-3">
+        <div class="form-group">
             <label for="exampleInputPassword1" class="form-label">Описание</label>
             <input name="machine_desc" class="form-control" id="exampleInputPassword1">
         </div>
 
-        <div class="mb-3">
-            <label id="ErrorMessage" class="col-sm control-label"></label>
+        <div class="form-group">
+            <label id="ErrorMessage" class="col-sm control-label text-danger"></label>
         </div>
-        <button type="submit" id="addModelButton" class="btn btn-primary">Добавить</button>
+
+        <div class="form-group">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button id="addModelButton" type="submit" class="btn btn-primary me-md-2 btn-sm">Добавить</button>
+            </div>
+        </div>
+
+
         </form>
     </div>
    

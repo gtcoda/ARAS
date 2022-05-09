@@ -172,6 +172,12 @@ function hashRefresh() {
 // Создать модальное окно
 // html - код модального окна 
 function modal(html, id) {
+
+
+    if ($.fn.button && $.fn.button.noConflict !== undefined) {
+        $.fn.bootstrapBtn = $.fn.button.noConflict();
+     }
+
     $(html) // Создание элемента div
         .addClass("dialog") // Назначение элементу класса
         .attr('id', id)     // Назначить окну id
@@ -198,15 +204,16 @@ function modal(html, id) {
  */
 
 // Проконтролируем надпись в меню
-function checkSingInMenu() {
+async function checkSingInMenu() {
     // Нет токена
     if ($.isEmptyObject(settings.getJWT())) {
         $("#signIn").empty();
-        $("#signIn").append(' Войти ');
+        $("#signIn").append('Войти');
     }
     else {
+      
         $("#signIn").empty();
-        $("#signIn").append(' Выйти ');
+        $("#signIn").append('Выход');
     }
 }
 

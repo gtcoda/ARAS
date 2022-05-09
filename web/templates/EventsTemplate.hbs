@@ -7,7 +7,7 @@
             <p class="card-text">Номер станка: {{machine.machine_number}}</p>
             <p class="card-text">{{machine.machine_desc}} </p>
             <p class="card-text"> {{maintenenceEvent machine.machine_id}}   </p>
-            <p class="card-text" id="QRCode" machine_id = {{machine.machine_id}}> </p>
+            <!--<p class="card-text" id="QRCode" machine_id = {{machine.machine_id}}> </p> -->
 
 
             <a class="card text-center text-decoration-none text-reset" style="background: #49a2f5;" data-bs-toggle="collapse" href="#wiki" role="button" aria-expanded="true" aria-controls="wiki">
@@ -32,8 +32,6 @@
                         <div class="card-body ">
                             {{setUser this.[0].user_id}}  {{setDate this.[0].event_data}} {{this.[0].event_modif_1}}
                             <h5 class="card-title">{{setImg this.[0].event_message}}</h5>
-                            
-
                                 <a href='' id='editEvent' event_id='{{this.[0].event_id}}'>Редактировать</a>
                         </div>
                     </div>
@@ -54,10 +52,9 @@
                             <div class="card shadow mb-3 rounded" style="background:#fff2d8">
                                 <div class="card-body ">
                                     {{setUser user_id}}  {{setDate event_data}} {{event_modif_1}}
-                                    <p class="card-text">{{setImg event_message}}</p>
-                                    
-
-                                        <a href='' id='editEvent' event_id='{{event_id}}'>Редактировать</a>
+                                    <p class="card-text">{{setImg event_message}} </br>
+                                    <a href='' id='editEvent' event_id='{{event_id}}'>Редактировать</a>
+                                    </p>
                                 </div>
                             </div>
 

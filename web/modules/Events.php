@@ -161,6 +161,9 @@ class Events extends Modules
 
         $this->log->add($fields);
 
+        // Запретим запрашивать определенные поля
+        unset($fields['user_password']);
+
         $all = $this->db->getAll("SELECT
                 ?l
             FROM

@@ -105,7 +105,7 @@ export default {
         }
 
         var html = `
-        <table class='table-borderless' style='border-collapse:separate; border-spacing: 10px;'>
+        <table class='table-borderless' style='border-collapse:separate; border-spacing: 10px; '>
             <tbody> `;
 
 
@@ -131,6 +131,22 @@ export default {
                         machine_number: "",
                         machine_desc: ""
                     };
+
+                    html += `
+                    <th>
+                    <div class='card opacity-0' style="width: 6rem; height: 5rem"  gild_id='' dimx='' dimy=''>
+                        <div  machine_id=  class="card-body eventsMachineSet">
+                            <p class="card-text"></p>
+                            <a href="#Events/"><h5 class="card-title"></h5></a>
+                            <p class="card-text"></p>
+    
+                        </div>
+                    </div>
+                    </th>
+                    `;
+
+                    continue;
+
                 }
 
                 if (models[machine.model_id] != undefined) {
@@ -140,17 +156,17 @@ export default {
                     var model = "";
                 }
 
-
-
                 html += `
                 <th>
-                <div class='card' style="width: 8rem; height: 10rem" gild_id='${data.gild_id}' dimx='${x}' dimy='${y}'>
-                    <div  machine_id=${machine.machine_id}  class="card-body eventsMachineSet">
-                        <p class="card-text">${model}</p>
-                        <a href="#Events/${machine.machine_id}"><h5 class="card-title">${machine.machine_number}</h5></a>
+                <div class='card border-secondary overview_machine' style=' width: 6rem; border-radius: 1rem;' machine_id = '${machine.machine_id}'   gild_id='${data.gild_id}' dimx='${x}' dimy='${y}'>
+                    <div  machine_id=${machine.machine_id}  class="card-body text-center">
+                        
+                        <a href="#Events/${machine.machine_id}" class="btn btn-light">${machine.machine_number}</a>
                         <p class="card-text">${machine.machine_desc}</p>
-
                     </div>
+                    <div class="text-center" style=""> 
+                        <p class="card-text">${model}</p>
+                    </div>    
                 </div>
                 </th>
                 `;
@@ -161,6 +177,33 @@ export default {
         html += `</tbody>
         </table>`;
         tableNode.innerHTML = html;
+
+
+
+        $(".overview_machine").on("mouseover",function(e){
+            
+
+            let parrent = e.target.closest(".overview_machine");
+
+            parrent.classList.add("bg-light");
+        });
+
+        $(".overview_machine").on("mouseout",function(e){
+            
+            let parrent = e.target.closest(".overview_machine");
+
+            parrent.classList.remove("bg-light");
+        });
+
+        $(".overview_machine").on("click",function(e){
+            
+            let parrent = e.target.closest(".overview_machine");
+
+
+            console.log(parrent);
+
+        });
+
     },
 
     async machineTable(gild_id) {

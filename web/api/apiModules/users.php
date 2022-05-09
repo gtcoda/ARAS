@@ -55,6 +55,8 @@ class usersApi extends Api
 
         try {
 
+
+
             if (ctype_digit($this->requestUri[0])) {
                 $data = $this->user->GetUserId($this->requestUri[0]);
             } else {

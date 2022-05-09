@@ -27,32 +27,38 @@
 <script id="prevMainYearsTemplate" type="text/template">
    
      <div>
+         <table class="table" style ="border: hidden;">
+             <tbody>
 
         {{#each this}}
-           
+           <tr style ="border: hidden;">
+               <th>
             <h5 class="card-title">
-                <div class="d-grid gap-2">
+                <div style="width: 8rem; " class = 'd-grid gap-2'>
                     <button class="btn btn-primary " type="button" data-bs-toggle="collapse" data-bs-target="#block{{@key}}" aria-expanded="false" aria-controls="block">
                             {{@key}}
                     </button>
                  <div>        
             </h5>
-           
+                </th>
 
+            <th>
             <div class="collapse" id="block{{@key}}">
                 <div class="flex-container">
 
                     <button type="button" class="btn btn-secondary btn-sm" id="PrevMainGenerate" model_id="{{this.[0].model_id}}" model="{{@key}}">Сгенерировать</button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainSave" model="{{@key}}">Сохранить</button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="PrevMainSettings" model="{{this.[0].model_id}}">Настроить</button>
 
                     <div id="table_{{@key}}">
                         {{insertTable this}}
                     </div>
 
                 </div>
-            </div>    
+            </div>
+            <th>
+            </tr>    
         {{/each}}  
+            </tbody>
+        </table>
     </div>
 
 </script>

@@ -12,23 +12,25 @@
     <link href="css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
-    
+
     <link rel="stylesheet" href="css/jquery-ui.min.css">
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 
-    <script src="js/lib/rest-client.js"></script>
+
     <script src="js/lib/jquery.min.js"></script>
     <script src="js/lib/bootstrap.js"></script>
     <script src="js/lib/jquery-ui.min.js"></script>
+
     <script src="js/lib/qrcode.js"></script>
-<!--
+    <script src="js/lib/rest-client.js"></script>
+    <!--
     <script src="js/lib/dhtmlx/dhtmlxgantt.js?v=7.1.10"></script>
 	<link rel="stylesheet" href="js/lib/dhtmlx/dhtmlxgantt.css?v=7.1.10">
     -->
 
     <link href='js/lib/fullcalendar/main.css' rel='stylesheet' />
-<script src='js/lib/fullcalendar/main.js'></script>
-<script src='js/lib/fullcalendar/locales-all.js'></script>   
+    <script src='js/lib/fullcalendar/main.js'></script>
+    <script src='js/lib/fullcalendar/locales-all.js'></script>
 
     <title>ARAS</title>
 </head>
@@ -58,9 +60,6 @@
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" data-role="nav-calen" href="#Calendar">Календарь</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-role="nav-rep" href="#Report">Отчет</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-role="nav-task" href="#Wiki">Документация</a>
@@ -94,22 +93,20 @@
     </div>
 
     <div id="templates">
-    <?php
-    $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-    require_once($config['dirConfig'] . 'log.php');
+        <?php
+        $config = include $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
+        require_once($config['dirConfig'] . 'log.php');
 
-    $log = Logi::getInstance();
+        $log = Logi::getInstance();
 
-    $file = scandir($config['dirTemplate']);
+        $file = scandir($config['dirTemplate']);
+        for ($i = 2; $i < count($file); $i++) {
+            echo file_get_contents($config['dirTemplate'] . $file[$i], true);
+        }
 
- 
-    for($i=2;$i<count($file);$i++){
-        echo file_get_contents($config['dirTemplate'].$file[$i],true);
-    }
-    
 
-    
-    ?>
+
+        ?>
 
     </div>
 

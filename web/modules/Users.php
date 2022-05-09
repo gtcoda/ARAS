@@ -36,12 +36,20 @@ class Users extends Modules
      * 
      * 
      */
-    public function GetUserId($id)
+    public function GetUserId($id, $fields = null)
     {
 
 
         try {
-            $row = $this->db->getRow("SELECT user_id, user_name FROM ?n WHERE user_id=?i", "users", $id);
+            if(empty($fields)){
+                unset($fields);
+                $fields[] = "user_id";
+            }
+
+            $row = $this->db->getRow("SELECT ?l FROM ?n WHERE user_id=?i", $fields, "users", $id);
+        
+        
+        
         } catch (Exception $e) {
             $this->log->add(print_r($e->getMessage(), true));
         }

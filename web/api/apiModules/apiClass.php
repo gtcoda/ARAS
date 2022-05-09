@@ -362,4 +362,23 @@ abstract class Api
         $this->log->add($value);
     }
 
+
+    /**
+     * 
+     * Формирует список запрашиваемых полей
+     *  
+     */
+
+     protected function fieldslist(){
+
+        if(empty($this->requestGETParam["fields"]) ){
+            return null;
+        }
+
+        $list = explode(",",$this->requestGETParam["fields"]);
+        // Запретим запрашивать определенные поля
+        unset($fields['user_password']);
+        return $list;
+     }
+
 }

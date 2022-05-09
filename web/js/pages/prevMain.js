@@ -26,7 +26,6 @@ Handlebars.registerHelper('insertYears', function () {
 
 // Обработчик вставки таблицы генерации годичного плана ТО
 Handlebars.registerHelper('insertTable', function (obj) {
-	console.log(obj);
 	return new Handlebars.SafeString(View.render("prevMainTable", obj));
 });
 
@@ -83,7 +82,7 @@ function AddCalendar() {
 	var Draggable = FullCalendar.Draggable;
 
 	var Mapp = document.getElementById("MaintenenceApps");
-
+	var initialLocaleCode = 'ru';
 	Mapp.innerHTML = View.render("prevMainCalendar");
 	var calendarEl = document.getElementById('MaintenenceCalendar');
 
@@ -97,6 +96,7 @@ function AddCalendar() {
 			right: 'dayGridMonth'
 		},
 		editable: true,
+		locale: initialLocaleCode,
 		droppable: true, // this allows things to be dropped onto the calendar
 		drop: function (info) {
 			// is the "remove after drop" checkbox checked?
@@ -235,6 +235,9 @@ export default {
 
 	// генерирование годового плана исходя из выбраных ТО
 	async generate(e) {
+
+		
+
 		Array.prototype.rotateRight = function (n) {
 			this.unshift.apply(this, this.splice(n, this.length));
 			return this;
@@ -290,6 +293,9 @@ export default {
 		}
 
 
+		// Сохраним сгенерированое на сервер
+		await Model.setMaintence(raw);
+		
 		//Обновим данные по модели с учетом вновь сгенерированных данных и выведем
 		items = await Model.getMachinesIndexModel();
 		let PPR = await Model.getMaintenceSchedule();
@@ -298,6 +304,8 @@ export default {
 			items[item].forEach(element => { element.maintence = PPR[element.machine_id]; });
 		}
 		mod = items[model];
+
+		console.log(mod);
 
 		model_div.innerHTML = View.render("prevMainTable", mod);
 

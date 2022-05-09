@@ -76,6 +76,19 @@ export default {
 
     },
 
+    getUser() {
+        return API.users.get({
+            jwt: settings.getJWT(),
+            fields:'user_id,user_name'
+        }).then(
+            function (login) {
+                return login.data;
+            },
+            function (xnr) {
+                return xnr;
+            })
+    },
+
     // Добавить пользователя
     setUser(login, password, name, email) {
         return new Promise((resolve, reject) => {

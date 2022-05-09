@@ -107,7 +107,7 @@ class loginApi extends Api
         } else {
             $answer = array(
                 'status' => 'error',
-                'messages' => 'User NOT confirmed'
+                'messages' => 'Неверный логин\пароль'
             );
             return $this->response($answer, 400);
         }
